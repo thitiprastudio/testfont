@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ThitipraStudio - Font Preview & VS Mode</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
   <style>
@@ -36,7 +35,8 @@
 </head>
 <body class="min-h-screen flex flex-col antialiased">
 
-  <header class="text-center py-6 px-4 bg-white/80 border-b-2 border-[#E6CCFF] backdrop-blur-sm sticky top-0 z-30 shadow-sm">
+  <!-- Header -->
+  <header class="text-center py-6 px-4 bg-white/85 border-b-2 border-[#E6CCFF] backdrop-blur-sm sticky top-0 z-30 shadow-sm">
     <div class="max-w-4xl mx-auto flex flex-col items-center">
       <div class="w-16 h-16 rounded-2xl overflow-hidden border-2 border-[#FF9AA2] mb-2 shadow-sm">
         <img src="IPCB5121.PNG" alt="Logo" class="w-full h-full object-cover">
@@ -51,16 +51,17 @@
         <button onclick="toggleVSMode()" class="px-3.5 py-1.5 rounded-full bg-[#E6CCFF] text-slate-700 hover:bg-[#d8b4fe] transition flex items-center gap-1.5 font-bold">
           <i class="fas fa-columns"></i> โหมด VS
         </button>
-        <a id="header-myshop-btn" href="#" target="_blank" class="px-3.5 py-1.5 rounded-full bg-[#06C755] text-white hover:bg-[#05b04b] transition flex items-center gap-1.5 font-medium shadow-sm">
+        <a id="nav-myshop-btn" href="#" target="_blank" class="px-3.5 py-1.5 rounded-full bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100 transition flex items-center gap-1">
           <i class="fas fa-shopping-bag"></i> MyShop
         </a>
         <a href="admin.html" class="px-3.5 py-1.5 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-slate-50 transition flex items-center gap-1">
-          <i class="fas fa-lock"></i> จัดการหลังบ้าน (Admin)
+          <i class="fas fa-lock"></i> หลังบ้าน (Admin)
         </a>
       </div>
     </div>
   </header>
 
+  <!-- Sidebar Menu (CMS Driven) -->
   <aside id="sidebar" class="fixed inset-y-0 left-0 w-80 max-w-[85vw] bg-white shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 ease-in-out border-r border-rose-100 flex flex-col justify-between p-6 overflow-y-auto">
     <div class="space-y-5">
       <div class="flex justify-between items-center pb-2 border-b">
@@ -68,23 +69,26 @@
         <button onclick="toggleSidebar()" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fas fa-times"></i></button>
       </div>
 
-      <div class="space-y-2 pb-3 border-b">
-        <a id="sidebar-line-btn" href="#" target="_blank" class="w-full flex items-center justify-center gap-2 py-2 bg-white text-[#06C755] border border-[#06C755] rounded-xl text-xs font-semibold hover:bg-[#06C755] hover:text-white transition">
-          <i class="fab fa-line text-sm"></i> ติดต่อสอบถาม / สั่งซื้อผ่านแอดมิน
+      <!-- Quick Contact Channels Set by Admin -->
+      <div class="space-y-2 text-xs">
+        <a id="sidebar-line-link" href="#" target="_blank" class="w-full py-2 px-3 bg-[#06C755] text-white font-semibold rounded-xl flex items-center justify-center gap-2 shadow-sm">
+          <i class="fab fa-line text-sm"></i> ติดต่อ / สั่งซื้อผ่านแอดมิน LINE
         </a>
-        <a id="sidebar-myshop-btn" href="#" target="_blank" class="w-full flex items-center justify-center gap-2 py-2 bg-[#06C755] text-white rounded-xl text-xs font-semibold hover:bg-[#05b04b] transition shadow-sm">
-          <i class="fas fa-shopping-bag text-sm"></i> สั่งซื้อผ่าน MyShop (24 ชม.)
+        <a id="sidebar-myshop-link" href="#" target="_blank" class="w-full py-2 px-3 bg-white border border-[#06C755] text-[#06C755] font-semibold rounded-xl flex items-center justify-center gap-2">
+          <i class="fas fa-shopping-cart text-sm"></i> สั่งซื้อผ่าน Line MyShop
         </a>
       </div>
 
-      <div id="sidebar-cms-container" class="space-y-4 text-xs"></div>
+      <div id="sidebar-cms-container" class="space-y-4 text-xs pt-2 border-t border-slate-100"></div>
     </div>
     <div class="pt-4 border-t text-center text-[11px] text-slate-400">© ThitipraStudio - All Rights Reserved</div>
   </aside>
   <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/30 z-40 hidden backdrop-blur-[2px]"></div>
 
+  <!-- Main Container -->
   <main class="max-w-7xl mx-auto px-4 py-6 w-full flex-1 space-y-6">
 
+    <!-- VS Comparison Mode Section -->
     <section id="vs-section" class="hidden p-5 bg-white border-2 border-dashed border-[#FF9AA2] rounded-3xl shadow-lg relative">
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
@@ -111,6 +115,7 @@
       </div>
     </section>
 
+    <!-- Search & Filter Controls -->
     <div class="flex flex-col md:flex-row items-center justify-between gap-3">
       <div class="w-full md:max-w-md relative">
         <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
@@ -124,9 +129,11 @@
       </div>
     </div>
 
+    <!-- Font Cards Grid -->
     <div id="fontsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
   </main>
 
+  <!-- Modal: สั่งซื้อฟอนต์ & แนบสลิป -->
   <div id="orderModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-rose-100 max-h-[90vh] overflow-y-auto text-xs">
       <div class="flex justify-between items-center mb-3">
@@ -143,7 +150,7 @@
         </div>
 
         <div>
-          <label class="block font-semibold mb-1 text-slate-600">ชื่อผู้สั่งซื้อ / Email *</label>
+          <label class="block font-semibold mb-1 text-slate-600">ชื่อผู้สั่งซื้อ / อีเมล *</label>
           <input type="text" id="orderName" required placeholder="เช่น Praewa หรือ praewa@gmail.com" class="w-full p-2 border rounded-xl outline-none bg-slate-50">
         </div>
 
@@ -168,6 +175,12 @@
   </div>
 
   <script>
+    // ดึงการตั้งค่าลิงก์ร้านที่แอดมินเป็นผู้กำหนด
+    const defaultSettings = {
+      lineUrl: "https://lin.ee/5HYfnJc",
+      myshopUrl: "https://shop.line.me/@wbk2012r"
+    };
+
     const defaultFonts = [
       { th: "สเตฟานี่", en: "Stephanie", p: 79, c: 169, b: 700, file: "fonts/Stephanie.ttf" },
       { th: "แอนโทนี่", en: "Anthony", p: 79, c: 169, b: 700, file: "fonts/Anthony.ttf" },
@@ -217,14 +230,9 @@
       { id: 'c2', title: 'ข้อห้าม & กฎการใช้งาน', subtitle: 'มีผลบังคับใช้ทุกเงื่อนไข', layout: 'text', content: '1 การสั่งซื้อ ต่อ 1 อีเมล = ใช้ได้ 1 บุคคลเท่านั้น\nบริษัท/องค์กร/หจก./หน่วยงาน เริ่มต้น 700.- (จำกัดไม่เกิน 5 เครื่อง)\n1. ห้ามส่งไฟล์ฟอนต์ต่อ ต้อง Create outline เป็นชิ้นงานสำเร็จเท่านั้น\n2. ห้ามแยกตัวอักษรทำสติ๊กเกอร์ไลน์เดี่ยวๆ ขาย\n3. ห้ามใช้ AI ดัดแปลงหรือเทรนโมเดลฟอนต์เลียนแบบ ฝ่าฝืนปรับ 10,000.- / ไฟล์' }
     ];
 
-    const defaultSettings = {
-      lineUrl: "https://lin.ee/5HYfnJc",
-      myshopUrl: "https://shop.line.me/@wbk2012r"
-    };
-
     let fontsList = JSON.parse(localStorage.getItem('thitipra_fonts')) || defaultFonts;
     let cmsList = JSON.parse(localStorage.getItem('thitipra_cms')) || defaultCMS;
-    let siteSettings = JSON.parse(localStorage.getItem('thitipra_settings')) || defaultSettings;
+    let shopSettings = JSON.parse(localStorage.getItem('thitipra_settings')) || defaultSettings;
     let activeFilter = 'all';
 
     async function loadDynamicFonts() {
@@ -244,17 +252,15 @@
       if(!localStorage.getItem('thitipra_cms')) localStorage.setItem('thitipra_cms', JSON.stringify(defaultCMS));
       if(!localStorage.getItem('thitipra_settings')) localStorage.setItem('thitipra_settings', JSON.stringify(defaultSettings));
       
-      applySiteSettings();
+      // อัปเดตลิงก์หน้าร้านตามที่ตั้งค่า
+      document.getElementById('nav-myshop-btn').href = shopSettings.myshopUrl;
+      document.getElementById('sidebar-line-link').href = shopSettings.lineUrl;
+      document.getElementById('sidebar-myshop-link').href = shopSettings.myshopUrl;
+
       loadDynamicFonts();
       renderFonts();
       renderCMS();
       populateVSSelectors();
-    }
-
-    function applySiteSettings() {
-      document.getElementById('header-myshop-btn').href = siteSettings.myshopUrl || '#';
-      document.getElementById('sidebar-line-btn').href = siteSettings.lineUrl || '#';
-      document.getElementById('sidebar-myshop-btn').href = siteSettings.myshopUrl || '#';
     }
 
     function renderFonts() {
@@ -402,10 +408,8 @@
       localStorage.setItem('thitipra_orders', JSON.stringify(orders));
 
       closeOrderModal();
-      
-      const targetLine = siteSettings.lineUrl || "https://line.me";
-      window.open(targetLine, '_blank');
-      alert(`บันทึกคำสั่งซื้อ ${orderObj.id} แล้ว! ระบบกำลังเปิด LINE ของทางร้าน`);
+      window.open(shopSettings.lineUrl, '_blank');
+      alert(`บันทึกคำสั่งซื้อ ${orderObj.id} แล้ว! ระบบกำลังนำท่านไปยัง LINE เพื่อยืนยันการรับฟอนต์`);
     }
 
     function renderCMS() {
