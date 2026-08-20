@@ -29,13 +29,12 @@
 
   <main class="max-w-7xl mx-auto px-4 py-8 w-full flex-1">
     
-    <!-- Login Card -->
     <div id="admin-auth-card" class="max-w-sm mx-auto bg-white rounded-3xl p-8 shadow-xl border my-12 text-center">
       <div class="w-14 h-14 bg-rose-50 text-[#FF9AA2] rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl">
         <i class="fas fa-shield-alt"></i>
       </div>
       <h2 class="text-xl font-bold text-slate-800 mb-1">เข้าสู่ระบบแอดมิน</h2>
-      <p class="text-xs text-slate-400 mb-6">กรอกชื่อผู้ใช้และรหัสผ่านเพื่อเข้าหลังบ้าน</p>
+      <p class="text-xs text-slate-400 mb-6">กรอกข้อมูลเพื่อจัดการระบบหลังบ้าน</p>
       
       <form onsubmit="handleLogin(event)" class="space-y-3 text-left text-xs">
         <div>
@@ -58,10 +57,8 @@
       </form>
     </div>
 
-    <!-- Admin Console Dashboard -->
     <div id="admin-console" class="hidden space-y-6">
       
-      <!-- Tabs Bar -->
       <div class="bg-white p-3 rounded-2xl border flex flex-wrap items-center justify-between gap-3 shadow-sm text-xs font-semibold">
         <div class="flex gap-2">
           <button onclick="switchTab('fonts')" id="tab-btn-fonts" class="px-3.5 py-1.5 rounded-xl tab-active transition">📦 จัดการฟอนต์ (<span id="count-fonts">0</span>)</button>
@@ -72,7 +69,6 @@
         <button onclick="logoutAdmin()" class="text-rose-500 hover:bg-rose-50 px-3 py-1.5 rounded-xl transition"><i class="fas fa-sign-out-alt"></i> ออกจากระบบ</button>
       </div>
 
-      <!-- Tab 1: Fonts -->
       <div id="view-fonts" class="space-y-4">
         <div class="flex justify-between items-center">
           <h3 class="font-bold text-slate-800 text-base">คลังฟอนต์ทั้งหมด (แสดงหน้าหลักอัตโนมัติ)</h3>
@@ -96,13 +92,11 @@
         </div>
       </div>
 
-      <!-- Tab 2: Orders -->
       <div id="view-orders" class="hidden space-y-4">
         <h3 class="font-bold text-slate-800 text-base">รายการแจ้งชำระเงินจากลูกค้า</h3>
         <div id="orders-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
       </div>
 
-      <!-- Tab 3: CMS -->
       <div id="view-cms" class="hidden space-y-4">
         <div class="flex justify-between items-center">
           <h3 class="font-bold text-slate-800 text-base">ตั้งค่าเนื้อหา Sidebar</h3>
@@ -113,7 +107,6 @@
         <div id="cms-list" class="space-y-3"></div>
       </div>
 
-      <!-- Tab 4: Settings -->
       <div id="view-settings" class="hidden space-y-4 max-w-lg">
         <h3 class="font-bold text-slate-800 text-base">ตั้งค่าช่องทางการติดต่อและสั่งซื้อ</h3>
         <form onsubmit="saveSettings(event)" class="bg-white p-6 rounded-2xl border space-y-4 text-xs">
@@ -132,7 +125,6 @@
     </div>
   </main>
 
-  <!-- Modal: Font Add/Edit -->
   <div id="fontModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border max-h-[90vh] overflow-y-auto text-xs">
       <h3 id="fontModalTitle" class="font-bold text-base text-slate-800 mb-3">เพิ่มฟอนต์ใหม่</h3>
@@ -178,7 +170,6 @@
     </div>
   </div>
 
-  <!-- Modal: CMS Add/Edit -->
   <div id="cmsModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border text-xs">
       <h3 class="font-bold text-base text-slate-800 mb-3">ตั้งค่าหัวข้อ Sidebar</h3>
@@ -212,9 +203,16 @@
   </div>
 
   <script>
-    // ซ่อนรหัสผ่านไม่ให้แสดง Plain-Text ใน F12
-    const _K1 = "YnJwcmg=";     // brprh
-    const _K2 = "cGxlbmcyMzU="; // pleng235
+    const _U = [98, 114, 112, 114, 104];
+    const _P = [112, 108, 101, 110, 103, 50, 51, 53];
+
+    function _chk(str, arr) {
+      if (str.length !== arr.length) return false;
+      for (let i = 0; i < arr.length; i++) {
+        if (str.charCodeAt(i) !== arr[i]) return false;
+      }
+      return true;
+    }
 
     let fonts = JSON.parse(localStorage.getItem('thitipra_fonts')) || [];
     let orders = JSON.parse(localStorage.getItem('thitipra_orders')) || [];
@@ -236,19 +234,51 @@
       }
     }
 
-    function handleLogin(e) {
-      e.preventDefault();
-      const u = document.getElementById('input-user').value.trim();
-      const p = document.getElementById('input-pass').value.trim();
+<script>
+    // ================= วางทับตำแหน่งนี้ได้เลย =================
+    const _U = [98, 114, 112, 114, 104];
+    const _P = [112, 108, 101, 110, 103, 50, 51, 53];
 
-      if (btoa(u) === _K1 && btoa(p) === _K2) {
+    function _chk(str, arr) {
+      if (str.length !== arr.length) return false;
+      for (let i = 0; i < arr.length; i++) {
+        if (str.charCodeAt(i) !== arr[i]) return false;
+      }
+      return true;
+    }
+
+    function handleLogin(e) {
+      if (e) e.preventDefault();
+      
+      const userInput = document.getElementById('input-user') || document.getElementById('inputUser');
+      const passInput = document.getElementById('input-pass') || document.getElementById('inputPass');
+      const errorEl = document.getElementById('auth-error') || document.getElementById('authError');
+
+      const u = userInput ? userInput.value.trim() : '';
+      const p = passInput ? passInput.value.trim() : '';
+
+      if (_chk(u, _U) && _chk(p, _P)) {
+        if (errorEl) errorEl.classList.add('hidden');
+        
         sessionStorage.setItem('thitipra_admin', 'true');
-        document.getElementById('auth-error').classList.add('hidden');
+        sessionStorage.setItem('font_mgr_auth', 'true');
+        
         renderDashboard();
       } else {
-        document.getElementById('auth-error').classList.remove('hidden');
+        if (errorEl) errorEl.classList.remove('hidden');
       }
     }
+    // ========================================================
+
+    function logoutAdmin() {
+      sessionStorage.removeItem('thitipra_admin');
+      location.reload();
+    }
+    
+    // ... โค้ดส่วนอื่นๆ คงเดิม ...
+  </script>
+</body>
+</html>
 
     function logoutAdmin() {
       sessionStorage.removeItem('thitipra_admin');
