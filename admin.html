@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Control Panel - ThitipraStudio</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -15,7 +16,6 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
 
-    <!-- Header -->
     <header class="bg-white border-b sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2">
@@ -30,7 +30,6 @@
 
     <main class="max-w-7xl mx-auto px-4 py-8 w-full flex-1">
         
-        <!-- Login Card -->
         <div id="admin-auth-card" class="max-w-sm mx-auto bg-white rounded-3xl p-8 shadow-xl border my-12 text-center">
             <div class="w-14 h-14 bg-rose-50 text-[#FF9EBB] rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl">
                 <i class="fas fa-shield-alt"></i>
@@ -59,7 +58,6 @@
             </form>
         </div>
 
-        <!-- Dashboard Console -->
         <div id="admin-console" class="hidden space-y-6">
             
             <div class="bg-white p-3 rounded-2xl border flex flex-wrap items-center justify-between gap-3 shadow-sm text-xs font-semibold">
@@ -71,10 +69,12 @@
                 <button onclick="logoutAdmin()" class="text-rose-500 hover:bg-rose-50 px-3 py-1.5 rounded-xl transition"><i class="fas fa-sign-out-alt"></i> ออกจากระบบ</button>
             </div>
 
-            <!-- Tab 1: Fonts -->
             <div id="view-fonts" class="space-y-4">
                 <div class="flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800 text-base">คลังฟอนต์และลิงก์ Drive</h3>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base">คลังฟอนต์และลิงก์ Drive</h3>
+                        <p class="text-xs text-slate-400">เชื่อมต่อ Supabase Storage: <code class="text-pink-600">czyjemcsufzrvkcfzfwv.supabase.co</code></p>
+                    </div>
                     <button onclick="openFontModal()" class="px-3.5 py-2 bg-[#FF9EBB] text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
                         <i class="fas fa-plus"></i> เพิ่มฟอนต์ใหม่
                     </button>
@@ -95,13 +95,11 @@
                 </div>
             </div>
 
-            <!-- Tab 2: Orders -->
             <div id="view-orders" class="hidden space-y-4">
                 <h3 class="font-bold text-slate-800 text-base">รายการสั่งซื้อ & สลิปโอนเงินรอดึงเมลเข้า Google Drive</h3>
                 <div id="orders-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
             </div>
 
-            <!-- Tab 3: Q&A Manager -->
             <div id="view-qa" class="hidden space-y-4">
                 <div class="flex justify-between items-center">
                     <div>
@@ -118,7 +116,6 @@
         </div>
     </main>
 
-    <!-- Modal: Font Add/Edit -->
     <div id="fontModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border max-h-[90vh] overflow-y-auto text-xs">
             <h3 id="fontModalTitle" class="font-bold text-base text-slate-800 mb-3">เพิ่มฟอนต์ใหม่</h3>
@@ -157,18 +154,18 @@
                     <input type="url" id="f-drive-c" placeholder="https://drive.google.com/..." class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
                 </div>
                 <div>
-                    <label class="block font-semibold mb-1">ไฟล์ฟอนต์ Path (.ttf/.otf) *</label>
-                    <input type="text" id="f-file" required placeholder="fonts/Stephanie.ttf" class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
+                    <label class="block font-semibold mb-1">ไฟล์ฟอนต์ (.ttf / .otf) หรือ Path *</label>
+                    <input type="text" id="f-file" required placeholder="fonts/Stephanie.ttf" class="w-full p-2 bg-slate-50 border rounded-xl outline-none mb-1.5">
+                    <input type="file" id="f-file-upload" accept=".ttf,.otf" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:bg-pink-100 file:text-pink-700">
                 </div>
                 <div class="pt-2 flex justify-end gap-2">
                     <button type="button" onclick="closeFontModal()" class="px-4 py-2 bg-slate-100 rounded-xl font-semibold">ยกเลิก</button>
-                    <button type="submit" class="px-4 py-2 bg-[#FF9EBB] text-white font-bold rounded-xl shadow-sm">บันทึกฟอนต์</button>
+                    <button type="submit" id="saveFontBtn" class="px-4 py-2 bg-[#FF9EBB] text-white font-bold rounded-xl shadow-sm">บันทึกฟอนต์</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Modal: Q&A Add/Edit -->
     <div id="qaModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border text-xs">
             <h3 class="font-bold text-base text-slate-800 mb-3">เพิ่ม/แก้ไขคำถาม-คำตอบ (Q&A)</h3>
@@ -191,6 +188,13 @@
     </div>
 
     <script>
+        const SUPABASE_URL = 'https://czyjemcsufzrvkcfzfwv.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_z10rntPACdi5LPL7lZe4yg_Ka2eCXPY';
+        let supabaseClient = null;
+        if (typeof supabase !== 'undefined') {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        }
+
         const _U = [98, 114, 112, 114, 104];
         const _P = [112, 108, 101, 110, 103, 50, 51, 53];
 
@@ -264,8 +268,8 @@
                 tr.innerHTML = `
                     <td class="p-3 font-bold">${f.th} <span class="font-normal text-slate-400">(${f.en})</span></td>
                     <td class="p-3 font-medium">${f.p} / ${f.c} / ${f.b||'700.-'}</td>
-                    <td class="p-3 text-[11px]"><a href="${f.drive_personal||'#'}" target="_blank" class="text-pink-500 hover:underline"><i class="fab fa-google-drive"></i> ส่วนตัว</a></td>
-                    <td class="p-3 text-[11px]"><a href="${f.drive_commercial||'#'}" target="_blank" class="text-blue-500 hover:underline"><i class="fab fa-google-drive"></i> พาณิชย์</a></td>
+                    <td class="p-3 text-[11px]"><a href="${f.drive_personal||f.drive||'#'}" target="_blank" class="text-pink-500 hover:underline"><i class="fab fa-google-drive"></i> ส่วนตัว</a></td>
+                    <td class="p-3 text-[11px]"><a href="${f.drive_commercial||f.drive||'#'}" target="_blank" class="text-blue-500 hover:underline"><i class="fab fa-google-drive"></i> พาณิชย์</a></td>
                     <td class="p-3 text-center">
                         <button onclick="editFont(${idx})" class="p-1 text-slate-500 hover:text-[#FF9EBB]"><i class="fas fa-edit"></i></button>
                         <button onclick="deleteFont(${idx})" class="p-1 text-slate-500 hover:text-rose-600"><i class="fas fa-trash"></i></button>
@@ -286,14 +290,33 @@
             document.getElementById('f-drive-p').value = '';
             document.getElementById('f-drive-c').value = '';
             document.getElementById('f-file').value = '';
+            document.getElementById('f-file-upload').value = '';
             document.getElementById('fontModal').classList.remove('hidden');
         }
 
         function closeFontModal() { document.getElementById('fontModal').classList.add('hidden'); }
 
-        function saveFont(e) {
+        async function saveFont(e) {
             e.preventDefault();
             const idx = document.getElementById('edit-font-idx').value;
+            const btn = document.getElementById('saveFontBtn');
+            btn.innerText = 'กำลังบันทึก...';
+
+            let fileUrl = document.getElementById('f-file').value.trim();
+            const uploadFile = document.getElementById('f-file-upload').files[0];
+
+            if (uploadFile && supabaseClient) {
+                try {
+                    const ext = uploadFile.name.split('.').pop();
+                    const path = `fonts_${Date.now()}.${ext}`;
+                    const { error } = await supabaseClient.storage.from('font-files').upload(path, uploadFile);
+                    if (!error) {
+                        const { data } = supabaseClient.storage.from('font-files').getPublicUrl(path);
+                        fileUrl = data.publicUrl;
+                    }
+                } catch(err) {}
+            }
+
             const fontObj = {
                 th: document.getElementById('f-th').value.trim(),
                 en: document.getElementById('f-en').value.trim(),
@@ -302,11 +325,13 @@
                 b: document.getElementById('f-b').value.trim(),
                 drive_personal: document.getElementById('f-drive-p').value.trim(),
                 drive_commercial: document.getElementById('f-drive-c').value.trim(),
-                file: document.getElementById('f-file').value.trim()
+                file: fileUrl
             };
 
             if (idx !== '') fonts[idx] = fontObj; else fonts.unshift(fontObj);
             localStorage.setItem('thitipra_fonts', JSON.stringify(fonts));
+
+            btn.innerText = 'บันทึกฟอนต์';
             closeFontModal();
             renderFontsTable();
         }
@@ -320,8 +345,8 @@
             document.getElementById('f-p').value = f.p;
             document.getElementById('f-c').value = f.c;
             document.getElementById('f-b').value = f.b || '700.-';
-            document.getElementById('f-drive-p').value = f.drive_personal || '';
-            document.getElementById('f-drive-c').value = f.drive_commercial || '';
+            document.getElementById('f-drive-p').value = f.drive_personal || f.drive || '';
+            document.getElementById('f-drive-c').value = f.drive_commercial || f.drive || '';
             document.getElementById('f-file').value = f.file;
             document.getElementById('fontModal').classList.remove('hidden');
         }
@@ -348,9 +373,9 @@
                         <span class="text-[#FF9EBB]">#${o.id}</span>
                         <span class="px-2 py-0.5 rounded-full ${isApp?'bg-green-100 text-green-700':'bg-amber-100 text-amber-700'}">${isApp?'ดึงเมลแล้ว':'รอดึงเมล 1-3 ชม.'}</span>
                     </div>
-                    <p class="font-bold text-slate-800">${o.fontName} (${o.license})</p>
+                    <p class="font-bold text-slate-800">${o.fontName || o.font} (${o.license})</p>
                     <p class="text-slate-600">Gmail ลูกค้า: <b class="text-pink-600">${o.customerEmail}</b></p>
-                    <p class="text-slate-500">ยอดชำระ: ${o.amount} | ${o.date}</p>
+                    <p class="text-slate-500">ยอดชำระ: ${o.amount || o.price} | ${o.date}</p>
                     <button onclick="approveOrder(${i})" ${isApp?'disabled':''} class="w-full py-1.5 bg-green-500 hover:bg-green-600 disabled:opacity-40 text-white font-bold rounded-xl mt-2 flex items-center justify-center gap-1">
                         <i class="fas fa-check-circle"></i> ${isApp?'อนุมัติเรียบร้อย':'ดึงเมลเข้า Drive & อนุมัติสิทธิ์'}
                     </button>
@@ -366,7 +391,7 @@
             alert(`อนุมัติคำสั่งซื้อเรียบร้อย! ปลดล็อกสิทธิ์ Drive ให้ ${orders[idx].customerEmail} สำเร็จ`);
         }
 
-        // Q&A
+        // Q&A Functions
         function renderQAList() {
             const list = document.getElementById('qa-list');
             list.innerHTML = '';
