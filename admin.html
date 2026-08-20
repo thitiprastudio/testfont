@@ -16,6 +16,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
 
+    <!-- Header -->
     <header class="bg-white border-b sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2">
@@ -30,6 +31,7 @@
 
     <main class="max-w-7xl mx-auto px-4 py-8 w-full flex-1">
         
+        <!-- Login Card -->
         <div id="admin-auth-card" class="max-w-sm mx-auto bg-white rounded-3xl p-8 shadow-xl border my-12 text-center">
             <div class="w-14 h-14 bg-rose-50 text-[#FF9EBB] rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl">
                 <i class="fas fa-shield-alt"></i>
@@ -58,22 +60,25 @@
             </form>
         </div>
 
+        <!-- Dashboard Console -->
         <div id="admin-console" class="hidden space-y-6">
             
             <div class="bg-white p-3 rounded-2xl border flex flex-wrap items-center justify-between gap-3 shadow-sm text-xs font-semibold">
                 <div class="flex gap-2 flex-wrap">
                     <button onclick="switchTab('fonts')" id="tab-btn-fonts" class="px-3.5 py-1.5 rounded-xl tab-active transition">📦 จัดการฟอนต์ & ไดรฟ์ (<span id="count-fonts">0</span>)</button>
                     <button onclick="switchTab('orders')" id="tab-btn-orders" class="px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-600 transition">📝 ตรวจสลิป & ดึงเมล (<span id="count-orders">0</span>)</button>
+                    <button onclick="switchTab('cms')" id="tab-btn-cms" class="px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-600 transition">🗂 จัดการ Sidebar Menu</button>
                     <button onclick="switchTab('qa')" id="tab-btn-qa" class="px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-600 transition">💬 จัดการคำถาม Q&A</button>
                 </div>
                 <button onclick="logoutAdmin()" class="text-rose-500 hover:bg-rose-50 px-3 py-1.5 rounded-xl transition"><i class="fas fa-sign-out-alt"></i> ออกจากระบบ</button>
             </div>
 
+            <!-- Tab 1: Fonts -->
             <div id="view-fonts" class="space-y-4">
                 <div class="flex justify-between items-center">
                     <div>
-                        <h3 class="font-bold text-slate-800 text-base">คลังฟอนต์และลิงก์ Drive</h3>
-                        <p class="text-xs text-slate-400">เชื่อมต่อ Supabase Storage: <code class="text-pink-600">czyjemcsufzrvkcfzfwv.supabase.co</code></p>
+                        <h3 class="font-bold text-slate-800 text-base">คลังฟอนต์และลิงก์ Drive (Supabase Cloud)</h3>
+                        <p class="text-xs text-slate-400">ฐานข้อมูล: <code class="text-pink-600">czyjemcsufzrvkcfzfwv.supabase.co</code></p>
                     </div>
                     <button onclick="openFontModal()" class="px-3.5 py-2 bg-[#FF9EBB] text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
                         <i class="fas fa-plus"></i> เพิ่มฟอนต์ใหม่
@@ -95,11 +100,27 @@
                 </div>
             </div>
 
+            <!-- Tab 2: Orders -->
             <div id="view-orders" class="hidden space-y-4">
                 <h3 class="font-bold text-slate-800 text-base">รายการสั่งซื้อ & สลิปโอนเงินรอดึงเมลเข้า Google Drive</h3>
                 <div id="orders-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
             </div>
 
+            <!-- Tab 3: Sidebar CMS Manager -->
+            <div id="view-cms" class="hidden space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base">ตั้งค่า Sidebar Menu หน้าร้าน</h3>
+                        <p class="text-xs text-slate-400">เพิ่มหัวข้อหลัก หัวข้อย่อย และเลือกลักษณะการ์ดหรือข้อความยาว</p>
+                    </div>
+                    <button onclick="openCmsModal()" class="px-3.5 py-2 bg-[#FF9EBB] text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
+                        <i class="fas fa-plus"></i> เพิ่มหัวข้อใหม่
+                    </button>
+                </div>
+                <div id="cms-list" class="space-y-3"></div>
+            </div>
+
+            <!-- Tab 4: Q&A Manager -->
             <div id="view-qa" class="hidden space-y-4">
                 <div class="flex justify-between items-center">
                     <div>
@@ -116,11 +137,12 @@
         </div>
     </main>
 
+    <!-- Modal: Font Add/Edit (Supabase Cloud Storage Sync) -->
     <div id="fontModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border max-h-[90vh] overflow-y-auto text-xs">
             <h3 id="fontModalTitle" class="font-bold text-base text-slate-800 mb-3">เพิ่มฟอนต์ใหม่</h3>
             <form onsubmit="saveFont(event)" class="space-y-3">
-                <input type="hidden" id="edit-font-idx">
+                <input type="hidden" id="edit-font-id">
                 <div class="grid grid-cols-2 gap-2">
                     <div>
                         <label class="block font-semibold mb-1">ชื่อภาษาไทย *</label>
@@ -155,7 +177,7 @@
                 </div>
                 <div>
                     <label class="block font-semibold mb-1">ไฟล์ฟอนต์ (.ttf / .otf) หรือ Path *</label>
-                    <input type="text" id="f-file" required placeholder="fonts/Stephanie.ttf" class="w-full p-2 bg-slate-50 border rounded-xl outline-none mb-1.5">
+                    <input type="text" id="f-file" required placeholder="fonts/Stephanie.ttf หรือ URL จาก Cloud" class="w-full p-2 bg-slate-50 border rounded-xl outline-none mb-1.5">
                     <input type="file" id="f-file-upload" accept=".ttf,.otf" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:bg-pink-100 file:text-pink-700">
                 </div>
                 <div class="pt-2 flex justify-end gap-2">
@@ -166,6 +188,40 @@
         </div>
     </div>
 
+    <!-- Modal: CMS Add/Edit -->
+    <div id="cmsModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border text-xs">
+            <h3 class="font-bold text-base text-slate-800 mb-3">ตั้งค่าหัวข้อ Sidebar Menu</h3>
+            <form onsubmit="saveCms(event)" class="space-y-3">
+                <input type="hidden" id="edit-cms-id">
+                <div>
+                    <label class="block font-semibold mb-1">หัวข้อหลักบนแถบเมนู (Title) *</label>
+                    <input type="text" id="c-title" required placeholder="เช่น สั่งซื้อฟอนต์เครืออื่นๆ" class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">หัวข้อย่อยใต้ชื่อ (Subtitle)</label>
+                    <input type="text" id="c-subtitle" placeholder="เช่น ตัวแทนจำหน่ายอย่างถูกต้อง ✨" class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">ลักษณะการแสดงผลข้างใน *</label>
+                    <select id="c-layout" class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
+                        <option value="card">แบบกรอบการ์ดแยกกล่อง (Card Layout)</option>
+                        <option value="text">แบบข้อความยาวต่อเนื่อง (Long Text)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">เนื้อหาข้างใน (Content Details) *</label>
+                    <textarea id="c-content" rows="5" required placeholder="พิมพ์ข้อความแต่ละข้อที่นี่..." class="w-full p-2 bg-slate-50 border rounded-xl outline-none"></textarea>
+                </div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeCmsModal()" class="px-4 py-2 bg-slate-100 rounded-xl font-semibold">ยกเลิก</button>
+                    <button type="submit" class="px-4 py-2 bg-[#FF9EBB] text-white font-bold rounded-xl shadow-sm">บันทึกหัวข้อ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Q&A Add/Edit -->
     <div id="qaModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border text-xs">
             <h3 class="font-bold text-base text-slate-800 mb-3">เพิ่ม/แก้ไขคำถาม-คำตอบ (Q&A)</h3>
@@ -195,8 +251,8 @@
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         }
 
-        const _U = [98, 114, 112, 114, 104];
-        const _P = [112, 108, 101, 110, 103, 50, 51, 53];
+        const _U = [98, 114, 112, 114, 104];         // brprh
+        const _P = [112, 108, 101, 110, 103, 50, 51, 53]; // pleng235
 
         function _chk(str, arr) {
             if (str.length !== arr.length) return false;
@@ -206,8 +262,9 @@
             return true;
         }
 
-        let fonts = JSON.parse(localStorage.getItem('thitipra_fonts')) || [];
+        let fonts = [];
         let orders = JSON.parse(localStorage.getItem('thitipra_orders')) || [];
+        let cms = JSON.parse(localStorage.getItem('thitipra_cms')) || [];
         let qaList = JSON.parse(localStorage.getItem('thitipra_qa')) || [];
 
         function togglePasswordVisibility() {
@@ -241,21 +298,39 @@
             location.reload();
         }
 
-        function renderDashboard() {
+        async function renderDashboard() {
             document.getElementById('admin-auth-card').classList.add('hidden');
             document.getElementById('admin-console').classList.remove('hidden');
-            renderFontsTable();
+            await fetchAdminFonts();
             renderOrdersGrid();
+            renderCMSList();
             renderQAList();
         }
 
         function switchTab(tab) {
-            ['fonts', 'orders', 'qa'].forEach(t => {
+            ['fonts', 'orders', 'cms', 'qa'].forEach(t => {
                 document.getElementById(`view-${t}`).classList.add('hidden');
                 document.getElementById(`tab-btn-${t}`).className = "px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-600 transition";
             });
             document.getElementById(`view-${tab}`).classList.remove('hidden');
             document.getElementById(`tab-btn-${tab}`).className = "px-3.5 py-1.5 rounded-xl tab-active transition";
+        }
+
+        async function fetchAdminFonts() {
+            if (supabaseClient) {
+                try {
+                    const { data } = await supabaseClient.from('fonts').select('*').order('created_at', { ascending: false });
+                    if (data) {
+                        fonts = data;
+                        localStorage.setItem('thitipra_fonts', JSON.stringify(fonts));
+                    }
+                } catch(e) {
+                    fonts = JSON.parse(localStorage.getItem('thitipra_fonts')) || [];
+                }
+            } else {
+                fonts = JSON.parse(localStorage.getItem('thitipra_fonts')) || [];
+            }
+            renderFontsTable();
         }
 
         function renderFontsTable() {
@@ -272,7 +347,7 @@
                     <td class="p-3 text-[11px]"><a href="${f.drive_commercial||f.drive||'#'}" target="_blank" class="text-blue-500 hover:underline"><i class="fab fa-google-drive"></i> พาณิชย์</a></td>
                     <td class="p-3 text-center">
                         <button onclick="editFont(${idx})" class="p-1 text-slate-500 hover:text-[#FF9EBB]"><i class="fas fa-edit"></i></button>
-                        <button onclick="deleteFont(${idx})" class="p-1 text-slate-500 hover:text-rose-600"><i class="fas fa-trash"></i></button>
+                        <button onclick="deleteFont('${f.id || idx}')" class="p-1 text-slate-500 hover:text-rose-600"><i class="fas fa-trash"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -281,7 +356,7 @@
 
         function openFontModal() {
             document.getElementById('fontModalTitle').innerText = 'เพิ่มฟอนต์ใหม่';
-            document.getElementById('edit-font-idx').value = '';
+            document.getElementById('edit-font-id').value = '';
             document.getElementById('f-th').value = '';
             document.getElementById('f-en').value = '';
             document.getElementById('f-p').value = '79.-';
@@ -298,7 +373,7 @@
 
         async function saveFont(e) {
             e.preventDefault();
-            const idx = document.getElementById('edit-font-idx').value;
+            const editId = document.getElementById('edit-font-id').value;
             const btn = document.getElementById('saveFontBtn');
             btn.innerText = 'กำลังบันทึก...';
 
@@ -328,18 +403,25 @@
                 file: fileUrl
             };
 
-            if (idx !== '') fonts[idx] = fontObj; else fonts.unshift(fontObj);
-            localStorage.setItem('thitipra_fonts', JSON.stringify(fonts));
+            if (supabaseClient) {
+                try {
+                    if (editId) {
+                        await supabaseClient.from('fonts').update(fontObj).eq('id', editId);
+                    } else {
+                        await supabaseClient.from('fonts').insert([fontObj]);
+                    }
+                } catch(err) {}
+            }
 
+            await fetchAdminFonts();
             btn.innerText = 'บันทึกฟอนต์';
             closeFontModal();
-            renderFontsTable();
         }
 
         function editFont(idx) {
             const f = fonts[idx];
             document.getElementById('fontModalTitle').innerText = 'แก้ไขข้อมูลฟอนต์';
-            document.getElementById('edit-font-idx').value = idx;
+            document.getElementById('edit-font-id').value = f.id || '';
             document.getElementById('f-th').value = f.th;
             document.getElementById('f-en').value = f.en;
             document.getElementById('f-p').value = f.p;
@@ -351,11 +433,15 @@
             document.getElementById('fontModal').classList.remove('hidden');
         }
 
-        function deleteFont(idx) {
+        async function deleteFont(id) {
             if(confirm('ต้องการลบฟอนต์นี้?')) {
-                fonts.splice(idx, 1);
-                localStorage.setItem('thitipra_fonts', JSON.stringify(fonts));
-                renderFontsTable();
+                if (supabaseClient && isNaN(id)) {
+                    await supabaseClient.from('fonts').delete().eq('id', id);
+                } else {
+                    fonts.splice(id, 1);
+                    localStorage.setItem('thitipra_fonts', JSON.stringify(fonts));
+                }
+                await fetchAdminFonts();
             }
         }
 
@@ -384,11 +470,85 @@
             });
         }
 
-        function approveOrder(idx) {
+        async function approveOrder(idx) {
             orders[idx].status = 'approved';
             localStorage.setItem('thitipra_orders', JSON.stringify(orders));
+            
+            if (supabaseClient && orders[idx].id) {
+                try {
+                    await supabaseClient.from('orders').update({ status: 'approved' }).eq('id', orders[idx].id);
+                } catch(e) {}
+            }
+
             renderOrdersGrid();
             alert(`อนุมัติคำสั่งซื้อเรียบร้อย! ปลดล็อกสิทธิ์ Drive ให้ ${orders[idx].customerEmail} สำเร็จ`);
+        }
+
+        // CMS Functions
+        function renderCMSList() {
+            const list = document.getElementById('cms-list');
+            list.innerHTML = '';
+            cms.forEach((c, idx) => {
+                const item = document.createElement('div');
+                item.className = "p-3.5 bg-white border rounded-2xl flex justify-between items-center text-xs";
+                item.innerHTML = `
+                    <div>
+                        <h4 class="font-bold text-slate-800">${c.title} <span class="text-pink-400 font-normal">(${c.layout==='card'?'กรอบการ์ด':'ข้อความยาว'})</span></h4>
+                        <p class="text-slate-400 text-[11px]">${c.subtitle||''}</p>
+                    </div>
+                    <div class="flex gap-1">
+                        <button onclick="editCms(${idx})" class="p-1 text-slate-500 hover:text-[#FF9EBB]"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteCms(${idx})" class="p-1 text-slate-500 hover:text-rose-600"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function openCmsModal() {
+            document.getElementById('edit-cms-id').value = '';
+            document.getElementById('c-title').value = '';
+            document.getElementById('c-subtitle').value = '';
+            document.getElementById('c-layout').value = 'card';
+            document.getElementById('c-content').value = '';
+            document.getElementById('cmsModal').classList.remove('hidden');
+        }
+
+        function closeCmsModal() { document.getElementById('cmsModal').classList.add('hidden'); }
+
+        function saveCms(e) {
+            e.preventDefault();
+            const idx = document.getElementById('edit-cms-id').value;
+            const cmsObj = {
+                id: 'c_' + Date.now(),
+                title: document.getElementById('c-title').value.trim(),
+                subtitle: document.getElementById('c-subtitle').value.trim(),
+                layout: document.getElementById('c-layout').value,
+                content: document.getElementById('c-content').value.trim()
+            };
+
+            if(idx !== '') cms[idx] = cmsObj; else cms.push(cmsObj);
+            localStorage.setItem('thitipra_cms', JSON.stringify(cms));
+            closeCmsModal();
+            renderCMSList();
+        }
+
+        function editCms(idx) {
+            const c = cms[idx];
+            document.getElementById('edit-cms-id').value = idx;
+            document.getElementById('c-title').value = c.title;
+            document.getElementById('c-subtitle').value = c.subtitle;
+            document.getElementById('c-layout').value = c.layout;
+            document.getElementById('c-content').value = c.content;
+            document.getElementById('cmsModal').classList.remove('hidden');
+        }
+
+        function deleteCms(idx) {
+            if(confirm('ต้องการลบหัวข้อนี้?')) {
+                cms.splice(idx, 1);
+                localStorage.setItem('thitipra_cms', JSON.stringify(cms));
+                renderCMSList();
+            }
         }
 
         // Q&A Functions
