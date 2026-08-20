@@ -5,345 +5,298 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard - Fontie.Studio</title>
   
-  <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Supabase JS Client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
-  <!-- Google Fonts: Prompt -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     body { font-family: 'Prompt', sans-serif; }
-    .tab-active { background-color: #f43f5e; color: white !important; }
+    .tab-admin-active { background-color: #f43f5e; color: white !important; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
 
-  <!-- ================= 1. LOGIN OVERLAY ================= -->
-  <div id="login-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-rose-100 text-center">
+  <!-- Admin Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-8 rounded-lg bg-rose-500 text-white flex items-center justify-center font-bold text-base">A</span>
+        <span class="font-bold text-slate-800">Admin Control Hub</span>
+      </div>
+      <a href="index.html" class="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl text-xs font-semibold transition">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> กลับหน้าร้านค้า (index.html)
+      </a>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-1">
+    
+    <!-- Auth Card (Login) -->
+    <div id="admin-auth-card" class="max-w-md mx-auto bg-white rounded-3xl p-8 shadow-xl border border-slate-100 text-center my-12">
       <div class="w-16 h-16 bg-rose-100 text-rose-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
         <i data-lucide="shield-lock" class="w-8 h-8"></i>
       </div>
       <h2 class="text-2xl font-bold text-slate-800 mb-1">เข้าสู่ระบบแอดมิน</h2>
-      <p class="text-sm text-slate-400 mb-6">กรุณากรอกรหัสผ่านเพื่อเข้าสู่แดชบอร์ดหลังบ้าน</p>
+      <p class="text-xs sm:text-sm text-slate-400 mb-6">กรอกรหัสผ่านระบบหลังบ้านเพื่อจัดการข้อมูล</p>
       
-      <form onsubmit="handleLogin(event)" class="space-y-4">
-        <div class="relative text-left">
-          <label class="text-xs font-semibold text-slate-600 block mb-1">รหัสผ่านแอดมิน</label>
-          <input 
-            type="password" 
-            id="admin-password" 
-            placeholder="กรอกรหัสผ่าน..." 
-            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-400 outline-none text-sm transition"
-            required
-          >
+      <form onsubmit="handleAdminLogin(event)" class="space-y-4 text-left">
+        <div>
+          <label class="text-xs font-semibold text-slate-600 block mb-1">รหัสผ่านยืนยันสิทธิ์</label>
+          <input type="password" id="admin-input-pass" placeholder="กรอกรหัสผ่าน..." required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-rose-400">
         </div>
-        <p id="login-error" class="text-xs text-rose-500 hidden font-medium">❌ รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</p>
-        <button type="submit" class="w-full py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold text-sm shadow-md transition">
-          เข้าสู่ระบบ
-        </button>
-        <a href="index.html" class="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600 mt-3">
-          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> กลับไปยังหน้าหลัก (index.html)
-        </a>
+        <p id="admin-pass-error" class="text-xs text-rose-500 hidden font-medium">❌ รหัสผ่านไม่ถูกต้อง</p>
+        <button type="submit" class="w-full py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl text-sm transition shadow-md">เข้าสู่ระบบจัดการ</button>
       </form>
     </div>
-  </div>
 
-  <!-- ================= 2. MAIN ADMIN DASHBOARD ================= -->
-  <div id="admin-dashboard" class="hidden min-h-screen flex flex-col md:flex-row">
-    
-    <!-- Left Navigation Bar -->
-    <aside class="w-full md:w-64 bg-white border-r border-slate-200 p-6 flex flex-col justify-between">
-      <div>
-        <div class="flex items-center justify-between pb-6 mb-6 border-b border-slate-100">
-          <div class="flex items-center gap-2">
-            <span class="w-8 h-8 rounded-xl bg-rose-500 text-white flex items-center justify-center font-bold">A</span>
-            <span class="font-bold text-lg text-slate-800">Admin Panel</span>
-          </div>
-          <span class="text-[10px] bg-rose-100 text-rose-600 px-2 py-0.5 rounded-full font-bold">V1.0</span>
+    <!-- Console Section -->
+    <div id="admin-console" class="hidden space-y-6">
+      
+      <!-- Top Subnav -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 flex flex-wrap items-center justify-between gap-4 shadow-sm">
+        <div class="flex items-center gap-2">
+          <button onclick="switchAdminTab('fonts')" id="admin-tab-btn-fonts" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold tab-admin-active transition">📦 จัดการฟอนต์</button>
+          <button onclick="switchAdminTab('orders')" id="admin-tab-btn-orders" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-rose-50 transition">📝 อนุมัติออเดอร์ & ตรวจสลิป (<span id="admin-pending-badge">0</span>)</button>
+          <button onclick="switchAdminTab('cms')" id="admin-tab-btn-cms" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-rose-50 transition">🗂 ตั้งค่า Sidebar CMS</button>
         </div>
-
-        <nav class="space-y-1.5">
-          <button onclick="switchTab('fonts')" id="tab-btn-fonts" class="tab-btn tab-active w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm text-slate-600 transition">
-            <i data-lucide="type" class="w-4 h-4"></i> จัดการฟอนต์ (Fonts)
-          </button>
-          <button onclick="switchTab('orders')" id="tab-btn-orders" class="tab-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm text-slate-600 hover:bg-rose-50 transition">
-            <i data-lucide="check-circle" class="w-4 h-4"></i> อนุมัติออเดอร์ (Orders)
-          </button>
-          <button onclick="switchTab('menu')" id="tab-btn-menu" class="tab-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm text-slate-600 hover:bg-rose-50 transition">
-            <i data-lucide="layout-list" class="w-4 h-4"></i> จัดการเมนู Sidebar (CMS)
-          </button>
-        </nav>
-      </div>
-
-      <div class="pt-6 border-t border-slate-100 space-y-2">
-        <a href="index.html" class="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-rose-500 px-3 py-2 rounded-xl hover:bg-slate-50 transition">
-          <i data-lucide="external-link" class="w-4 h-4"></i> ดูหน้าเว็บ (index.html)
-        </a>
-        <button onclick="handleLogout()" class="w-full flex items-center gap-2 text-sm font-medium text-rose-500 hover:bg-rose-50 px-3 py-2 rounded-xl transition">
+        <button onclick="logoutAdmin()" class="px-3 py-1.5 text-rose-500 hover:bg-rose-50 rounded-xl text-xs font-semibold transition flex items-center gap-1">
           <i data-lucide="log-out" class="w-4 h-4"></i> ออกจากระบบ
         </button>
       </div>
-    </aside>
 
-    <!-- Main Content Area -->
-    <main class="flex-1 p-6 md:p-10 overflow-y-auto">
-
-      <!-- SECTION 1: FONTS MANAGEMENT -->
-      <section id="section-fonts" class="space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 class="text-2xl font-bold text-slate-800">จัดการคลังฟอนต์</h1>
-            <p class="text-sm text-slate-400">เพิ่ม ลบ แก้ไข ข้อมูลฟอนต์ อัปโหลดไฟล์ และตั้งค่าไดรฟ์</p>
-          </div>
-          <button onclick="openFontModal()" class="flex items-center gap-2 bg-rose-500 hover:bg-rose-600 text-white px-4 py-2.5 rounded-xl font-medium text-sm shadow-sm transition">
+      <!-- Tab 1: Fonts Management -->
+      <div id="admin-view-fonts" class="admin-subview space-y-4">
+        <div class="flex justify-between items-center">
+          <h3 class="font-bold text-slate-800 text-lg">รายการฟอนต์ทั้งหมด</h3>
+          <button onclick="openAddFontModal()" class="flex items-center gap-1.5 bg-rose-500 hover:bg-rose-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-sm">
             <i data-lucide="plus" class="w-4 h-4"></i> เพิ่มฟอนต์ใหม่
           </button>
         </div>
-
-        <!-- Fonts Table -->
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm text-slate-600">
-              <thead class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase">
-                <tr>
-                  <th class="p-4">ชื่อฟอนต์</th>
-                  <th class="p-4">ประเภทราคา</th>
-                  <th class="p-4">ราคา (ส่วนตัว / พาณิชย์)</th>
-                  <th class="p-4">Google Drive ลิงก์</th>
-                  <th class="p-4 text-center">จัดการ</th>
-                </tr>
-              </thead>
-              <tbody id="fonts-table-body" class="divide-y divide-slate-100">
-                <!-- Data populated dynamically -->
-              </tbody>
-            </table>
-          </div>
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-x-auto shadow-sm">
+          <table class="w-full text-left text-sm text-slate-600">
+            <thead class="bg-slate-50 border-b text-xs uppercase text-slate-400">
+              <tr>
+                <th class="p-3.5">ชื่อฟอนต์</th>
+                <th class="p-3.5">รูปแบบราคา</th>
+                <th class="p-3.5">ราคา (ส่วนตัว / พาณิชย์ / องค์กร)</th>
+                <th class="p-3.5">Google Drive ลิงก์</th>
+                <th class="p-3.5 text-center">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="admin-fonts-tbody" class="divide-y divide-slate-100"></tbody>
+          </table>
         </div>
-      </section>
+      </div>
 
-      <!-- SECTION 2: ORDERS APPROVAL -->
-      <section id="section-orders" class="hidden space-y-6">
-        <div>
-          <h1 class="text-2xl font-bold text-slate-800">ระบบอนุมัติออเดอร์ (Orders Approval)</h1>
-          <p class="text-sm text-slate-400">ตรวจสอบสลิปโอนเงินของลูกค้า ยืนยันการสั่งซื้อ และส่งข้อมูลเข้า LINE</p>
-        </div>
+      <!-- Tab 2: Orders Approval -->
+      <div id="admin-view-orders" class="admin-subview hidden space-y-4">
+        <h3 class="font-bold text-slate-800 text-lg">รายการสั่งซื้อ & สลิปโอนเงิน</h3>
+        <div id="admin-orders-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="orders-list">
-          <!-- Orders cards loaded dynamically -->
-        </div>
-      </section>
-
-      <!-- SECTION 3: SIDEBAR MENU MANAGER (CMS) -->
-      <section id="section-menu" class="hidden space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <!-- Tab 3: Sidebar CMS -->
+      <div id="admin-view-cms" class="admin-subview hidden space-y-4">
+        <div class="flex justify-between items-center">
           <div>
-            <h1 class="text-2xl font-bold text-slate-800">จัดการเนื้อหา Sidebar Menu (CMS)</h1>
-            <p class="text-sm text-slate-400">เพิ่ม/แก้ไข หัวข้อใหญ่ หัวข้อย่อย และเลือกลักษณะแสดงผลแบบกรอบหรือข้อความยาว</p>
+            <h3 class="font-bold text-slate-800 text-lg">จัดการหัวข้อเมนู Sidebar</h3>
+            <p class="text-xs text-slate-400">เพิ่ม/แก้ไขหัวข้อหลักและย่อย เลือกลักษณะกล่องการ์ดหรือข้อความยาว</p>
           </div>
-          <button onclick="openMenuModal()" class="flex items-center gap-2 bg-rose-500 hover:bg-rose-600 text-white px-4 py-2.5 rounded-xl font-medium text-sm shadow-sm transition">
-            <i data-lucide="folder-plus" class="w-4 h-4"></i> เพิ่มหัวข้อเมนูใหม่
+          <button onclick="openAddCmsModal()" class="flex items-center gap-1.5 bg-rose-500 hover:bg-rose-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-sm">
+            <i data-lucide="plus" class="w-4 h-4"></i> เพิ่มหัวข้อใหม่
           </button>
         </div>
-
-        <!-- Sidebar Menu Items List -->
-        <div id="menu-items-list" class="space-y-4">
-          <!-- Dynamically populated menu cards -->
-        </div>
-      </section>
-
-    </main>
-  </div>
-
-  <!-- ================= MODAL: ADD/EDIT FONT ================= -->
-  <div id="font-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center mb-6">
-        <h3 id="font-modal-title" class="text-lg font-bold text-slate-800">เพิ่มฟอนต์ใหม่</h3>
-        <button onclick="closeFontModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <div id="admin-cms-list" class="space-y-3"></div>
       </div>
 
-      <form id="font-form" onsubmit="handleSaveFont(event)" class="space-y-4">
-        <input type="hidden" id="form-font-id">
+    </div>
+  </main>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="text-xs font-semibold text-slate-600 block mb-1">ชื่อฟอนต์ *</label>
-            <input type="text" id="font-name" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-rose-400">
-          </div>
-          <div>
-            <label class="text-xs font-semibold text-slate-600 block mb-1">ผู้สร้าง / สตูดิโอ</label>
-            <input type="text" id="font-author" value="Fontie Studio" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-rose-400">
-          </div>
-        </div>
+  <!-- Modal: Font CRUD -->
+  <div id="admin-font-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h3 id="admin-font-modal-title" class="font-bold text-lg text-slate-800">เพิ่มฟอนต์ใหม่</h3>
+        <button onclick="closeAdminFontModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div>
-            <label class="text-xs font-semibold text-slate-600 block mb-1">ราคาใช้ส่วนตัว (฿) *</label>
-            <input type="number" id="font-price-personal" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-rose-400">
-          </div>
-          <div>
-            <label class="text-xs font-semibold text-slate-600 block mb-1">ราคาเชิงพาณิชย์ (฿) *</label>
-            <input type="number" id="font-price-commercial" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-rose-400">
-          </div>
-          <div>
-            <label class="text-xs font-semibold text-slate-600 block mb-1">ราคาองค์กร/Business (฿)</label>
-            <input type="number" id="font-price-business" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-rose-400">
-          </div>
-        </div>
-
-        <!-- Google Drive Links -->
-        <div class="p-4 bg-rose-50/50 rounded-2xl border border-rose-100 space-y-3">
-          <h4 class="text-xs font-bold text-rose-600 flex items-center gap-1.5"><i data-lucide="hard-drive" class="w-4 h-4"></i> ลิงก์ Google Drive สำหรับส่งมอบลูกค้า</h4>
-          <div>
-            <label class="text-xs font-medium text-slate-600 block mb-1">ลิงก์ Drive (สิทธิ์ส่วนตัว - Personal)</label>
-            <input type="url" id="font-drive-personal" placeholder="https://drive.google.com/..." class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs outline-none focus:ring-2 focus:ring-rose-400">
-          </div>
-          <div>
-            <label class="text-xs font-medium text-slate-600 block mb-1">ลิงก์ Drive (สิทธิ์พาณิชย์ - Commercial)</label>
-            <input type="url" id="font-drive-commercial" placeholder="https://drive.google.com/..." class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs outline-none focus:ring-2 focus:ring-rose-400">
-          </div>
-        </div>
-
-        <!-- File Upload to Supabase Storage -->
+      <form onsubmit="saveAdminFont(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="admin-font-id">
         <div>
-          <label class="text-xs font-semibold text-slate-600 block mb-1">อัปโหลดไฟล์ฟอนต์ (.ttf / .otf)</label>
-          <input type="file" id="font-file" accept=".ttf,.otf,.woff,.woff2" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-rose-100 file:text-rose-600 hover:file:bg-rose-200 cursor-pointer">
+          <label class="font-semibold text-slate-600 block mb-1">ชื่อฟอนต์ *</label>
+          <input type="text" id="af-name" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-rose-400">
         </div>
-
-        <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
-          <button type="button" onclick="closeFontModal()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-medium">ยกเลิก</button>
-          <button type="submit" class="px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-sm font-bold shadow-sm">บันทึกฟอนต์</button>
+        <div>
+          <label class="font-semibold text-slate-600 block mb-1">ชื่อสตูดิโอ / ผู้สร้าง</label>
+          <input type="text" id="af-author" value="BR & PRH" class="w-full px-3 py-2 bg-slate-50 border rounded-xl outline-none">
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="font-semibold text-slate-600 block mb-1">ส่วนตัว (฿) *</label>
+            <input type="number" id="af-price-p" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl outline-none">
+          </div>
+          <div>
+            <label class="font-semibold text-slate-600 block mb-1">พาณิชย์ (฿) *</label>
+            <input type="number" id="af-price-c" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl outline-none">
+          </div>
+          <div>
+            <label class="font-semibold text-slate-600 block mb-1">องค์กร (฿)</label>
+            <input type="number" id="af-price-b" value="700" class="w-full px-3 py-2 bg-slate-50 border rounded-xl outline-none">
+          </div>
+        </div>
+        <div>
+          <label class="font-semibold text-slate-600 block mb-1">Google Drive URL (สิทธิ์ส่วนตัว)</label>
+          <input type="url" id="af-drive-p" placeholder="https://drive.google.com/..." class="w-full px-3 py-2 bg-slate-50 border rounded-xl outline-none">
+        </div>
+        <div>
+          <label class="font-semibold text-slate-600 block mb-1">Google Drive URL (สิทธิ์พาณิชย์/องค์กร)</label>
+          <input type="url" id="af-drive-c" placeholder="https://drive.google.com/..." class="w-full px-3 py-2 bg-slate-50 border rounded-xl outline-none">
+        </div>
+        <div class="pt-3 border-t flex justify-end gap-2">
+          <button type="button" onclick="closeAdminFontModal()" class="px-4 py-2 bg-slate-100 rounded-xl font-semibold">ยกเลิก</button>
+          <button type="submit" class="px-4 py-2 bg-rose-500 text-white font-bold rounded-xl shadow-sm">บันทึกข้อมูล</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- ================= MODAL: ADD/EDIT SIDEBAR MENU ================= -->
-  <div id="menu-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center mb-6">
-        <h3 class="text-lg font-bold text-slate-800">ตั้งค่าหัวข้อเมนู Sidebar</h3>
-        <button onclick="closeMenuModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+  <!-- Modal: CMS CRUD -->
+  <div id="admin-cms-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-bold text-lg text-slate-800">ตั้งค่าหัวข้อ Sidebar</h3>
+        <button onclick="closeAdminCmsModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
 
-      <form onsubmit="handleSaveMenu(event)" class="space-y-4">
-        <input type="hidden" id="menu-id">
-
+      <form onsubmit="saveAdminCms(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="admin-cms-id">
         <div>
-          <label class="text-xs font-semibold text-slate-600 block mb-1">หัวข้อหลัก (Main Category) *</label>
-          <input type="text" id="menu-title" placeholder="เช่น เงื่อนไข & ประเภทการใช้งาน" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-rose-400">
+          <label class="font-semibold text-slate-600 block mb-1">หัวข้อหลัก (Title) *</label>
+          <input type="text" id="ac-title" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-rose-400">
         </div>
-
         <div>
-          <label class="text-xs font-semibold text-slate-600 block mb-1">หัวข้อย่อย (Subtitle / Note)</label>
-          <input type="text" id="menu-subtitle" placeholder="เช่น ตัวแทนจำหน่ายอย่างถูกต้อง ✨" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-rose-400">
+          <label class="font-semibold text-slate-600 block mb-1">หัวข้อย่อย (Subtitle)</label>
+          <input type="text" id="ac-subtitle" class="w-full px-3 py-2 bg-slate-50 border rounded-xl outline-none">
         </div>
-
         <div>
-          <label class="text-xs font-semibold text-slate-600 block mb-1">รูปแบบการแสดงผลเนื้อหาข้างใน *</label>
-          <select id="menu-layout-type" onchange="toggleMenuContentType()" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-rose-400">
-            <option value="card">แบบกรอบการ์ดกล่องข้อความ (Box / Card Grid)</option>
-            <option value="text">แบบข้อความยาวต่อเนื่อง (Long Paragraph / Rich Text)</option>
+          <label class="font-semibold text-slate-600 block mb-1">รูปแบบการแสดงผล *</label>
+          <select id="ac-layout" class="w-full px-3 py-2 bg-slate-50 border rounded-xl outline-none">
+            <option value="card">แบบกรอบการ์ดแยกกล่อง (Card Layout)</option>
+            <option value="text">แบบข้อความยาวต่อเนื่อง (Long Text)</option>
           </select>
         </div>
-
-        <div id="content-container">
-          <label class="text-xs font-semibold text-slate-600 block mb-1">เนื้อหาข้างใน (Content Details) *</label>
-          <textarea id="menu-content" rows="6" placeholder="พิมพ์รายละเอียด ข้อห้าม หรือเนื้อหาที่ต้องการแสดง..." required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-rose-400"></textarea>
-          <p class="text-[11px] text-slate-400 mt-1">* หากเลือกแบบกรอบ ข้อความแต่ละบรรทัด/ข้อจะถูกนำไปสร้างเป็นการ์ดแยกกล่อง</p>
+        <div>
+          <label class="font-semibold text-slate-600 block mb-1">เนื้อหารายละเอียด *</label>
+          <textarea id="ac-content" rows="5" required placeholder="ใส่เนื้อหา (หากเลือกแบบกรอบ ข้อความขึ้นบรรทัดใหม่จะแยกเป็นการ์ดอัตโนมัติ)" class="w-full p-2.5 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-rose-400"></textarea>
         </div>
-
-        <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
-          <button type="button" onclick="closeMenuModal()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-medium">ยกเลิก</button>
-          <button type="submit" class="px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-sm font-bold shadow-sm">บันทึกข้อมูลเมนู</button>
+        <div class="pt-3 border-t flex justify-end gap-2">
+          <button type="button" onclick="closeAdminCmsModal()" class="px-4 py-2 bg-slate-100 rounded-xl font-semibold">ยกเลิก</button>
+          <button type="submit" class="px-4 py-2 bg-rose-500 text-white font-bold rounded-xl shadow-sm">บันทึกหัวข้อ</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- ================= APPLICATION SCRIPTS ================= -->
   <script>
-    // 1. Password & State Config
-    const ADMIN_PASS = "pleng235";
-    const LINE_OA_ID = "@yourfontshop";
-    
-    // Supabase Config
-    const SUPABASE_URL = "YOUR_SUPABASE_URL";
-    const SUPABASE_KEY = "YOUR_SUPABASE_ANON_KEY";
-    const supabase = (SUPABASE_URL !== "YOUR_SUPABASE_URL") 
-      ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) 
-      : null;
+    // Local State Bridge for Database
+    let state = {
+      isAdmin: false,
+      fonts: JSON.parse(localStorage.getItem('fontie_fonts')) || [
+        { id: '1', name: 'สเตฟานี่ (Stephanie)', author: 'BR & PRH', price_personal: 79, price_commercial: 169, price_business: 700, drive_personal: 'https://drive.google.com/demo_p', drive_commercial: 'https://drive.google.com/demo_c' },
+        { id: '2', name: 'เซลีน (Selene)', author: 'BR & PRH', price_personal: 89, price_commercial: 89, price_business: 700, drive_personal: 'https://drive.google.com/demo_selene', drive_commercial: 'https://drive.google.com/demo_selene' }
+      ],
+      orders: JSON.parse(localStorage.getItem('fontie_orders')) || [
+        { id: 'ORD-1011', customer_name: 'คุณแพรวา', customer_contact: 'praewa_line', font_id: '1', font_name: 'สเตฟานี่ (Stephanie)', license: 'Commercial', amount: 169, slip_url: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=500&auto=format&fit=crop&q=60', status: 'pending', date: '2026-08-20 18:30' }
+      ],
+      sidebarCMS: JSON.parse(localStorage.getItem('fontie_cms')) || [
+        { id: 'c1', title: 'สั่งซื้อฟอนต์เครืออื่นๆ', subtitle: 'ตัวแทนจำหน่ายอย่างถูกต้อง ✨', layout: 'card', content: 'รับสิทธิ์แท้ 100% ปลอดภัย\nอัปเดตไฟล์ฟรีตลอดชีพ\nออกใบเสนอราคา & ใบเสร็จได้' },
+        { id: 'c2', title: 'เงื่อนไข & ประเภทการใช้งาน', subtitle: 'กฎและข้อห้ามลิขสิทธิ์', layout: 'text', content: '1 การสั่งซื้อ ต่อ 1 อีเมล = ใช้ได้ 1 บุคคลเท่านั้น\nราคาสำหรับบริษัท/องค์กร/หจก./หน่วยงาน เริ่มต้น 700.-' }
+      ]
+    };
 
-    // Local Mock DB
-    let fontsList = [
-      { id: '1', name: 'Mitr Sweetie', author: 'Studio Peach', price_personal: 290, price_commercial: 590, price_business: 1200, drive_personal: 'https://drive.google.com/drive/folders/demo1', drive_commercial: 'https://drive.google.com/drive/folders/demo2' },
-      { id: '2', name: 'Sarabun Modern', author: 'Craft Type', price_personal: 350, price_commercial: 350, price_business: 350, drive_personal: 'https://drive.google.com/drive/folders/demo3', drive_commercial: 'https://drive.google.com/drive/folders/demo4' }
-    ];
+    function init() {
+      if (sessionStorage.getItem('isAdminSession') === 'true') {
+        state.isAdmin = true;
+      }
+      renderAdmin();
+    }
 
-    let ordersList = [
-      { id: 'ORD-9821', customer_name: 'คุณแพรวา มะลิวัลย์', customer_line: 'praewa_design', font_name: 'Mitr Sweetie', license: 'Commercial', amount: 590, slip_url: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=500&auto=format&fit=crop&q=60', status: 'pending', created_at: '2026-08-20 20:30' },
-      { id: 'ORD-9820', customer_name: 'คุณสมศักดิ์ นำเจริญ', customer_line: 'somsak_it', font_name: 'Sarabun Modern', license: 'Personal', amount: 350, slip_url: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=500&auto=format&fit=crop&q=60', status: 'approved', created_at: '2026-08-20 18:15' }
-    ];
-
-    let menuSections = [
-      { id: 'm1', title: 'แคตตาล็อกฟอนต์ทั้งหมด', subtitle: 'รวมฟอนต์น่ารักสำหรับงานออกแบบ', layout: 'card', content: 'ฟอนต์ลายมือ\nฟอนต์มินิมอล\nฟอนต์พาดหัว' },
-      { id: 'm2', title: 'สั่งซื้อฟอนต์เครืออื่นๆ', subtitle: 'ตัวแทนจำหน่ายอย่างถูกต้อง ✨', layout: 'card', content: 'รับสิทธิ์แท้ 100%\nอัปเดตไฟล์ฟรีตลอดชีพ\nออกใบกำกับภาษีได้' },
-      { id: 'm3', title: 'เงื่อนไข & ประเภทการใช้งาน', subtitle: 'กฎและข้อห้ามลิขสิทธิ์', layout: 'text', content: '1. สิทธิ์ส่วนตัว (Personal) : ใช้สำหรับงานส่วนบุคคล ไม่แสวงหากำไร\n2. สิทธิ์เชิงพาณิชย์ (Commercial) : สำหรับใช้สร้างรายได้ สื่อโฆษณา ยูทูป สินค้า\n3. ห้ามแจกจ่าย ดัดแปลง ส่งต่อ หรือจำหน่ายต่อโดยเด็ดขาด' }
-    ];
-
-    // ================= AUTHENTICATION =================
-    function handleLogin(e) {
+    async function handleAdminLogin(e) {
       e.preventDefault();
-      const pass = document.getElementById('admin-password').value;
-      if (pass === ADMIN_PASS) {
-        sessionStorage.setItem('isAdminLoggedIn', 'true');
-        document.getElementById('login-modal').classList.add('hidden');
-        document.getElementById('admin-dashboard').classList.remove('hidden');
-        initDashboard();
+      const inputPass = document.getElementById('admin-input-pass').value;
+      
+      // ตรวจสอบผ่าน Hash SHA-256 (รหัสผ่านจะไม่ปรากฏเป็น Plain text เมื่อกด F12 Inspect)
+      const encoder = new TextEncoder();
+      const data = encoder.encode(inputPass);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+      // Hash ของรหัสลับระบบ
+      if (hashHex === "55d784dfc2f25fcba35a0d33e9d8e57303e91b5c2195dfb4a4cbbf3d949ec308") {
+        state.isAdmin = true;
+        sessionStorage.setItem('isAdminSession', 'true');
+        document.getElementById('admin-pass-error').classList.add('hidden');
+        renderAdmin();
       } else {
-        document.getElementById('login-error').classList.remove('hidden');
+        document.getElementById('admin-pass-error').classList.remove('hidden');
       }
     }
 
-    function handleLogout() {
-      sessionStorage.removeItem('isAdminLoggedIn');
-      window.location.reload();
+    function logoutAdmin() {
+      state.isAdmin = false;
+      sessionStorage.removeItem('isAdminSession');
+      renderAdmin();
     }
 
-    // ================= NAVIGATION =================
-    function switchTab(tab) {
-      ['fonts', 'orders', 'menu'].forEach(t => {
-        document.getElementById(`section-${t}`).classList.add('hidden');
-        document.getElementById(`tab-btn-${t}`).className = "tab-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm text-slate-600 hover:bg-rose-50 transition";
+    function renderAdmin() {
+      const auth = document.getElementById('admin-auth-card');
+      const consoleEl = document.getElementById('admin-console');
+
+      if (!state.isAdmin) {
+        auth.classList.remove('hidden');
+        consoleEl.classList.add('hidden');
+        return;
+      }
+
+      auth.classList.add('hidden');
+      consoleEl.classList.remove('hidden');
+      
+      const pendingCount = state.orders.filter(o => o.status === 'pending').length;
+      document.getElementById('admin-pending-badge').innerText = pendingCount;
+
+      renderAdminFonts();
+      renderAdminOrders();
+      renderAdminCMS();
+      lucide.createIcons();
+    }
+
+    function switchAdminTab(tab) {
+      ['fonts', 'orders', 'cms'].forEach(t => {
+        document.getElementById(`admin-view-${t}`).classList.add('hidden');
+        document.getElementById(`admin-tab-btn-${t}`).className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-rose-50 transition";
       });
-      document.getElementById(`section-${tab}`).classList.remove('hidden');
-      document.getElementById(`tab-btn-${tab}`).className = "tab-btn tab-active w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm text-white transition";
+      document.getElementById(`admin-view-${tab}`).classList.remove('hidden');
+      document.getElementById(`admin-tab-btn-${tab}`).className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold tab-admin-active transition";
     }
 
-    // ================= 1. FONTS MANAGER =================
-    function renderFonts() {
-      const tbody = document.getElementById('fonts-table-body');
+    // CRUD Fonts
+    function renderAdminFonts() {
+      const tbody = document.getElementById('admin-fonts-tbody');
       tbody.innerHTML = '';
-      fontsList.forEach(f => {
+      state.fonts.forEach(f => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td class="p-4 font-semibold text-slate-800">${f.name} <div class="text-xs text-slate-400 font-normal">โดย ${f.author}</div></td>
-          <td class="p-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-medium">${f.price_personal === f.price_commercial ? 'ราคาเดียว' : 'แยกสิทธิ์'}</span></td>
-          <td class="p-4 text-slate-700">฿${f.price_personal} / ฿${f.price_commercial}</td>
-          <td class="p-4 text-xs space-y-1">
-            <div><a href="${f.drive_personal || '#'}" target="_blank" class="text-rose-500 hover:underline">📁 ไดรฟ์ (ส่วนตัว)</a></div>
-            <div><a href="${f.drive_commercial || '#'}" target="_blank" class="text-blue-500 hover:underline">📁 ไดรฟ์ (พาณิชย์)</a></div>
+          <td class="p-3.5 font-bold text-slate-800">${f.name} <div class="text-xs text-slate-400 font-normal">โดย ${f.author}</div></td>
+          <td class="p-3.5"><span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-xs">${f.price_personal === f.price_commercial ? 'ราคาเดียว' : 'แยกสิทธิ์'}</span></td>
+          <td class="p-3.5">฿${f.price_personal} / ฿${f.price_commercial} / ฿${f.price_business || 700}</td>
+          <td class="p-3.5 text-xs space-y-0.5">
+            <div><a href="${f.drive_personal || '#'}" target="_blank" class="text-rose-500 hover:underline">ส่วนตัว</a></div>
+            <div><a href="${f.drive_commercial || '#'}" target="_blank" class="text-blue-500 hover:underline">พาณิชย์</a></div>
           </td>
-          <td class="p-4 text-center">
-            <div class="flex items-center justify-center gap-2">
-              <button onclick="editFont('${f.id}')" class="p-1.5 text-slate-500 hover:text-rose-500 hover:bg-rose-50 rounded-lg"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
-              <button onclick="deleteFont('${f.id}')" class="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          <td class="p-3.5 text-center">
+            <div class="flex items-center justify-center gap-1">
+              <button onclick="editAdminFont('${f.id}')" class="p-1 text-slate-500 hover:text-rose-500"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+              <button onclick="deleteAdminFont('${f.id}')" class="p-1 text-slate-500 hover:text-rose-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
             </div>
           </td>
         `;
@@ -352,160 +305,129 @@
       lucide.createIcons();
     }
 
-    function openFontModal(isEdit = false) {
-      document.getElementById('font-modal-title').innerText = isEdit ? 'แก้ไขข้อมูลฟอนต์' : 'เพิ่มฟอนต์ใหม่';
-      document.getElementById('font-modal').classList.remove('hidden');
+    function openAddFontModal() {
+      document.getElementById('admin-font-modal-title').innerText = 'เพิ่มฟอนต์ใหม่';
+      document.getElementById('admin-font-id').value = '';
+      document.getElementById('af-name').value = '';
+      document.getElementById('af-author').value = 'BR & PRH';
+      document.getElementById('af-price-p').value = '';
+      document.getElementById('af-price-c').value = '';
+      document.getElementById('af-price-b').value = '700';
+      document.getElementById('af-drive-p').value = '';
+      document.getElementById('af-drive-c').value = '';
+      document.getElementById('admin-font-modal').classList.remove('hidden');
     }
 
-    function closeFontModal() {
-      document.getElementById('font-modal').classList.add('hidden');
-      document.getElementById('font-form').reset();
-      document.getElementById('form-font-id').value = '';
+    function closeAdminFontModal() {
+      document.getElementById('admin-font-modal').classList.add('hidden');
     }
 
-    async function handleSaveFont(e) {
+    function saveAdminFont(e) {
       e.preventDefault();
-      const id = document.getElementById('form-font-id').value || Date.now().toString();
-      const name = document.getElementById('font-name').value;
-      const author = document.getElementById('font-author').value;
-      const price_personal = Number(document.getElementById('font-price-personal').value);
-      const price_commercial = Number(document.getElementById('font-price-commercial').value);
-      const price_business = Number(document.getElementById('font-price-business').value) || price_commercial * 2;
-      const drive_personal = document.getElementById('font-drive-personal').value;
-      const drive_commercial = document.getElementById('font-drive-commercial').value;
+      const id = document.getElementById('admin-font-id').value || Date.now().toString();
+      const fontObj = {
+        id,
+        name: document.getElementById('af-name').value,
+        author: document.getElementById('af-author').value,
+        price_personal: Number(document.getElementById('af-price-p').value),
+        price_commercial: Number(document.getElementById('af-price-c').value),
+        price_business: Number(document.getElementById('af-price-b').value),
+        drive_personal: document.getElementById('af-drive-p').value,
+        drive_commercial: document.getElementById('af-drive-c').value,
+        class: 'font-sample-mitr'
+      };
 
-      // File upload simulation or Supabase Storage
-      const fileInput = document.getElementById('font-file');
-      if (fileInput.files.length > 0 && supabase) {
-        const file = fileInput.files[0];
-        await supabase.storage.from('fonts').upload(`public/${Date.now()}_${file.name}`, file);
-      }
-
-      const existingIndex = fontsList.findIndex(f => f.id === id);
-      const fontData = { id, name, author, price_personal, price_commercial, price_business, drive_personal, drive_commercial };
-
-      if (existingIndex > -1) {
-        fontsList[existingIndex] = fontData;
-      } else {
-        fontsList.unshift(fontData);
-      }
-
-      closeFontModal();
-      renderFonts();
+      const idx = state.fonts.findIndex(f => f.id === id);
+      if (idx > -1) state.fonts[idx] = fontObj; else state.fonts.unshift(fontObj);
+      
+      localStorage.setItem('fontie_fonts', JSON.stringify(state.fonts));
+      closeAdminFontModal();
+      renderAdminFonts();
     }
 
-    function editFont(id) {
-      const f = fontsList.find(item => item.id === id);
+    function editAdminFont(id) {
+      const f = state.fonts.find(item => item.id === id);
       if (!f) return;
-      document.getElementById('form-font-id').value = f.id;
-      document.getElementById('font-name').value = f.name;
-      document.getElementById('font-author').value = f.author;
-      document.getElementById('font-price-personal').value = f.price_personal;
-      document.getElementById('font-price-commercial').value = f.price_commercial;
-      document.getElementById('font-price-business').value = f.price_business || '';
-      document.getElementById('font-drive-personal').value = f.drive_personal || '';
-      document.getElementById('font-drive-commercial').value = f.drive_commercial || '';
-      openFontModal(true);
+      document.getElementById('admin-font-modal-title').innerText = 'แก้ไขฟอนต์';
+      document.getElementById('admin-font-id').value = f.id;
+      document.getElementById('af-name').value = f.name;
+      document.getElementById('af-author').value = f.author;
+      document.getElementById('af-price-p').value = f.price_personal;
+      document.getElementById('af-price-c').value = f.price_commercial;
+      document.getElementById('af-price-b').value = f.price_business || 700;
+      document.getElementById('af-drive-p').value = f.drive_personal || '';
+      document.getElementById('af-drive-c').value = f.drive_commercial || '';
+      document.getElementById('admin-font-modal').classList.remove('hidden');
     }
 
-    function deleteFont(id) {
-      if (confirm('ยืนยันการลบฟอนต์นี้ออกจากระบบ?')) {
-        fontsList = fontsList.filter(f => f.id !== id);
-        renderFonts();
+    function deleteAdminFont(id) {
+      if (confirm('ยืนยันการลบฟอนต์นี้?')) {
+        state.fonts = state.fonts.filter(f => f.id !== id);
+        localStorage.setItem('fontie_fonts', JSON.stringify(state.fonts));
+        renderAdminFonts();
       }
     }
 
-    // ================= 2. ORDERS APPROVAL =================
-    function renderOrders() {
-      const container = document.getElementById('orders-list');
-      container.innerHTML = '';
-
-      ordersList.forEach(ord => {
+    // Orders & Slips
+    function renderAdminOrders() {
+      const grid = document.getElementById('admin-orders-grid');
+      grid.innerHTML = '';
+      state.orders.forEach(ord => {
+        const isApproved = ord.status === 'approved';
         const card = document.createElement('div');
-        card.className = "bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4 flex flex-col justify-between";
+        card.className = "bg-white border rounded-2xl p-4 shadow-sm space-y-3 flex flex-col justify-between";
         card.innerHTML = `
           <div>
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-xs font-bold text-rose-500 bg-rose-50 px-2.5 py-1 rounded-lg">${ord.id}</span>
-              <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full ${ord.status === 'approved' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
-                ${ord.status === 'approved' ? 'อนุมัติแล้ว' : 'รอตรวจสอบสลิป'}
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-xs font-bold text-rose-500">#${ord.id}</span>
+              <span class="text-[11px] px-2 py-0.5 rounded-full font-bold ${isApproved ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+                ${isApproved ? 'อนุมัติแล้ว' : 'รอตรวจสอบสลิป'}
               </span>
             </div>
-
-            <h4 class="font-bold text-slate-800 text-base">${ord.font_name}</h4>
-            <div class="text-xs text-slate-500 space-y-1 mt-1">
-              <p>👤 <strong>ลูกค้า:</strong> ${ord.customer_name} (@${ord.customer_line})</p>
-              <p>📜 <strong>สิทธิ์:</strong> ${ord.license} | <strong>ยอดโอน:</strong> ฿${ord.amount}</p>
-              <p>🕒 <strong>เวลา:</strong> ${ord.created_at}</p>
-            </div>
-
-            <!-- Slip Image Preview -->
-            <div class="mt-3">
-              <label class="text-[11px] font-semibold text-slate-400 block mb-1">สลิปการโอนเงิน:</label>
-              <a href="${ord.slip_url}" target="_blank">
-                <img src="${ord.slip_url}" alt="Slip" class="w-full h-32 object-cover rounded-xl border border-slate-100 hover:opacity-90 transition">
-              </a>
-            </div>
+            <h4 class="font-bold text-slate-800 text-sm">${ord.font_name} (${ord.license})</h4>
+            <p class="text-xs text-slate-500">ลูกค้า: ${ord.customer_name} (${ord.customer_contact})</p>
+            <p class="text-xs text-slate-500">ยอดเงิน: ฿${ord.amount} | วันที่: ${ord.date}</p>
+            
+            <a href="${ord.slip_url}" target="_blank" class="block mt-2">
+              <img src="${ord.slip_url}" alt="Slip" class="w-full h-24 object-cover rounded-lg border hover:opacity-90">
+            </a>
           </div>
 
-          <div class="pt-3 border-t border-slate-100 flex items-center gap-2">
-            <button onclick="approveOrder('${ord.id}')" ${ord.status === 'approved' ? 'disabled' : ''} class="flex-1 py-2 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-40 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1">
-              <i data-lucide="check" class="w-4 h-4"></i> อนุมัติ & ส่งไดรฟ์
-            </button>
-            <button onclick="notifyLine('${ord.id}')" class="px-3 py-2 bg-[#06C755] hover:bg-[#05b04b] text-white rounded-xl text-xs font-bold transition flex items-center gap-1" title="ส่งข้อมูลเข้าไลน์">
-              <i data-lucide="send" class="w-4 h-4"></i> แจ้ง LINE
+          <div class="pt-2 border-t flex gap-2">
+            <button onclick="approveAdminOrder('${ord.id}')" ${isApproved ? 'disabled' : ''} class="flex-1 py-1.5 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-40 text-white rounded-lg text-xs font-bold transition">
+              ${isApproved ? 'อนุมัติแล้ว' : 'อนุมัติยอด'}
             </button>
           </div>
         `;
-        container.appendChild(card);
+        grid.appendChild(card);
       });
       lucide.createIcons();
     }
 
-    function approveOrder(orderId) {
-      const ord = ordersList.find(o => o.id === orderId);
+    function approveAdminOrder(id) {
+      const ord = state.orders.find(o => o.id === id);
       if (ord) {
         ord.status = 'approved';
-        alert(`อนุมัติออเดอร์ ${orderId} สำเร็จ! ระบบเตรียมส่งมอบลิงก์ Google Drive ให้ลูกค้า`);
-        renderOrders();
+        localStorage.setItem('fontie_orders', JSON.stringify(state.orders));
+        renderAdmin();
       }
     }
 
-    function notifyLine(orderId) {
-      const ord = ordersList.find(o => o.id === orderId);
-      const font = fontsList.find(f => f.name === ord.font_name);
-      const driveLink = ord.license === 'Personal' ? font?.drive_personal : font?.drive_commercial;
-
-      const message = `✨ [อนุมัติคำสั่งซื้อ ${ord.id}]%0Aเรียน ${encodeURIComponent(ord.customer_name)}%0Aทางเราตรวจสอบยอดเงินเรียบร้อยแล้วค่ะ 🎉%0A- ฟอนต์: ${encodeURIComponent(ord.font_name)} (${ord.license})%0A- ลิงก์ดาวน์โหลด Google Drive:%0A${encodeURIComponent(driveLink || 'โปรดติดต่อแอดมิน')}`;
-      window.open(`https://line.me/R/oaMessage/${LINE_OA_ID}/?${message}`, '_blank');
-    }
-
-    // ================= 3. SIDEBAR CMS =================
-    function renderMenuCMS() {
-      const list = document.getElementById('menu-items-list');
+    // Sidebar CMS
+    function renderAdminCMS() {
+      const list = document.getElementById('admin-cms-list');
       list.innerHTML = '';
-
-      menuSections.forEach(m => {
+      state.sidebarCMS.forEach(c => {
         const item = document.createElement('div');
-        item.className = "p-5 bg-white border border-slate-200 rounded-2xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4";
+        item.className = "p-4 bg-white border rounded-xl flex items-center justify-between gap-4";
         item.innerHTML = `
-          <div class="space-y-1">
-            <div class="flex items-center gap-2">
-              <h3 class="font-bold text-slate-800 text-base">${m.title}</h3>
-              <span class="text-[11px] px-2.5 py-0.5 rounded-full font-medium ${m.layout === 'card' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}">
-                ${m.layout === 'card' ? '🗂 แบบกรอบ/การ์ด' : '📝 แบบข้อความยาว'}
-              </span>
-            </div>
-            <p class="text-xs text-rose-500 font-medium">${m.subtitle || ''}</p>
-            <p class="text-xs text-slate-400 whitespace-pre-line line-clamp-2 mt-1">${m.content}</p>
+          <div>
+            <h4 class="font-bold text-slate-800 text-sm">${c.title} <span class="text-[10px] text-rose-500 font-normal">(${c.layout === 'card' ? 'การ์ดแยกกล่อง' : 'ข้อความยาว'})</span></h4>
+            <p class="text-xs text-slate-400">${c.subtitle || ''}</p>
           </div>
-          <div class="flex items-center gap-2">
-            <button onclick="editMenu('${m.id}')" class="px-3 py-1.5 text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition flex items-center gap-1">
-              <i data-lucide="edit-2" class="w-3.5 h-3.5"></i> แก้ไข
-            </button>
-            <button onclick="deleteMenu('${m.id}')" class="p-2 text-rose-500 hover:bg-rose-50 rounded-xl transition">
-              <i data-lucide="trash-2" class="w-4 h-4"></i>
-            </button>
+          <div class="flex items-center gap-1">
+            <button onclick="editAdminCms('${c.id}')" class="p-1.5 text-slate-500 hover:text-rose-500"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+            <button onclick="deleteAdminCms('${c.id}')" class="p-1.5 text-rose-500 hover:bg-rose-50 rounded"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
           </div>
         `;
         list.appendChild(item);
@@ -513,71 +435,58 @@
       lucide.createIcons();
     }
 
-    function openMenuModal() {
-      document.getElementById('menu-modal').classList.remove('hidden');
+    function openAddCmsModal() {
+      document.getElementById('admin-cms-id').value = '';
+      document.getElementById('ac-title').value = '';
+      document.getElementById('ac-subtitle').value = '';
+      document.getElementById('ac-layout').value = 'card';
+      document.getElementById('ac-content').value = '';
+      document.getElementById('admin-cms-modal').classList.remove('hidden');
     }
 
-    function closeMenuModal() {
-      document.getElementById('menu-modal').classList.add('hidden');
-      document.getElementById('menu-id').value = '';
-      document.getElementById('menu-title').value = '';
-      document.getElementById('menu-subtitle').value = '';
-      document.getElementById('menu-content').value = '';
+    function closeAdminCmsModal() {
+      document.getElementById('admin-cms-modal').classList.add('hidden');
     }
 
-    function handleSaveMenu(e) {
+    function saveAdminCms(e) {
       e.preventDefault();
-      const id = document.getElementById('menu-id').value || 'm_' + Date.now();
-      const title = document.getElementById('menu-title').value;
-      const subtitle = document.getElementById('menu-subtitle').value;
-      const layout = document.getElementById('menu-layout-type').value;
-      const content = document.getElementById('menu-content').value;
+      const id = document.getElementById('admin-cms-id').value || 'c_' + Date.now();
+      const cmsObj = {
+        id,
+        title: document.getElementById('ac-title').value,
+        subtitle: document.getElementById('ac-subtitle').value,
+        layout: document.getElementById('ac-layout').value,
+        content: document.getElementById('ac-content').value
+      };
 
-      const idx = menuSections.findIndex(m => m.id === id);
-      if (idx > -1) {
-        menuSections[idx] = { id, title, subtitle, layout, content };
-      } else {
-        menuSections.push({ id, title, subtitle, layout, content });
+      const idx = state.sidebarCMS.findIndex(c => c.id === id);
+      if (idx > -1) state.sidebarCMS[idx] = cmsObj; else state.sidebarCMS.push(cmsObj);
+
+      localStorage.setItem('fontie_cms', JSON.stringify(state.sidebarCMS));
+      closeAdminCmsModal();
+      renderAdminCMS();
+    }
+
+    function editAdminCms(id) {
+      const c = state.sidebarCMS.find(item => item.id === id);
+      if (!c) return;
+      document.getElementById('admin-cms-id').value = c.id;
+      document.getElementById('ac-title').value = c.title;
+      document.getElementById('ac-subtitle').value = c.subtitle;
+      document.getElementById('ac-layout').value = c.layout;
+      document.getElementById('ac-content').value = c.content;
+      document.getElementById('admin-cms-modal').classList.remove('hidden');
+    }
+
+    function deleteAdminCms(id) {
+      if (confirm('ต้องการลบหัวข้อนี้?')) {
+        state.sidebarCMS = state.sidebarCMS.filter(c => c.id !== id);
+        localStorage.setItem('fontie_cms', JSON.stringify(state.sidebarCMS));
+        renderAdminCMS();
       }
-
-      closeMenuModal();
-      renderMenuCMS();
     }
 
-    function editMenu(id) {
-      const m = menuSections.find(item => item.id === id);
-      if (!m) return;
-      document.getElementById('menu-id').value = m.id;
-      document.getElementById('menu-title').value = m.title;
-      document.getElementById('menu-subtitle').value = m.subtitle;
-      document.getElementById('menu-layout-type').value = m.layout;
-      document.getElementById('menu-content').value = m.content;
-      openMenuModal();
-    }
-
-    function deleteMenu(id) {
-      if (confirm('ต้องการลบหัวข้อเมนูนี้หรือไม่?')) {
-        menuSections = menuSections.filter(m => m.id !== id);
-        renderMenuCMS();
-      }
-    }
-
-    // ================= INITIALIZATION =================
-    function initDashboard() {
-      renderFonts();
-      renderOrders();
-      renderMenuCMS();
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
-      // เช็คว่าเคยล็อกอินไว้ใน Session หรือไม่
-      if (sessionStorage.getItem('isAdminLoggedIn') === 'true') {
-        document.getElementById('login-modal').classList.add('hidden');
-        document.getElementById('admin-dashboard').classList.remove('hidden');
-        initDashboard();
-      }
-    });
+    window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
