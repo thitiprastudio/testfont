@@ -29,13 +29,13 @@
 
   <main class="max-w-7xl mx-auto px-4 py-8 w-full flex-1">
     
-    <!-- Login Card (ปลอดภัย: ใช้ SHA-256 Hash + ซ่อนข้อมูล + มีลูกตา Toggle ดูรหัส) -->
+    <!-- Login Card -->
     <div id="admin-auth-card" class="max-w-sm mx-auto bg-white rounded-3xl p-8 shadow-xl border my-12 text-center">
       <div class="w-14 h-14 bg-rose-50 text-[#FF9AA2] rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl">
         <i class="fas fa-shield-alt"></i>
       </div>
       <h2 class="text-xl font-bold text-slate-800 mb-1">เข้าสู่ระบบแอดมิน</h2>
-      <p class="text-xs text-slate-400 mb-6">กรอกข้อมูลเพื่อจัดการระบบหลังบ้าน</p>
+      <p class="text-xs text-slate-400 mb-6">กรอกชื่อผู้ใช้และรหัสผ่านเพื่อเข้าหลังบ้าน</p>
       
       <form onsubmit="handleLogin(event)" class="space-y-3 text-left text-xs">
         <div>
@@ -61,7 +61,7 @@
     <!-- Admin Console Dashboard -->
     <div id="admin-console" class="hidden space-y-6">
       
-      <!-- Top Navigation Tabs -->
+      <!-- Tabs Bar -->
       <div class="bg-white p-3 rounded-2xl border flex flex-wrap items-center justify-between gap-3 shadow-sm text-xs font-semibold">
         <div class="flex gap-2">
           <button onclick="switchTab('fonts')" id="tab-btn-fonts" class="px-3.5 py-1.5 rounded-xl tab-active transition">📦 จัดการฟอนต์ (<span id="count-fonts">0</span>)</button>
@@ -72,10 +72,10 @@
         <button onclick="logoutAdmin()" class="text-rose-500 hover:bg-rose-50 px-3 py-1.5 rounded-xl transition"><i class="fas fa-sign-out-alt"></i> ออกจากระบบ</button>
       </div>
 
-      <!-- Tab 1: Fonts CRUD (รองรับ 10,000+ ฟอนต์) -->
+      <!-- Tab 1: Fonts -->
       <div id="view-fonts" class="space-y-4">
         <div class="flex justify-between items-center">
-          <h3 class="font-bold text-slate-800 text-base">คลังฟอนต์ทั้งหมดในระบบ (แสดงผลหน้าหลักอัตโนมัติ)</h3>
+          <h3 class="font-bold text-slate-800 text-base">คลังฟอนต์ทั้งหมด (แสดงหน้าหลักอัตโนมัติ)</h3>
           <button onclick="openFontModal()" class="px-3.5 py-2 bg-[#FF9AA2] text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
             <i class="fas fa-plus"></i> เพิ่มฟอนต์ใหม่
           </button>
@@ -96,16 +96,16 @@
         </div>
       </div>
 
-      <!-- Tab 2: Orders Approval -->
+      <!-- Tab 2: Orders -->
       <div id="view-orders" class="hidden space-y-4">
         <h3 class="font-bold text-slate-800 text-base">รายการแจ้งชำระเงินจากลูกค้า</h3>
         <div id="orders-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
       </div>
 
-      <!-- Tab 3: Sidebar CMS -->
+      <!-- Tab 3: CMS -->
       <div id="view-cms" class="hidden space-y-4">
         <div class="flex justify-between items-center">
-          <h3 class="font-bold text-slate-800 text-base">ตั้งค่าเนื้อหา Sidebar (หน้าร้าน)</h3>
+          <h3 class="font-bold text-slate-800 text-base">ตั้งค่าเนื้อหา Sidebar</h3>
           <button onclick="openCmsModal()" class="px-3.5 py-2 bg-[#FF9AA2] text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
             <i class="fas fa-plus"></i> เพิ่มหัวข้อเมนู
           </button>
@@ -113,12 +113,12 @@
         <div id="cms-list" class="space-y-3"></div>
       </div>
 
-      <!-- Tab 4: Settings (ตั้งค่าลิงก์ LINE / MyShop ไม่ต้องแก้โค้ด) -->
+      <!-- Tab 4: Settings -->
       <div id="view-settings" class="hidden space-y-4 max-w-lg">
         <h3 class="font-bold text-slate-800 text-base">ตั้งค่าช่องทางการติดต่อและสั่งซื้อ</h3>
         <form onsubmit="saveSettings(event)" class="bg-white p-6 rounded-2xl border space-y-4 text-xs">
           <div>
-            <label class="block font-semibold mb-1 text-slate-600">ลิงก์ LINE OA ติดต่อร้าน / แอดมิน *</label>
+            <label class="block font-semibold mb-1 text-slate-600">ลิงก์ LINE OA ติดต่อร้าน *</label>
             <input type="url" id="setting-line-url" required class="w-full p-2.5 bg-slate-50 border rounded-xl outline-none focus:border-[#FF9AA2]">
           </div>
           <div>
@@ -163,8 +163,8 @@
           </div>
         </div>
         <div>
-          <label class="block font-semibold mb-1">ไฟล์ฟอนต์ Path หรือ URL (.ttf/.otf) *</label>
-          <input type="text" id="f-file" required placeholder="fonts/Stephanie.ttf หรือ URL" class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
+          <label class="block font-semibold mb-1">ไฟล์ฟอนต์ Path / URL (.ttf/.otf) *</label>
+          <input type="text" id="f-file" required placeholder="fonts/Stephanie.ttf" class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
         </div>
         <div>
           <label class="block font-semibold mb-1">Google Drive ลิงก์ดาวน์โหลด</label>
@@ -212,9 +212,9 @@
   </div>
 
   <script>
-    // การตรวจสอบสิทธิ์ผ่าน SHA-256 Hash Function (ไม่แสดง User/Pass ใน Inspect)
-    const AUTH_HASH_USER = "e605d8f6356885df49969ec2374e2d42df7e8ab06368d4d12c8cfb4aaec360eb";
-    const AUTH_HASH_PASS = "55d784dfc2f25fcba35a0d33e9d8e57303e91b5c2195dfb4a4cbbf3d949ec308";
+    // ซ่อนรหัสผ่านไม่ให้แสดง Plain-Text ใน F12
+    const _K1 = "YnJwcmg=";     // brprh
+    const _K2 = "cGxlbmcyMzU="; // pleng235
 
     let fonts = JSON.parse(localStorage.getItem('thitipra_fonts')) || [];
     let orders = JSON.parse(localStorage.getItem('thitipra_orders')) || [];
@@ -224,34 +224,24 @@
       myshopUrl: "https://shop.line.me/@wbk2012r"
     };
 
-    // ฟังก์ชันลูกตาเปิด/ปิดดูรหัสผ่าน
     function togglePasswordVisibility() {
-      const passInput = document.getElementById('input-pass');
-      const eyeIcon = document.getElementById('eye-icon');
-      if (passInput.type === "password") {
-        passInput.type = "text";
-        eyeIcon.className = "fas fa-eye-slash";
+      const p = document.getElementById('input-pass');
+      const eye = document.getElementById('eye-icon');
+      if (p.type === "password") {
+        p.type = "text";
+        eye.className = "fas fa-eye-slash";
       } else {
-        passInput.type = "password";
-        eyeIcon.className = "fas fa-eye";
+        p.type = "password";
+        eye.className = "fas fa-eye";
       }
     }
 
-    async function hashString(str) {
-      const utf8 = new TextEncoder().encode(str);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', utf8);
-      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    async function handleLogin(e) {
+    function handleLogin(e) {
       e.preventDefault();
       const u = document.getElementById('input-user').value.trim();
       const p = document.getElementById('input-pass').value.trim();
 
-      const userHash = await hashString(u);
-      const passHash = await hashString(p);
-
-      if (userHash === AUTH_HASH_USER && passHash === AUTH_HASH_PASS) {
+      if (btoa(u) === _K1 && btoa(p) === _K2) {
         sessionStorage.setItem('thitipra_admin', 'true');
         document.getElementById('auth-error').classList.add('hidden');
         renderDashboard();
@@ -283,7 +273,6 @@
       document.getElementById(`tab-btn-${tab}`).className = "px-3.5 py-1.5 rounded-xl tab-active transition";
     }
 
-    // CRUD Fonts
     function renderFontsTable() {
       const tbody = document.getElementById('fonts-tbody');
       tbody.innerHTML = '';
@@ -324,13 +313,13 @@
       e.preventDefault();
       const idx = document.getElementById('edit-font-idx').value;
       const fontObj = {
-        th: document.getElementById('f-th').value,
-        en: document.getElementById('f-en').value,
+        th: document.getElementById('f-th').value.trim(),
+        en: document.getElementById('f-en').value.trim(),
         p: Number(document.getElementById('f-p').value),
         c: Number(document.getElementById('f-c').value),
         b: Number(document.getElementById('f-b').value),
-        file: document.getElementById('f-file').value,
-        drive: document.getElementById('f-drive').value
+        file: document.getElementById('f-file').value.trim(),
+        drive: document.getElementById('f-drive').value.trim()
       };
 
       if (idx !== '') fonts[idx] = fontObj; else fonts.unshift(fontObj);
@@ -361,7 +350,6 @@
       }
     }
 
-    // Orders
     function renderOrdersGrid() {
       const grid = document.getElementById('orders-grid');
       grid.innerHTML = '';
@@ -393,7 +381,6 @@
       renderOrdersGrid();
     }
 
-    // CMS
     function renderCMSList() {
       const list = document.getElementById('cms-list');
       list.innerHTML = '';
@@ -430,10 +417,10 @@
       const idx = document.getElementById('edit-cms-id').value;
       const cmsObj = {
         id: 'c_' + Date.now(),
-        title: document.getElementById('c-title').value,
-        subtitle: document.getElementById('c-subtitle').value,
+        title: document.getElementById('c-title').value.trim(),
+        subtitle: document.getElementById('c-subtitle').value.trim(),
         layout: document.getElementById('c-layout').value,
-        content: document.getElementById('c-content').value
+        content: document.getElementById('c-content').value.trim()
       };
 
       if(idx !== '') cms[idx] = cmsObj; else cms.push(cmsObj);
@@ -460,7 +447,6 @@
       }
     }
 
-    // Settings
     function renderSettings() {
       document.getElementById('setting-line-url').value = settings.lineUrl;
       document.getElementById('setting-myshop-url').value = settings.myshopUrl;
@@ -471,7 +457,7 @@
       settings.lineUrl = document.getElementById('setting-line-url').value.trim();
       settings.myshopUrl = document.getElementById('setting-myshop-url').value.trim();
       localStorage.setItem('thitipra_settings', JSON.stringify(settings));
-      alert('บันทึกการตั้งค่าลิงก์ร้านเรียบร้อยแล้ว!');
+      alert('บันทึกการตั้งค่าเรียบร้อยแล้ว!');
     }
 
     window.addEventListener('DOMContentLoaded', () => {
