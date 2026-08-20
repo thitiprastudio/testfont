@@ -1,485 +1,348 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FontCraft ✿ ร้านฟอนต์น่ารัก</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Kanit', 'sans-serif'],
-                    },
-                    colors: {
-                        cream: '#FFFDF9',
-                        softPink: '#FCE7F3',
-                        pastelPink: '#F472B6',
-                        pastelPurple: '#C084FC',
-                        pastelYellow: '#FEF08A',
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Font Store & Live Tester</title>
+  
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Google Fonts (Prompt & Kanit สำหรับ UI และตัวอย่างฟอนต์) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;700&family=Charm:wght@400;700&family=Kanit:wght@300;400;700&family=Mitr:wght@300;400;700&family=Prompt:ital,wght@0,300;0,400;0,700;1,400&family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Prompt', sans-serif; }
+    .font-sample-mitr { font-family: 'Mitr', sans-serif; }
+    .font-sample-sarabun { font-family: 'Sarabun', sans-serif; }
+    .font-sample-kanit { font-family: 'Kanit', sans-serif; }
+    .font-sample-charm { font-family: 'Charm', cursive; }
+    .font-sample-chakra { font-family: 'Chakra Petch', sans-serif; }
+  </style>
 </head>
-<body class="bg-cream text-gray-700 min-h-screen flex flex-col font-sans">
+<body class="bg-rose-50/40 text-slate-800 min-h-screen flex flex-col">
 
-    <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-pink-100 shadow-sm transition-all">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <button onclick="toggleSidebar()" class="p-2.5 rounded-2xl bg-pink-50 text-pastelPink hover:bg-pink-100 hover:scale-105 transition-all text-xl focus:outline-none">
-                    <i class="fa-solid fa-bars-staggered"></i>
-                </button>
-                <a href="#" class="flex items-center gap-2 group">
-                    <span class="text-3xl animate-bounce">🎀</span>
-                    <span class="text-2xl font-bold bg-gradient-to-r from-pastelPink to-pastelPurple bg-clip-text text-transparent group-hover:opacity-90">
-                        BR&PRHFONT
-                    </span>
-                </a>
-            </div>
+  <!-- ================= Header ================= -->
+  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-rose-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <div class="flex items-center gap-3">
+        <button onclick="toggleSidebar()" class="p-2 rounded-xl text-slate-600 hover:bg-rose-100/60 transition" aria-label="Open Sidebar">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+        <a href="#" class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-full bg-rose-400 text-white flex items-center justify-center font-bold text-lg shadow-sm">Aa</span>
+          <span class="text-xl font-bold bg-gradient-to-r from-rose-500 to-pink-500 bg-clip-text text-transparent">Fontie.Studio</span>
+        </a>
+      </div>
 
-            <div class="flex items-center gap-3">
-                <button onclick="toggleVSModal(true)" class="hidden sm:flex items-center gap-2 bg-gradient-to-r from-purple-100 to-pink-100 hover:from-purple-200 hover:to-pink-200 text-purple-700 px-4 py-2 rounded-full font-medium transition shadow-sm border border-purple-200/50">
-                    <i class="fa-solid fa-code-compare"></i> VS Mode
-                </button>
-                <button onclick="handleAuthModal()" class="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white px-5 py-2.5 rounded-full font-medium shadow-md shadow-pink-200 hover:shadow-lg transition">
-                    <i class="fa-regular fa-circle-user text-lg"></i>
-                    <span>โปรไฟล์ / เข้าสู่ระบบ</span>
-                </button>
-            </div>
-        </div>
-    </header>
+      <div class="flex items-center gap-2 sm:gap-4">
+        <button onclick="toggleVSMode()" class="px-3 py-1.5 rounded-full border border-rose-300 text-rose-600 hover:bg-rose-50 text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition">
+          <i data-lucide="split" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">โหมดเปรียบเทียบ</span> (VS)
+        </button>
+        <button class="flex items-center gap-2 px-3 py-1.5 bg-rose-500 text-white rounded-full hover:bg-rose-600 transition shadow-sm text-xs sm:text-sm font-medium">
+          <i data-lucide="user" class="w-4 h-4"></i>
+          <span>เข้าสู่ระบบ</span>
+        </button>
+      </div>
 
-    <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity"></div>
-    <aside id="sidebar" class="fixed top-0 left-0 w-72 h-full bg-white shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col justify-between p-6">
-        <div>
-            <div class="flex items-center justify-between pb-6 border-b border-gray-100">
-                <div class="flex items-center gap-2">
-                    <span class="text-2xl">✨</span>
-                    <span class="font-bold text-xl text-gray-800">เมนูหลัก</span>
-                </div>
-                <button onclick="toggleSidebar()" class="text-gray-400 hover:text-gray-600 text-xl">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <nav class="mt-6 flex flex-col gap-2">
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-pink-50 text-pink-600 font-medium"><i class="fa-solid fa-house"></i> หน้าแรก</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 text-gray-600"><i class="fa-solid fa-fire"></i> ฟอนต์ยอดนิยม</a>
-                <button onclick="toggleSidebar(); toggleVSModal(true);" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 text-gray-600"><i class="fa-solid fa-code-compare"></i> โหมดเปรียบเทียบ (VS)</button>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 text-gray-600"><i class="fa-solid fa-shield-halved"></i> เงื่อนไขลิขสิทธิ์</a>
-            </nav>
-        </div>
-        <div class="bg-pink-50 p-4 rounded-2xl border border-pink-100 text-center">
-            <p class="text-xs text-pink-600 font-semibold mb-1">ต้องการสั่งทำฟอนต์พิเศษ?</p>
-            <p class="text-xs text-gray-500 mb-3">ปรึกษาและออกแบบตามใจชอบ</p>
-            <a href="https://line.me/ti/p/@yourlineoa" target="_blank" class="block w-full py-2 bg-[#06C755] text-white rounded-xl text-xs font-semibold shadow-sm hover:opacity-90 transition">
-                <i class="fa-brands fa-line mr-1"></i> ติดต่อทีมงาน
-            </a>
-        </div>
-    </aside>
+    </div>
+  </header>
 
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- ================= Sidebar Drawer ================= -->
+  <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-white shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 ease-in-out border-r border-rose-100 flex flex-col justify-between p-6">
+    <div>
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-lg font-bold text-rose-500">✨ เมนูหลัก</h2>
+        <button onclick="toggleSidebar()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+      <nav class="space-y-2 text-sm font-medium">
+        <a href="#" class="flex items-center gap-3 px-3 py-2 text-rose-600 bg-rose-50 rounded-xl"><i data-lucide="sparkles" class="w-4 h-4"></i> คอลเลกชันทั้งหมด</a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-rose-50/50 rounded-xl"><i data-lucide="heart" class="w-4 h-4"></i> รายการโปรด</a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-rose-50/50 rounded-xl"><i data-lucide="shield-check" class="w-4 h-4"></i> เงื่อนไขลิขสิทธิ์</a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-rose-50/50 rounded-xl"><i data-lucide="headset" class="w-4 h-4"></i> ติดต่อทีมงาน</a>
+      </nav>
+    </div>
+    <p class="text-xs text-slate-400 text-center">© 2026 Fontie.Studio</p>
+  </aside>
+  <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/20 z-40 hidden backdrop-blur-[2px]"></div>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-1">
+
+    <!-- ================= Search & Price Filters ================= -->
+    <section class="mb-8 space-y-4">
+      <div class="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
         
-        <section class="text-center my-8">
-            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-800 mb-3 tracking-tight">
-                ค้นหาฟอนต์ลายมือน่ารัก <span class="text-pastelPink inline-block animate-pulse">✿</span>
-            </h1>
-            <p class="text-gray-500 text-base sm:text-lg">ทดลองพิมพ์สด ปรับขนาด และเลือกสิทธิ์การใช้งานที่ตรงใจคุณ</p>
-        </section>
-
-        <section class="bg-white p-4 sm:p-6 rounded-3xl shadow-sm border border-pink-100 mb-10">
-            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
-                
-                <div class="relative w-full md:w-1/2">
-                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                    <input type="text" id="searchInput" oninput="filterFonts()" placeholder="ค้นหาชื่อฟอนต์หรือแท็ก..." 
-                        class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:bg-white transition text-sm">
-                </div>
-
-                <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
-                    <button onclick="setPriceFilter('all', this)" class="price-filter-btn px-5 py-2.5 rounded-full text-sm font-medium bg-pink-500 text-white shadow-sm transition">
-                        ทั้งหมด
-                    </button>
-                    <button onclick="setPriceFilter('tiered', this)" class="price-filter-btn px-5 py-2.5 rounded-full text-sm font-medium bg-gray-100 hover:bg-gray-200 text-gray-700 transition">
-                        แยกสิทธิ์การใช้งาน
-                    </button>
-                    <button onclick="setPriceFilter('single', this)" class="price-filter-btn px-5 py-2.5 rounded-full text-sm font-medium bg-gray-100 hover:bg-gray-200 text-gray-700 transition">
-                        ราคาเดียว (All-in-one)
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <section>
-            <div id="fontsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm animate-pulse h-80"></div>
-                <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm animate-pulse h-80"></div>
-            </div>
-        </section>
-    </main>
-
-    <div id="vsModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-white w-full max-w-4xl rounded-3xl shadow-2xl p-6 sm:p-8 flex flex-col max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between border-b pb-4 mb-6">
-                <div class="flex items-center gap-2">
-                    <span class="text-2xl">⚔️</span>
-                    <h3 class="text-xl font-bold text-gray-800">VS Mode เปรียบเทียบฟอนต์</h3>
-                </div>
-                <button onclick="toggleVSModal(false)" class="text-gray-400 hover:text-gray-600 text-2xl">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <div class="mb-6">
-                <label class="block text-xs font-semibold text-gray-500 mb-1.5">พิมพ์ข้อความเพื่อเปรียบเทียบพร้อมกัน:</label>
-                <input type="text" id="vsSharedInput" oninput="updateVSText(this.value)" value="สวัสดี! ยินดีต้อนรับสู่ร้านฟอนต์ลายมือ 12345 Hello World!" 
-                    class="w-full p-3 bg-pink-50/50 border border-pink-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300">
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="border border-purple-100 bg-purple-50/30 p-5 rounded-2xl flex flex-col justify-between min-h-[220px]">
-                    <div>
-                        <select id="vsFontSelectA" onchange="applyVSFont('A')" class="w-full bg-white border border-purple-200 rounded-xl p-2.5 mb-3 text-sm focus:outline-none"></select>
-                        <p id="vsPreviewA" class="text-2xl break-words mt-4">สวัสดี! ยินดีต้อนรับสู่ร้านฟอนต์ลายมือ 12345 Hello World!</p>
-                    </div>
-                </div>
-
-                <div class="border border-pink-100 bg-pink-50/30 p-5 rounded-2xl flex flex-col justify-between min-h-[220px]">
-                    <div>
-                        <select id="vsFontSelectB" onchange="applyVSFont('B')" class="w-full bg-white border border-pink-200 rounded-xl p-2.5 mb-3 text-sm focus:outline-none"></select>
-                        <p id="vsPreviewB" class="text-2xl break-words mt-4">สวัสดี! ยินดีต้อนรับสู่ร้านฟอนต์ลายมือ 12345 Hello World!</p>
-                    </div>
-                </div>
-            </div>
+        <!-- แถบค้นหา -->
+        <div class="relative flex-1 max-w-lg">
+          <i data-lucide="search" class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input 
+            type="text" 
+            id="search-input" 
+            oninput="handleSearch()"
+            placeholder="ค้นหาชื่อฟอนต์ เช่น คาเฟ่, โมเดิร์น, ลายมือ..." 
+            class="w-full pl-10 pr-4 py-2.5 bg-white border border-rose-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-rose-400 text-sm shadow-sm"
+          >
         </div>
+
+        <!-- กรองราคา -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 text-xs sm:text-sm">
+          <button onclick="setFilter('all', this)" class="filter-btn active px-4 py-2 rounded-xl font-medium bg-rose-500 text-white shadow-sm transition">ทั้งหมด</button>
+          <button onclick="setFilter('tiered', this)" class="filter-btn px-4 py-2 rounded-xl font-medium bg-white text-slate-600 border border-rose-200 hover:bg-rose-50 transition">แยกสิทธิ์</button>
+          <button onclick="setFilter('single', this)" class="filter-btn px-4 py-2 rounded-xl font-medium bg-white text-slate-600 border border-rose-200 hover:bg-rose-50 transition">ราคาเดียว</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= VS Comparison Modal ================= -->
+    <section id="vs-section" class="hidden mb-10 p-6 bg-white border border-rose-200 rounded-3xl shadow-lg relative">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
+          <span class="p-1.5 bg-rose-100 text-rose-500 rounded-lg"><i data-lucide="columns" class="w-5 h-5"></i></span>
+          VS Mode (เปรียบเทียบสด)
+        </h3>
+        <button onclick="toggleVSMode()" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Font Left -->
+        <div class="p-4 bg-rose-50/40 rounded-2xl border border-rose-100 space-y-3">
+          <select id="vs-font-1" onchange="renderVS()" class="w-full bg-white border border-rose-200 rounded-xl px-3 py-2 text-sm font-semibold"></select>
+          <textarea id="vs-text-1" rows="3" class="w-full bg-transparent border-0 focus:ring-0 text-slate-800 text-xl resize-none outline-none leading-relaxed">พิมพ์ข้อความเปรียบเทียบที่นี่...</textarea>
+        </div>
+        <!-- Font Right -->
+        <div class="p-4 bg-rose-50/40 rounded-2xl border border-rose-100 space-y-3">
+          <select id="vs-font-2" onchange="renderVS()" class="w-full bg-white border border-rose-200 rounded-xl px-3 py-2 text-sm font-semibold"></select>
+          <textarea id="vs-text-2" rows="3" class="w-full bg-transparent border-0 focus:ring-0 text-slate-800 text-xl resize-none outline-none leading-relaxed">พิมพ์ข้อความเปรียบเทียบที่นี่...</textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Font Cards Grid ================= -->
+    <!-- Grid System: 1 คอลัมน์บนมือถือ | 2 บนแท็บเล็ต | 3 บนคอมพิวเตอร์ -->
+    <div id="fonts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Font Cards rendered via JavaScript -->
     </div>
 
-    <div id="checkoutModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 sm:p-8">
-            <div class="flex items-center justify-between border-b pb-3 mb-4">
-                <h3 class="text-lg font-bold text-gray-800">สั่งซื้อฟอนต์</h3>
-                <button onclick="toggleCheckoutModal(false)" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+  </main>
+
+  <!-- ================= App Logic ================= -->
+  <script>
+    // 1. จำลองข้อมูล Supabase หรือเชื่อมต่อจริง
+    const SUPABASE_URL = "YOUR_SUPABASE_URL";
+    const SUPABASE_KEY = "YOUR_SUPABASE_ANON_KEY";
+    const supabase = (SUPABASE_URL !== "YOUR_SUPABASE_URL") 
+      ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) 
+      : null;
+
+    const LINE_OA_ID = "@yourfontshop"; // ไอดี LINE OA สำหรับรับคำสั่งซื้อ
+
+    // Fallback Data กรณีที่ยังไม่ได้ตั้งค่าคีย์ Supabase
+    let allFonts = [
+      { id: '1', name: 'Mitr Sweetie', class: 'font-sample-mitr', pricing_type: 'tiered', prices: { personal: 290, commercial: 590, business: 1200 }, author: 'Studio Peach' },
+      { id: '2', name: 'Sarabun Modern', class: 'font-sample-sarabun', pricing_type: 'single', prices: { personal: 350, commercial: 350, business: 350 }, author: 'Craft Type' },
+      { id: '3', name: 'Kanit Chunky', class: 'font-sample-kanit', pricing_type: 'tiered', prices: { personal: 390, commercial: 790, business: 1500 }, author: 'Studio Peach' },
+      { id: '4', name: 'Charm Handwriting', class: 'font-sample-charm', pricing_type: 'single', prices: { personal: 199, commercial: 199, business: 199 }, author: 'Little Note' },
+      { id: '5', name: 'Chakra Cyber', class: 'font-sample-chakra', pricing_type: 'tiered', prices: { personal: 450, commercial: 890, business: 2000 }, author: 'Neo Design' }
+    ];
+
+    let currentFilter = 'all';
+
+    // 2. Fetch Data
+    async function loadFonts() {
+      if (supabase) {
+        const { data, error } = await supabase.from('fonts').select('*');
+        if (!error && data && data.length > 0) allFonts = data;
+      }
+      renderCards(allFonts);
+      populateVSSelectors();
+    }
+
+    // 3. Render Cards
+    function renderCards(list) {
+      const container = document.getElementById('fonts-grid');
+      container.innerHTML = '';
+
+      if (list.length === 0) {
+        container.innerHTML = `<div class="col-span-full py-16 text-center text-slate-400">ไม่พบฟอนต์ที่ค้นหา</div>`;
+        return;
+      }
+
+      list.forEach(font => {
+        const card = document.createElement('div');
+        card.className = "bg-white border border-rose-100 rounded-3xl p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <!-- Header Card -->
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <h3 class="font-bold text-base text-slate-800">${font.name}</h3>
+                <p class="text-xs text-slate-400">โดย ${font.author}</p>
+              </div>
+              <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full ${font.pricing_type === 'single' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'}">
+                ${font.pricing_type === 'single' ? 'ราคาเดียว' : 'แยกสิทธิ์'}
+              </span>
             </div>
-            
+
+            <!-- Controls (Size & Weight) -->
+            <div class="flex items-center gap-2 mb-3 bg-rose-50/50 p-2 rounded-xl text-xs">
+              <span class="text-slate-500 font-medium">ขนาด:</span>
+              <input type="range" min="16" max="48" value="24" oninput="updateFontSize(this, 'preview-${font.id}')" class="w-20 accent-rose-500 cursor-pointer">
+              
+              <div class="flex gap-1 ml-auto">
+                <button onclick="setFontWeight('preview-${font.id}', 300)" class="px-2 py-0.5 bg-white border border-rose-200 rounded text-[10px] hover:bg-rose-100">บาง</button>
+                <button onclick="setFontWeight('preview-${font.id}', 400)" class="px-2 py-0.5 bg-white border border-rose-200 rounded text-[10px] hover:bg-rose-100">ปกติ</button>
+                <button onclick="setFontWeight('preview-${font.id}', 700)" class="px-2 py-0.5 bg-white border border-rose-200 rounded text-[10px] hover:bg-rose-100">หนา</button>
+              </div>
+            </div>
+
+            <!-- Interactive Text Area -->
             <div class="mb-4">
-                <p class="text-sm text-gray-500">คุณกำลังจะสั่งซื้อ:</p>
-                <p id="orderFontName" class="text-xl font-bold text-pink-600 mb-4"></p>
-
-                <label class="block text-xs font-semibold text-gray-600 mb-2">เลือกสิทธิ์การใช้งาน (License):</label>
-                <div class="space-y-2" id="licenseOptions">
-                    </div>
+              <textarea 
+                id="preview-${font.id}" 
+                class="${font.class || ''} w-full min-h-[90px] p-3 rounded-xl border border-rose-100 bg-rose-50/20 focus:bg-white focus:outline-none focus:ring-1 focus:ring-rose-400 text-slate-700 resize-none transition"
+                style="font-size: 24px; font-weight: 400;"
+              >ก้าวแรกไม่เป็นไร ก้าวต่อไปเริ่มชอบฟอนต์นี้แล้ว ✨</textarea>
             </div>
+          </div>
 
-            <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-3 text-xs text-yellow-800 mb-6 flex gap-2">
-                <i class="fa-solid fa-circle-info mt-0.5"></i>
-                <span>ระบบจะส่งรายละเอียดคำสั่งซื้อไปยัง LINE OA อัตโนมัติ เพื่อยืนยันและชำระเงิน</span>
+          <!-- Bottom: Price Selection & LINE CTA -->
+          <div class="border-t border-rose-100 pt-3 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <label class="text-slate-500 font-medium">สิทธิ์การใช้งาน:</label>
+              <select id="license-${font.id}" onchange="updatePriceDisplay('${font.id}')" class="bg-rose-50 border border-rose-200 rounded-lg px-2 py-1 outline-none text-slate-700">
+                <option value="personal">Personal (ใช้ส่วนตัว)</option>
+                <option value="commercial">Commercial (เชิงพาณิชย์)</option>
+                <option value="business">Business (องค์กร/แบรนด์)</option>
+              </select>
             </div>
-
-            <button onclick="proceedToLineOrder()" class="w-full bg-[#06C755] hover:bg-[#05a346] text-white py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-green-100 transition">
-                <i class="fa-brands fa-line text-2xl"></i> ไปยัง LINE OA เพื่อสั่งซื้อ
-            </button>
-        </div>
-    </div>
-
-    <script>
-        // 1. กำหนดค่า Supabase Config (แก้ไข URL และ ANON KEY ของคุณที่นี่)
-        const SUPABASE_URL = 'https://YOUR_SUPABASE_PROJECT_ID.supabase.co';
-        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-        const LINE_OA_ID = '@yourlineoa'; // ใส่ LINE OA ID ของคุณ (มี @)
-
-        let supabase = null;
-        try {
-            supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        } catch(e) {
-            console.warn("Supabase not fully configured yet, fallback will be used.");
-        }
-
-        // Mock Fallback Data (ใช้แสดงผลกรณีที่ยังไม่ได้ต่อ Database จริง)
-        const mockFonts = [
-            {
-                id: '1',
-                name: 'Cookie Dough Handwrite',
-                font_family: 'CookieDough',
-                font_url: 'https://fonts.cdnfonts.com/s/16061/Cookie-Regular.woff',
-                price_type: 'tiered', // tiered, single
-                price_personal: 129,
-                price_commercial: 259,
-                price_business: 499,
-                price_single: null,
-                tag: 'น่ารัก / พาสเทล'
-            },
-            {
-                id: '2',
-                name: 'Strawberry Bubble Font',
-                font_family: 'StrawberryBubble',
-                font_url: 'https://fonts.cdnfonts.com/s/14883/Pacifico.woff',
-                price_type: 'single',
-                price_personal: null,
-                price_commercial: null,
-                price_business: null,
-                price_single: 199,
-                tag: 'หัวกลม / บับเบิ้ล'
-            }
-        ];
-
-        let fontList = [];
-        let activeFilter = 'all';
-        let currentCheckoutFont = null;
-
-        // Fetch Fonts from Supabase or Fallback
-        async function fetchFonts() {
-            try {
-                if (supabase) {
-                    let { data, error } = await supabase.from('fonts').select('*');
-                    if (error || !data || data.length === 0) throw error;
-                    fontList = data;
-                } else {
-                    fontList = mockFonts;
-                }
-            } catch (err) {
-                console.log("Using Mock Data");
-                fontList = mockFonts;
-            }
-            loadCustomFontStyles(fontList);
-            renderFonts(fontList);
-            populateVSSelects();
-        }
-
-        // Dynamically Inject @font-face CSS
-        function loadCustomFontStyles(fonts) {
-            let styleTag = document.getElementById('dynamic-fonts-css');
-            if (!styleTag) {
-                styleTag = document.createElement('style');
-                styleTag.id = 'dynamic-fonts-css';
-                document.head.appendChild(styleTag);
-            }
-            let css = '';
-            fonts.forEach(f => {
-                if(f.font_url) {
-                    css += `
-                    @font-face {
-                        font-family: '${f.font_family}';
-                        src: url('${f.font_url}') format('woff2'), url('${f.font_url}') format('woff');
-                        font-display: swap;
-                    }
-                    `;
-                }
-            });
-            styleTag.innerHTML = css;
-        }
-
-        // Render Font Cards
-        function renderFonts(fonts) {
-            const container = document.getElementById('fontsContainer');
-            container.innerHTML = '';
-
-            if(fonts.length === 0) {
-                container.innerHTML = `<div class="col-span-2 text-center py-12 text-gray-400">ไม่พบฟอนต์ที่ค้นหา ✿</div>`;
-                return;
-            }
-
-            fonts.forEach(font => {
-                const card = document.createElement('div');
-                card.className = "bg-white border border-pink-100 rounded-3xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between";
-
-                // License Price Text formatting
-                let priceBadge = font.price_type === 'single' 
-                    ? `<span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">ราคาเดียว ฿${font.price_single}</span>`
-                    : `<span class="bg-pink-100 text-pink-700 px-3 py-1 rounded-full text-xs font-semibold">เริ่มต้น ฿${font.price_personal}</span>`;
-
-                card.innerHTML = `
-                    <div>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <span class="text-xs text-gray-400">${font.tag || 'ฟอนต์ลายมือ'}</span>
-                                <h2 class="text-xl font-bold text-gray-800">${font.name}</h2>
-                            </div>
-                            ${priceBadge}
-                        </div>
-
-                        <div class="bg-gray-50 border border-gray-200/80 rounded-2xl p-4 mb-4 min-h-[130px] flex items-center justify-center">
-                            <p id="preview-${font.id}" 
-                               class="w-full text-center outline-none bg-transparent break-words" 
-                               style="font-family: '${font.font_family}', sans-serif; font-size: 28px; font-weight: 400;" 
-                               contenteditable="true" spellcheck="false">
-                                พิมพ์ข้อความทดสอบที่นี่ 123
-                            </p>
-                        </div>
-
-                        <div class="flex items-center justify-between gap-4 mb-6 bg-cream p-2.5 rounded-xl border border-orange-100/50">
-                            <div class="flex items-center gap-2 flex-grow">
-                                <i class="fa-solid fa-text-height text-xs text-gray-400"></i>
-                                <input type="range" min="16" max="64" value="28" 
-                                    oninput="updateFontSize('${font.id}', this.value)" 
-                                    class="w-full h-1.5 bg-pink-200 rounded-lg appearance-none cursor-pointer accent-pastelPink">
-                            </div>
-                            <div class="flex items-center gap-1 bg-white p-1 rounded-lg border border-gray-200 text-xs">
-                                <button onclick="updateFontWeight('${font.id}', '300')" class="px-2 py-0.5 rounded hover:bg-pink-50">บาง</button>
-                                <button onclick="updateFontWeight('${font.id}', '400')" class="px-2 py-0.5 rounded hover:bg-pink-50 font-medium">ปกติ</button>
-                                <button onclick="updateFontWeight('${font.id}', '700')" class="px-2 py-0.5 rounded hover:bg-pink-50 font-bold">หนา</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button onclick="openCheckoutModal('${font.id}')" class="w-full py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-2xl font-medium shadow-md shadow-pink-100 flex items-center justify-center gap-2 transition">
-                        <i class="fa-solid fa-bag-shopping"></i> สั่งซื้อฟอนต์นี้
-                    </button>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        // Realtime Preview Modifiers
-        function updateFontSize(id, val) {
-            document.getElementById(`preview-${id}`).style.fontSize = `${val}px`;
-        }
-        function updateFontWeight(id, weight) {
-            document.getElementById(`preview-${id}`).style.fontWeight = weight;
-        }
-
-        // Filtering
-        function filterFonts() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = fontList.filter(f => {
-                const matchesSearch = f.name.toLowerCase().includes(query) || (f.tag && f.tag.toLowerCase().includes(query));
-                const matchesPrice = activeFilter === 'all' || f.price_type === activeFilter;
-                return matchesSearch && matchesPrice;
-            });
-            renderFonts(filtered);
-        }
-
-        function setPriceFilter(type, btn) {
-            activeFilter = type;
-            document.querySelectorAll('.price-filter-btn').forEach(b => {
-                b.className = 'price-filter-btn px-5 py-2.5 rounded-full text-sm font-medium bg-gray-100 hover:bg-gray-200 text-gray-700 transition';
-            });
-            btn.className = 'price-filter-btn px-5 py-2.5 rounded-full text-sm font-medium bg-pink-500 text-white shadow-sm transition';
-            filterFonts();
-        }
-
-        // UI Toggles
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const isOpen = !sidebar.classList.contains('-translate-x-full');
-            if (isOpen) {
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.add('hidden');
-                overlay.classList.remove('opacity-100');
-            } else {
-                sidebar.classList.remove('-translate-x-full');
-                overlay.classList.remove('hidden');
-                setTimeout(() => overlay.classList.add('opacity-100'), 10);
-            }
-        }
-
-        function handleAuthModal() {
-            alert('✿ ระบบ Authentication / Profile เชื่อมต่อผ่าน Supabase Auth ได้ที่นี่');
-        }
-
-        // VS MODE LOGIC
-        function toggleVSModal(show) {
-            const modal = document.getElementById('vsModal');
-            modal.style.display = show ? 'flex' : 'none';
-        }
-
-        function populateVSSelects() {
-            const selA = document.getElementById('vsFontSelectA');
-            const selB = document.getElementById('vsFontSelectB');
-            selA.innerHTML = '';
-            selB.innerHTML = '';
-            fontList.forEach((f, idx) => {
-                selA.innerHTML += `<option value="${f.font_family}">${f.name}</option>`;
-                selB.innerHTML += `<option value="${f.font_family}" ${idx === 1 ? 'selected' : ''}>${f.name}</option>`;
-            });
-            applyVSFont('A');
-            applyVSFont('B');
-        }
-
-        function applyVSFont(side) {
-            const family = document.getElementById(`vsFontSelect${side}`).value;
-            document.getElementById(`vsPreview${side}`).style.fontFamily = `'${family}', sans-serif`;
-        }
-
-        function updateVSText(text) {
-            document.getElementById('vsPreviewA').innerText = text;
-            document.getElementById('vsPreviewB').innerText = text;
-        }
-
-        // CHECKOUT & LINE OA LOGIC
-        function openCheckoutModal(fontId) {
-            currentCheckoutFont = fontList.find(f => f.id === fontId);
-            if (!currentCheckoutFont) return;
-
-            document.getElementById('orderFontName').innerText = currentCheckoutFont.name;
-            const container = document.getElementById('licenseOptions');
-            container.innerHTML = '';
-
-            if (currentCheckoutFont.price_type === 'single') {
-                container.innerHTML = `
-                    <label class="flex items-center justify-between p-3.5 border border-pink-200 rounded-xl bg-pink-50/50 cursor-pointer">
-                        <div class="flex items-center gap-2">
-                            <input type="radio" name="license" value="All-in-one" checked class="accent-pink-500">
-                            <span class="text-sm font-medium">All-in-one (ทุกสิทธิ์การใช้งาน)</span>
-                        </div>
-                        <span class="font-bold text-pink-600">฿${currentCheckoutFont.price_single}</span>
-                    </label>
-                `;
-            } else {
-                container.innerHTML = `
-                    <label class="flex items-center justify-between p-3 border border-gray-200 rounded-xl hover:bg-pink-50/30 cursor-pointer">
-                        <div class="flex items-center gap-2">
-                            <input type="radio" name="license" value="Personal" checked class="accent-pink-500">
-                            <span class="text-sm">Personal (ส่วนบุคคล/ตกแต่ง)</span>
-                        </div>
-                        <span class="font-bold text-gray-700">฿${currentCheckoutFont.price_personal}</span>
-                    </label>
-                    <label class="flex items-center justify-between p-3 border border-gray-200 rounded-xl hover:bg-pink-50/30 cursor-pointer">
-                        <div class="flex items-center gap-2">
-                            <input type="radio" name="license" value="Commercial" class="accent-pink-500">
-                            <span class="text-sm">Commercial (เชิงพาณิชย์/ขายของ)</span>
-                        </div>
-                        <span class="font-bold text-gray-700">฿${currentCheckoutFont.price_commercial}</span>
-                    </label>
-                    <label class="flex items-center justify-between p-3 border border-gray-200 rounded-xl hover:bg-pink-50/30 cursor-pointer">
-                        <div class="flex items-center gap-2">
-                            <input type="radio" name="license" value="Business" class="accent-pink-500">
-                            <span class="text-sm">Business (องค์กร/แบรนด์)</span>
-                        </div>
-                        <span class="font-bold text-gray-700">฿${currentCheckoutFont.price_business}</span>
-                    </label>
-                `;
-            }
-
-            document.getElementById('checkoutModal').style.display = 'flex';
-        }
-
-        function toggleCheckoutModal(show) {
-            document.getElementById('checkoutModal').style.display = show ? 'flex' : 'none';
-        }
-
-        function proceedToLineOrder() {
-            const selectedLicense = document.querySelector('input[name="license"]:checked').value;
-            const message = encodeURIComponent(`สวัสดีครับ/ค่ะ ต้องการสั่งซื้อฟอนต์: ${currentCheckoutFont.name}\nประเภทสิทธิ์: ${selectedLicense}`);
-            const lineUrl = `https://line.me/R/oaMessage/${LINE_OA_ID}/?${message}`;
             
-            window.open(lineUrl, '_blank');
-            toggleCheckoutModal(false);
-        }
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-xs text-slate-400">ราคา: </span>
+                <span id="price-${font.id}" class="text-base font-bold text-rose-500">฿${font.prices.personal}</span>
+              </div>
+              <button onclick="orderViaLine('${font.id}')" class="flex items-center gap-1.5 px-4 py-2 bg-[#06C755] hover:bg-[#05b04b] text-white rounded-xl text-xs font-semibold shadow-sm transition">
+                <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i>
+                สั่งซื้อผ่าน LINE
+              </button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+      lucide.createIcons();
+    }
 
-        // Initialize on page load
-        window.addEventListener('DOMContentLoaded', fetchFonts);
-    </script>
+    // 4. Interactive Adjustments
+    function updateFontSize(slider, elementId) {
+      document.getElementById(elementId).style.fontSize = `${slider.value}px`;
+    }
+
+    function setFontWeight(elementId, weight) {
+      document.getElementById(elementId).style.fontWeight = weight;
+    }
+
+    function updatePriceDisplay(fontId) {
+      const font = allFonts.find(f => f.id === fontId);
+      const license = document.getElementById(`license-${fontId}`).value;
+      document.getElementById(`price-${fontId}`).innerText = `฿${font.prices[license]}`;
+    }
+
+    // 5. Line OA Order Link
+    function orderViaLine(fontId) {
+      const font = allFonts.find(f => f.id === fontId);
+      const license = document.getElementById(`license-${fontId}`).value;
+      const price = font.prices[license];
+      
+      const message = `สวัสดีครับ/ค่ะ ต้องการสั่งซื้อฟอนต์ ✨%0A- ฟอนต์: ${encodeURIComponent(font.name)}%0A- สิทธิ์: ${license.toUpperCase()}%0A- ราคา: ฿${price}`;
+      const lineUrl = `https://line.me/R/oaMessage/${LINE_OA_ID}/?${message}`;
+      
+      window.open(lineUrl, '_blank');
+    }
+
+    // 6. Search & Filters
+    function handleSearch() {
+      const query = document.getElementById('search-input').value.toLowerCase();
+      const filtered = allFonts.filter(f => {
+        const matchName = f.name.toLowerCase().includes(query);
+        const matchFilter = currentFilter === 'all' || f.pricing_type === currentFilter;
+        return matchName && matchFilter;
+      });
+      renderCards(filtered);
+    }
+
+    function setFilter(type, btn) {
+      currentFilter = type;
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        b.className = "filter-btn px-4 py-2 rounded-xl font-medium bg-white text-slate-600 border border-rose-200 hover:bg-rose-50 transition";
+      });
+      btn.className = "filter-btn active px-4 py-2 rounded-xl font-medium bg-rose-500 text-white shadow-sm transition";
+      handleSearch();
+    }
+
+    // 7. Sidebar Controls
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      const isOpen = !sidebar.classList.contains('-translate-x-full');
+      
+      if (isOpen) {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      } else {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+      }
+    }
+
+    // 8. VS Mode Setup
+    function toggleVSMode() {
+      const vs = document.getElementById('vs-section');
+      vs.classList.toggle('hidden');
+      if (!vs.classList.contains('hidden')) {
+        renderVS();
+      }
+    }
+
+    function populateVSSelectors() {
+      const s1 = document.getElementById('vs-font-1');
+      const s2 = document.getElementById('vs-font-2');
+      s1.innerHTML = '';
+      s2.innerHTML = '';
+      
+      allFonts.forEach((f, idx) => {
+        s1.add(new Option(f.name, f.class, idx === 0, idx === 0));
+        s2.add(new Option(f.name, f.class, idx === 1, idx === 1));
+      });
+    }
+
+    function renderVS() {
+      const s1 = document.getElementById('vs-font-1').value;
+      const s2 = document.getElementById('vs-font-2').value;
+      const t1 = document.getElementById('vs-text-1');
+      const t2 = document.getElementById('vs-text-2');
+      
+      t1.className = `${s1} w-full bg-transparent border-0 focus:ring-0 text-slate-800 text-2xl resize-none outline-none leading-relaxed`;
+      t2.className = `${s2} w-full bg-transparent border-0 focus:ring-0 text-slate-800 text-2xl resize-none outline-none leading-relaxed`;
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      loadFonts();
+    });
+  </script>
 </body>
 </html>
