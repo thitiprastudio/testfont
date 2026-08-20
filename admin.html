@@ -1,483 +1,436 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel - ThitipraStudio</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    body { font-family: 'Prompt', sans-serif; }
-    .tab-active { background-color: #FF9AA2; color: white !important; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Control Panel - ThitipraStudio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Prompt', sans-serif; }
+        .tab-active { background-color: #FF9EBB; color: white !important; }
+    </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
 
-  <!-- Top Bar -->
-  <header class="bg-white border-b sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <span class="w-8 h-8 rounded-lg bg-[#FF9AA2] text-white flex items-center justify-center font-bold">A</span>
-        <span class="font-bold text-slate-800">Thitipra Admin Hub</span>
-      </div>
-      <a href="index.html" class="px-3 py-1.5 border rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition">
-        <i class="fas fa-arrow-left"></i> กลับหน้าร้านค้า (index.html)
-      </a>
+    <!-- Header -->
+    <header class="bg-white border-b sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-[#FF9EBB] text-white flex items-center justify-center font-bold">A</span>
+                <span class="font-bold text-slate-800">Thitipra Admin Control Hub</span>
+            </div>
+            <a href="index.html" class="px-3.5 py-1.5 border border-pink-200 bg-pink-50 text-pink-700 rounded-xl text-xs font-semibold hover:bg-pink-100 transition flex items-center gap-1.5">
+                <i class="fas fa-store"></i> ไปยังหน้าร้านค้า (index.html)
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 w-full flex-1">
+        
+        <!-- Login Card -->
+        <div id="admin-auth-card" class="max-w-sm mx-auto bg-white rounded-3xl p-8 shadow-xl border my-12 text-center">
+            <div class="w-14 h-14 bg-rose-50 text-[#FF9EBB] rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h2 class="text-xl font-bold text-slate-800 mb-1">เข้าสู่ระบบแอดมิน</h2>
+            <p class="text-xs text-slate-400 mb-6">กรอกข้อมูลเพื่อจัดการระบบหลังบ้าน</p>
+            
+            <form onsubmit="handleLogin(event)" class="space-y-3 text-left text-xs">
+                <div>
+                    <label class="block font-semibold mb-1 text-slate-600">ชื่อผู้ใช้งาน (Username)</label>
+                    <input type="text" id="input-user" required placeholder="Username..." class="w-full p-2.5 bg-slate-50 border rounded-xl outline-none focus:border-[#FF9EBB]">
+                </div>
+
+                <div>
+                    <label class="block font-semibold mb-1 text-slate-600">รหัสผ่าน (Password)</label>
+                    <div class="relative">
+                        <input type="password" id="input-pass" required placeholder="Password..." class="w-full p-2.5 bg-slate-50 border rounded-xl outline-none focus:border-[#FF9EBB] pr-10">
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-sm">
+                            <i id="eye-icon" class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <p id="auth-error" class="text-rose-500 hidden text-[11px] font-semibold">❌ บัญชีผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</p>
+                <button type="submit" class="w-full py-2.5 bg-[#FF9EBB] hover:bg-[#ff89ac] text-white font-bold rounded-xl transition shadow-sm mt-2">เข้าสู่ระบบ</button>
+            </form>
+        </div>
+
+        <!-- Dashboard Console -->
+        <div id="admin-console" class="hidden space-y-6">
+            
+            <div class="bg-white p-3 rounded-2xl border flex flex-wrap items-center justify-between gap-3 shadow-sm text-xs font-semibold">
+                <div class="flex gap-2 flex-wrap">
+                    <button onclick="switchTab('fonts')" id="tab-btn-fonts" class="px-3.5 py-1.5 rounded-xl tab-active transition">📦 จัดการฟอนต์ & ไดรฟ์ (<span id="count-fonts">0</span>)</button>
+                    <button onclick="switchTab('orders')" id="tab-btn-orders" class="px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-600 transition">📝 ตรวจสลิป & ดึงเมล (<span id="count-orders">0</span>)</button>
+                    <button onclick="switchTab('qa')" id="tab-btn-qa" class="px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-600 transition">💬 จัดการคำถาม Q&A</button>
+                </div>
+                <button onclick="logoutAdmin()" class="text-rose-500 hover:bg-rose-50 px-3 py-1.5 rounded-xl transition"><i class="fas fa-sign-out-alt"></i> ออกจากระบบ</button>
+            </div>
+
+            <!-- Tab 1: Fonts -->
+            <div id="view-fonts" class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800 text-base">คลังฟอนต์และลิงก์ Drive</h3>
+                    <button onclick="openFontModal()" class="px-3.5 py-2 bg-[#FF9EBB] text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
+                        <i class="fas fa-plus"></i> เพิ่มฟอนต์ใหม่
+                    </button>
+                </div>
+                <div class="bg-white rounded-2xl border overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-600">
+                        <thead class="bg-slate-50 border-b text-slate-400">
+                            <tr>
+                                <th class="p-3">ชื่อฟอนต์</th>
+                                <th class="p-3">ราคา (ส่วนตัว / พาณิชย์ / นิติบุคคล)</th>
+                                <th class="p-3">Google Drive (ส่วนตัว)</th>
+                                <th class="p-3">Google Drive (พาณิชย์)</th>
+                                <th class="p-3 text-center">จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fonts-tbody" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 2: Orders -->
+            <div id="view-orders" class="hidden space-y-4">
+                <h3 class="font-bold text-slate-800 text-base">รายการสั่งซื้อ & สลิปโอนเงินรอดึงเมลเข้า Google Drive</h3>
+                <div id="orders-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+            </div>
+
+            <!-- Tab 3: Q&A Manager -->
+            <div id="view-qa" class="hidden space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base">ตั้งค่าคำถาม-คำตอบ (Q&A Chat)</h3>
+                        <p class="text-xs text-slate-400">เพิ่มคำถามที่ลูกค้าชอบถาม เพื่อให้แสดงเป็นกล่องแชทหน้าร้าน</p>
+                    </div>
+                    <button onclick="openQAModal()" class="px-3.5 py-2 bg-[#FF9EBB] text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
+                        <i class="fas fa-plus"></i> เพิ่มข้อความ Q&A
+                    </button>
+                </div>
+                <div id="qa-list" class="space-y-3"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal: Font Add/Edit -->
+    <div id="fontModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border max-h-[90vh] overflow-y-auto text-xs">
+            <h3 id="fontModalTitle" class="font-bold text-base text-slate-800 mb-3">เพิ่มฟอนต์ใหม่</h3>
+            <form onsubmit="saveFont(event)" class="space-y-3">
+                <input type="hidden" id="edit-font-idx">
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-semibold mb-1">ชื่อภาษาไทย *</label>
+                        <input type="text" id="f-th" required placeholder="เช่น สเตฟานี่" class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">ชื่อภาษาอังกฤษ *</label>
+                        <input type="text" id="f-en" required placeholder="เช่น Stephanie" class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <div>
+                        <label class="block font-semibold mb-1">ส่วนตัว (฿) *</label>
+                        <input type="text" id="f-p" value="79.-" required class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">พาณิชย์ (฿) *</label>
+                        <input type="text" id="f-c" value="169.-" required class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">นิติบุคคล (฿)</label>
+                        <input type="text" id="f-b" value="700.-" class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">Google Drive (สิทธิ์ส่วนตัว) *</label>
+                    <input type="url" id="f-drive-p" placeholder="https://drive.google.com/..." class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">Google Drive (สิทธิ์พาณิชย์) *</label>
+                    <input type="url" id="f-drive-c" placeholder="https://drive.google.com/..." class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">ไฟล์ฟอนต์ Path (.ttf/.otf) *</label>
+                    <input type="text" id="f-file" required placeholder="fonts/Stephanie.ttf" class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
+                </div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeFontModal()" class="px-4 py-2 bg-slate-100 rounded-xl font-semibold">ยกเลิก</button>
+                    <button type="submit" class="px-4 py-2 bg-[#FF9EBB] text-white font-bold rounded-xl shadow-sm">บันทึกฟอนต์</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </header>
 
-  <main class="max-w-7xl mx-auto px-4 py-8 w-full flex-1">
-    
-    <!-- Login Card -->
-    <div id="admin-auth-card" class="max-w-sm mx-auto bg-white rounded-3xl p-8 shadow-xl border my-12 text-center">
-      <div class="w-14 h-14 bg-rose-50 text-[#FF9AA2] rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl">
-        <i class="fas fa-shield-alt"></i>
-      </div>
-      <h2 class="text-xl font-bold text-slate-800 mb-1">เข้าสู่ระบบแอดมิน</h2>
-      <p class="text-xs text-slate-400 mb-6">กรอกข้อมูลเพื่อจัดการระบบหลังบ้าน</p>
-      
-      <form onsubmit="handleLogin(event)" class="space-y-3 text-left text-xs">
-        <div>
-          <label class="block font-semibold mb-1 text-slate-600">ชื่อผู้ใช้งาน (Username)</label>
-          <input type="text" id="input-user" required placeholder="กรอก Username..." class="w-full p-2.5 bg-slate-50 border rounded-xl outline-none focus:border-[#FF9AA2]">
+    <!-- Modal: Q&A Add/Edit -->
+    <div id="qaModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border text-xs">
+            <h3 class="font-bold text-base text-slate-800 mb-3">เพิ่ม/แก้ไขคำถาม-คำตอบ (Q&A)</h3>
+            <form onsubmit="saveQA(event)" class="space-y-3">
+                <input type="hidden" id="edit-qa-idx">
+                <div>
+                    <label class="block font-semibold mb-1">ข้อความคำถามจากลูกค้า (Question) *</label>
+                    <input type="text" id="qa-q" required placeholder="เช่น สั่งแล้วรอนานไหม?" class="w-full p-2.5 bg-slate-50 border rounded-xl outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">ข้อความคำตอบจากแอดมิน (Answer) *</label>
+                    <textarea id="qa-a" rows="4" required placeholder="เช่น ดึงเมลเข้า Google Drive ภายใน 1-3 ชม.ค่ะ..." class="w-full p-2.5 bg-slate-50 border rounded-xl outline-none"></textarea>
+                </div>
+                <div class="pt-2 flex justify-end gap-2 border-t">
+                    <button type="button" onclick="closeQAModal()" class="px-4 py-2 bg-slate-100 rounded-xl font-semibold">ยกเลิก</button>
+                    <button type="submit" class="px-4 py-2 bg-[#FF9EBB] text-white font-bold rounded-xl shadow-sm">บันทึก Q&A</button>
+                </div>
+            </form>
         </div>
-
-        <div>
-          <label class="block font-semibold mb-1 text-slate-600">รหัสผ่าน (Password)</label>
-          <div class="relative">
-            <input type="password" id="input-pass" required placeholder="กรอก Password..." class="w-full p-2.5 bg-slate-50 border rounded-xl outline-none focus:border-[#FF9AA2] pr-10">
-            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-sm">
-              <i id="eye-icon" class="fas fa-eye"></i>
-            </button>
-          </div>
-        </div>
-
-        <p id="auth-error" class="text-rose-500 hidden text-[11px] font-semibold">❌ บัญชีผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</p>
-        <button type="submit" class="w-full py-2.5 bg-[#FF9AA2] hover:bg-[#ff8690] text-white font-bold rounded-xl transition shadow-sm mt-2">เข้าสู่ระบบ</button>
-      </form>
     </div>
 
-    <!-- Admin Console Dashboard -->
-    <div id="admin-console" class="hidden space-y-6">
-      
-      <!-- Sub Navigation -->
-      <div class="bg-white p-3 rounded-2xl border flex flex-wrap items-center justify-between gap-3 shadow-sm text-xs font-semibold">
-        <div class="flex gap-2">
-          <button onclick="switchTab('fonts')" id="tab-btn-fonts" class="px-3.5 py-1.5 rounded-xl tab-active transition">📦 จัดการฟอนต์ (<span id="count-fonts">0</span>)</button>
-          <button onclick="switchTab('orders')" id="tab-btn-orders" class="px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-600 transition">📝 สลิปสั่งซื้อ (<span id="count-orders">0</span>)</button>
-          <button onclick="switchTab('cms')" id="tab-btn-cms" class="px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-600 transition">🗂 ปรับแต่ง Sidebar</button>
-          <button onclick="switchTab('settings')" id="tab-btn-settings" class="px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-600 transition">⚙️ ตั้งค่าลิงก์ร้าน</button>
-        </div>
-        <button onclick="logoutAdmin()" class="text-rose-500 hover:bg-rose-50 px-3 py-1.5 rounded-xl transition"><i class="fas fa-sign-out-alt"></i> ออกจากระบบ</button>
-      </div>
+    <script>
+        const _U = [98, 114, 112, 114, 104];
+        const _P = [112, 108, 101, 110, 103, 50, 51, 53];
 
-      <!-- Tab 1: Fonts -->
-      <div id="view-fonts" class="space-y-4">
-        <div class="flex justify-between items-center">
-          <h3 class="font-bold text-slate-800 text-base">คลังฟอนต์ทั้งหมด (แสดงหน้าหลักอัตโนมัติ)</h3>
-          <button onclick="openFontModal()" class="px-3.5 py-2 bg-[#FF9AA2] text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
-            <i class="fas fa-plus"></i> เพิ่มฟอนต์ใหม่
-          </button>
-        </div>
-        <div class="bg-white rounded-2xl border overflow-x-auto">
-          <table class="w-full text-left text-xs text-slate-600">
-            <thead class="bg-slate-50 border-b text-slate-400">
-              <tr>
-                <th class="p-3">ชื่อฟอนต์</th>
-                <th class="p-3">ประเภทราคา</th>
-                <th class="p-3">ราคา (ส่วนตัว / พาณิชย์ / องค์กร)</th>
-                <th class="p-3">Google Drive ลิงก์</th>
-                <th class="p-3 text-center">จัดการ</th>
-              </tr>
-            </thead>
-            <tbody id="fonts-tbody" class="divide-y"></tbody>
-          </table>
-        </div>
-      </div>
+        function _chk(str, arr) {
+            if (str.length !== arr.length) return false;
+            for (let i = 0; i < arr.length; i++) {
+                if (str.charCodeAt(i) !== arr[i]) return false;
+            }
+            return true;
+        }
 
-      <!-- Tab 2: Orders -->
-      <div id="view-orders" class="hidden space-y-4">
-        <h3 class="font-bold text-slate-800 text-base">รายการแจ้งชำระเงินจากลูกค้า</h3>
-        <div id="orders-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
-      </div>
+        let fonts = JSON.parse(localStorage.getItem('thitipra_fonts')) || [];
+        let orders = JSON.parse(localStorage.getItem('thitipra_orders')) || [];
+        let qaList = JSON.parse(localStorage.getItem('thitipra_qa')) || [];
 
-      <!-- Tab 3: CMS -->
-      <div id="view-cms" class="hidden space-y-4">
-        <div class="flex justify-between items-center">
-          <h3 class="font-bold text-slate-800 text-base">ตั้งค่าเนื้อหา Sidebar</h3>
-          <button onclick="openCmsModal()" class="px-3.5 py-2 bg-[#FF9AA2] text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
-            <i class="fas fa-plus"></i> เพิ่มหัวข้อเมนู
-          </button>
-        </div>
-        <div id="cms-list" class="space-y-3"></div>
-      </div>
+        function togglePasswordVisibility() {
+            const p = document.getElementById('input-pass');
+            const eye = document.getElementById('eye-icon');
+            if (p.type === "password") {
+                p.type = "text";
+                eye.className = "fas fa-eye-slash";
+            } else {
+                p.type = "password";
+                eye.className = "fas fa-eye";
+            }
+        }
 
-      <!-- Tab 4: Settings -->
-      <div id="view-settings" class="hidden space-y-4 max-w-lg">
-        <h3 class="font-bold text-slate-800 text-base">ตั้งค่าช่องทางการติดต่อและสั่งซื้อ</h3>
-        <form onsubmit="saveSettings(event)" class="bg-white p-6 rounded-2xl border space-y-4 text-xs">
-          <div>
-            <label class="block font-semibold mb-1 text-slate-600">ลิงก์ LINE OA ติดต่อร้าน *</label>
-            <input type="url" id="setting-line-url" required class="w-full p-2.5 bg-slate-50 border rounded-xl outline-none focus:border-[#FF9AA2]">
-          </div>
-          <div>
-            <label class="block font-semibold mb-1 text-slate-600">ลิงก์ Line MyShop *</label>
-            <input type="url" id="setting-myshop-url" required class="w-full p-2.5 bg-slate-50 border rounded-xl outline-none focus:border-[#FF9AA2]">
-          </div>
-          <button type="submit" class="px-4 py-2 bg-[#FF9AA2] text-white font-bold rounded-xl shadow-sm">บันทึกการตั้งค่า</button>
-        </form>
-      </div>
+        function handleLogin(e) {
+            if (e) e.preventDefault();
+            const u = document.getElementById('input-user').value.trim();
+            const p = document.getElementById('input-pass').value.trim();
 
-    </div>
-  </main>
+            if (_chk(u, _U) && _chk(p, _P)) {
+                document.getElementById('auth-error').classList.add('hidden');
+                sessionStorage.setItem('thitipra_admin_auth', 'true');
+                renderDashboard();
+            } else {
+                document.getElementById('auth-error').classList.remove('hidden');
+            }
+        }
 
-  <!-- Modal: Font Add/Edit -->
-  <div id="fontModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border max-h-[90vh] overflow-y-auto text-xs">
-      <h3 id="fontModalTitle" class="font-bold text-base text-slate-800 mb-3">เพิ่มฟอนต์ใหม่</h3>
-      <form onsubmit="saveFont(event)" class="space-y-3">
-        <input type="hidden" id="edit-font-idx">
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block font-semibold mb-1">ชื่อภาษาไทย *</label>
-            <input type="text" id="f-th" required placeholder="เช่น สเตฟานี่" class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
-          </div>
-          <div>
-            <label class="block font-semibold mb-1">ชื่อภาษาอังกฤษ *</label>
-            <input type="text" id="f-en" required placeholder="เช่น Stephanie" class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
-          </div>
-        </div>
-        <div class="grid grid-cols-3 gap-2">
-          <div>
-            <label class="block font-semibold mb-1">ส่วนตัว (฿) *</label>
-            <input type="text" id="f-p" value="79.-" required class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
-          </div>
-          <div>
-            <label class="block font-semibold mb-1">พาณิชย์ (฿) *</label>
-            <input type="text" id="f-c" value="169.-" required class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
-          </div>
-          <div>
-            <label class="block font-semibold mb-1">องค์กร (฿)</label>
-            <input type="text" id="f-b" value="700.-" class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
-          </div>
-        </div>
-        <div>
-          <label class="block font-semibold mb-1">ไฟล์ฟอนต์ Path / URL (.ttf/.otf) *</label>
-          <input type="text" id="f-file" required placeholder="fonts/Stephanie.ttf" class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
-        </div>
-        <div>
-          <label class="block font-semibold mb-1">Google Drive ลิงก์ดาวน์โหลด</label>
-          <input type="url" id="f-drive" placeholder="https://drive.google.com/..." class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
-        </div>
-        <div class="pt-2 flex justify-end gap-2">
-          <button type="button" onclick="closeFontModal()" class="px-4 py-2 bg-slate-100 rounded-xl font-semibold">ยกเลิก</button>
-          <button type="submit" class="px-4 py-2 bg-[#FF9AA2] text-white font-bold rounded-xl shadow-sm">บันทึกฟอนต์</button>
-        </div>
-      </form>
-    </div>
-  </div>
+        function logoutAdmin() {
+            sessionStorage.removeItem('thitipra_admin_auth');
+            location.reload();
+        }
 
-  <!-- Modal: CMS Add/Edit -->
-  <div id="cmsModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border text-xs">
-      <h3 class="font-bold text-base text-slate-800 mb-3">ตั้งค่าหัวข้อ Sidebar</h3>
-      <form onsubmit="saveCms(event)" class="space-y-3">
-        <input type="hidden" id="edit-cms-id">
-        <div>
-          <label class="block font-semibold mb-1">หัวข้อหลัก (Title) *</label>
-          <input type="text" id="c-title" required class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
-        </div>
-        <div>
-          <label class="block font-semibold mb-1">หัวข้อย่อย (Subtitle)</label>
-          <input type="text" id="c-subtitle" class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
-        </div>
-        <div>
-          <label class="block font-semibold mb-1">ลักษณะการแสดงผล *</label>
-          <select id="c-layout" class="w-full p-2 bg-slate-50 border rounded-xl outline-none">
-            <option value="card">แบบกรอบการ์ดแยกกล่อง (Card Layout)</option>
-            <option value="text">แบบข้อความยาวต่อเนื่อง (Long Text)</option>
-          </select>
-        </div>
-        <div>
-          <label class="block font-semibold mb-1">เนื้อหาข้างใน *</label>
-          <textarea id="c-content" rows="4" required class="w-full p-2 bg-slate-50 border rounded-xl outline-none"></textarea>
-        </div>
-        <div class="pt-2 flex justify-end gap-2">
-          <button type="button" onclick="closeCmsModal()" class="px-4 py-2 bg-slate-100 rounded-xl font-semibold">ยกเลิก</button>
-          <button type="submit" class="px-4 py-2 bg-[#FF9AA2] text-white font-bold rounded-xl shadow-sm">บันทึก</button>
-        </div>
-      </form>
-    </div>
-  </div>
+        function renderDashboard() {
+            document.getElementById('admin-auth-card').classList.add('hidden');
+            document.getElementById('admin-console').classList.remove('hidden');
+            renderFontsTable();
+            renderOrdersGrid();
+            renderQAList();
+        }
 
-  <script>
-    const _U = [98, 114, 112, 114, 104];
-    const _P = [112, 108, 101, 110, 103, 50, 51, 53];
+        function switchTab(tab) {
+            ['fonts', 'orders', 'qa'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.add('hidden');
+                document.getElementById(`tab-btn-${t}`).className = "px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-600 transition";
+            });
+            document.getElementById(`view-${tab}`).classList.remove('hidden');
+            document.getElementById(`tab-btn-${tab}`).className = "px-3.5 py-1.5 rounded-xl tab-active transition";
+        }
 
-    function _chk(str, arr) {
-      if (str.length !== arr.length) return false;
-      for (let i = 0; i < arr.length; i++) {
-        if (str.charCodeAt(i) !== arr[i]) return false;
-      }
-      return true;
-    }
+        function renderFontsTable() {
+            const tbody = document.getElementById('fonts-tbody');
+            tbody.innerHTML = '';
+            document.getElementById('count-fonts').innerText = fonts.length;
 
-    let fonts = JSON.parse(localStorage.getItem('thitipra_fonts')) || [];
-    let orders = JSON.parse(localStorage.getItem('thitipra_orders')) || [];
-    let cms = JSON.parse(localStorage.getItem('thitipra_cms')) || [];
-    let settings = JSON.parse(localStorage.getItem('thitipra_settings')) || {
-      lineUrl: "https://lin.ee/5HYfnJc",
-      myshopUrl: "https://shop.line.me/@wbk2012r"
-    };
+            fonts.forEach((f, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-3 font-bold">${f.th} <span class="font-normal text-slate-400">(${f.en})</span></td>
+                    <td class="p-3 font-medium">${f.p} / ${f.c} / ${f.b||'700.-'}</td>
+                    <td class="p-3 text-[11px]"><a href="${f.drive_personal||'#'}" target="_blank" class="text-pink-500 hover:underline"><i class="fab fa-google-drive"></i> ส่วนตัว</a></td>
+                    <td class="p-3 text-[11px]"><a href="${f.drive_commercial||'#'}" target="_blank" class="text-blue-500 hover:underline"><i class="fab fa-google-drive"></i> พาณิชย์</a></td>
+                    <td class="p-3 text-center">
+                        <button onclick="editFont(${idx})" class="p-1 text-slate-500 hover:text-[#FF9EBB]"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteFont(${idx})" class="p-1 text-slate-500 hover:text-rose-600"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
 
-    function togglePasswordVisibility() {
-      const p = document.getElementById('input-pass');
-      const eye = document.getElementById('eye-icon');
-      if (p.type === "password") {
-        p.type = "text";
-        eye.className = "fas fa-eye-slash";
-      } else {
-        p.type = "password";
-        eye.className = "fas fa-eye";
-      }
-    }
+        function openFontModal() {
+            document.getElementById('fontModalTitle').innerText = 'เพิ่มฟอนต์ใหม่';
+            document.getElementById('edit-font-idx').value = '';
+            document.getElementById('f-th').value = '';
+            document.getElementById('f-en').value = '';
+            document.getElementById('f-p').value = '79.-';
+            document.getElementById('f-c').value = '169.-';
+            document.getElementById('f-b').value = '700.-';
+            document.getElementById('f-drive-p').value = '';
+            document.getElementById('f-drive-c').value = '';
+            document.getElementById('f-file').value = '';
+            document.getElementById('fontModal').classList.remove('hidden');
+        }
 
-    function handleLogin(e) {
-      if (e) e.preventDefault();
-      
-      const userInput = document.getElementById('input-user');
-      const passInput = document.getElementById('input-pass');
-      const errorEl = document.getElementById('auth-error');
+        function closeFontModal() { document.getElementById('fontModal').classList.add('hidden'); }
 
-      const u = userInput ? userInput.value.trim() : '';
-      const p = passInput ? passInput.value.trim() : '';
+        function saveFont(e) {
+            e.preventDefault();
+            const idx = document.getElementById('edit-font-idx').value;
+            const fontObj = {
+                th: document.getElementById('f-th').value.trim(),
+                en: document.getElementById('f-en').value.trim(),
+                p: document.getElementById('f-p').value.trim(),
+                c: document.getElementById('f-c').value.trim(),
+                b: document.getElementById('f-b').value.trim(),
+                drive_personal: document.getElementById('f-drive-p').value.trim(),
+                drive_commercial: document.getElementById('f-drive-c').value.trim(),
+                file: document.getElementById('f-file').value.trim()
+            };
 
-      if (_chk(u, _U) && _chk(p, _P)) {
-        if (errorEl) errorEl.classList.add('hidden');
-        sessionStorage.setItem('thitipra_admin', 'true');
-        renderDashboard();
-      } else {
-        if (errorEl) errorEl.classList.remove('hidden');
-      }
-    }
+            if (idx !== '') fonts[idx] = fontObj; else fonts.unshift(fontObj);
+            localStorage.setItem('thitipra_fonts', JSON.stringify(fonts));
+            closeFontModal();
+            renderFontsTable();
+        }
 
-    function logoutAdmin() {
-      sessionStorage.removeItem('thitipra_admin');
-      location.reload();
-    }
+        function editFont(idx) {
+            const f = fonts[idx];
+            document.getElementById('fontModalTitle').innerText = 'แก้ไขข้อมูลฟอนต์';
+            document.getElementById('edit-font-idx').value = idx;
+            document.getElementById('f-th').value = f.th;
+            document.getElementById('f-en').value = f.en;
+            document.getElementById('f-p').value = f.p;
+            document.getElementById('f-c').value = f.c;
+            document.getElementById('f-b').value = f.b || '700.-';
+            document.getElementById('f-drive-p').value = f.drive_personal || '';
+            document.getElementById('f-drive-c').value = f.drive_commercial || '';
+            document.getElementById('f-file').value = f.file;
+            document.getElementById('fontModal').classList.remove('hidden');
+        }
 
-    function renderDashboard() {
-      document.getElementById('admin-auth-card').classList.add('hidden');
-      document.getElementById('admin-console').classList.remove('hidden');
-      renderFontsTable();
-      renderOrdersGrid();
-      renderCMSList();
-      renderSettings();
-    }
+        function deleteFont(idx) {
+            if(confirm('ต้องการลบฟอนต์นี้?')) {
+                fonts.splice(idx, 1);
+                localStorage.setItem('thitipra_fonts', JSON.stringify(fonts));
+                renderFontsTable();
+            }
+        }
 
-    function switchTab(tab) {
-      ['fonts', 'orders', 'cms', 'settings'].forEach(t => {
-        document.getElementById(`view-${t}`).classList.add('hidden');
-        document.getElementById(`tab-btn-${t}`).className = "px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-600 transition";
-      });
-      document.getElementById(`view-${tab}`).classList.remove('hidden');
-      document.getElementById(`tab-btn-${tab}`).className = "px-3.5 py-1.5 rounded-xl tab-active transition";
-    }
+        function renderOrdersGrid() {
+            const grid = document.getElementById('orders-grid');
+            grid.innerHTML = '';
+            document.getElementById('count-orders').innerText = orders.length;
 
-    function renderFontsTable() {
-      const tbody = document.getElementById('fonts-tbody');
-      tbody.innerHTML = '';
-      document.getElementById('count-fonts').innerText = fonts.length;
+            orders.forEach((o, i) => {
+                const isApp = (o.status === 'approved');
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-2xl border shadow-sm space-y-2 text-xs";
+                card.innerHTML = `
+                    <div class="flex justify-between font-bold">
+                        <span class="text-[#FF9EBB]">#${o.id}</span>
+                        <span class="px-2 py-0.5 rounded-full ${isApp?'bg-green-100 text-green-700':'bg-amber-100 text-amber-700'}">${isApp?'ดึงเมลแล้ว':'รอดึงเมล 1-3 ชม.'}</span>
+                    </div>
+                    <p class="font-bold text-slate-800">${o.fontName} (${o.license})</p>
+                    <p class="text-slate-600">Gmail ลูกค้า: <b class="text-pink-600">${o.customerEmail}</b></p>
+                    <p class="text-slate-500">ยอดชำระ: ${o.amount} | ${o.date}</p>
+                    <button onclick="approveOrder(${i})" ${isApp?'disabled':''} class="w-full py-1.5 bg-green-500 hover:bg-green-600 disabled:opacity-40 text-white font-bold rounded-xl mt-2 flex items-center justify-center gap-1">
+                        <i class="fas fa-check-circle"></i> ${isApp?'อนุมัติเรียบร้อย':'ดึงเมลเข้า Drive & อนุมัติสิทธิ์'}
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
 
-      fonts.forEach((f, idx) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="p-3 font-bold">${f.th} <span class="font-normal text-slate-400">(${f.en})</span></td>
-          <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] ${f.p===f.c?'bg-green-100 text-green-700':'bg-amber-100 text-amber-700'}">${f.p===f.c?'ราคาเดียว':'แยกสิทธิ์'}</span></td>
-          <td class="p-3">${f.p} / ${f.c} / ${f.b||'700.-'}</td>
-          <td class="p-3 text-[11px]"><a href="${f.drive_personal||f.drive||'#'}" target="_blank" class="text-blue-500 hover:underline">Google Drive</a></td>
-          <td class="p-3 text-center">
-            <button onclick="editFont(${idx})" class="p-1 text-slate-500 hover:text-[#FF9AA2]"><i class="fas fa-edit"></i></button>
-            <button onclick="deleteFont(${idx})" class="p-1 text-slate-500 hover:text-rose-600"><i class="fas fa-trash"></i></button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
+        function approveOrder(idx) {
+            orders[idx].status = 'approved';
+            localStorage.setItem('thitipra_orders', JSON.stringify(orders));
+            renderOrdersGrid();
+            alert(`อนุมัติคำสั่งซื้อเรียบร้อย! ปลดล็อกสิทธิ์ Drive ให้ ${orders[idx].customerEmail} สำเร็จ`);
+        }
 
-    function openFontModal() {
-      document.getElementById('fontModalTitle').innerText = 'เพิ่มฟอนต์ใหม่';
-      document.getElementById('edit-font-idx').value = '';
-      document.getElementById('f-th').value = '';
-      document.getElementById('f-en').value = '';
-      document.getElementById('f-p').value = '79.-';
-      document.getElementById('f-c').value = '169.-';
-      document.getElementById('f-b').value = '700.-';
-      document.getElementById('f-file').value = '';
-      document.getElementById('f-drive').value = '';
-      document.getElementById('fontModal').classList.remove('hidden');
-    }
+        // Q&A
+        function renderQAList() {
+            const list = document.getElementById('qa-list');
+            list.innerHTML = '';
+            qaList.forEach((item, idx) => {
+                const card = document.createElement('div');
+                card.className = "p-3.5 bg-white border rounded-2xl flex justify-between items-start text-xs gap-3";
+                card.innerHTML = `
+                    <div class="space-y-1 flex-1">
+                        <div class="font-bold text-pink-600">Q: ${item.q}</div>
+                        <div class="text-slate-600">A: ${item.a}</div>
+                    </div>
+                    <div class="flex gap-1 shrink-0">
+                        <button onclick="editQA(${idx})" class="p-1 text-slate-500 hover:text-[#FF9EBB]"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteQA(${idx})" class="p-1 text-slate-500 hover:text-rose-600"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
 
-    function closeFontModal() { document.getElementById('fontModal').classList.add('hidden'); }
+        function openQAModal() {
+            document.getElementById('edit-qa-idx').value = '';
+            document.getElementById('qa-q').value = '';
+            document.getElementById('qa-a').value = '';
+            document.getElementById('qaModal').classList.remove('hidden');
+        }
 
-    function saveFont(e) {
-      e.preventDefault();
-      const idx = document.getElementById('edit-font-idx').value;
-      const fontObj = {
-        th: document.getElementById('f-th').value.trim(),
-        en: document.getElementById('f-en').value.trim(),
-        p: document.getElementById('f-p').value.trim(),
-        c: document.getElementById('f-c').value.trim(),
-        b: document.getElementById('f-b').value.trim(),
-        file: document.getElementById('f-file').value.trim(),
-        drive: document.getElementById('f-drive').value.trim()
-      };
+        function closeQAModal() { document.getElementById('qaModal').classList.add('hidden'); }
 
-      if (idx !== '') fonts[idx] = fontObj; else fonts.unshift(fontObj);
-      localStorage.setItem('thitipra_fonts', JSON.stringify(fonts));
-      closeFontModal();
-      renderFontsTable();
-    }
+        function saveQA(e) {
+            e.preventDefault();
+            const idx = document.getElementById('edit-qa-idx').value;
+            const obj = {
+                q: document.getElementById('qa-q').value.trim(),
+                a: document.getElementById('qa-a').value.trim()
+            };
 
-    function editFont(idx) {
-      const f = fonts[idx];
-      document.getElementById('fontModalTitle').innerText = 'แก้ไขข้อมูลฟอนต์';
-      document.getElementById('edit-font-idx').value = idx;
-      document.getElementById('f-th').value = f.th;
-      document.getElementById('f-en').value = f.en;
-      document.getElementById('f-p').value = f.p;
-      document.getElementById('f-c').value = f.c;
-      document.getElementById('f-b').value = f.b || '700.-';
-      document.getElementById('f-file').value = f.file;
-      document.getElementById('f-drive').value = f.drive || f.drive_personal || '';
-      document.getElementById('fontModal').classList.remove('hidden');
-    }
+            if(idx !== '') qaList[idx] = obj; else qaList.push(obj);
+            localStorage.setItem('thitipra_qa', JSON.stringify(qaList));
+            closeQAModal();
+            renderQAList();
+        }
 
-    function deleteFont(idx) {
-      if(confirm('ต้องการลบฟอนต์นี้?')) {
-        fonts.splice(idx, 1);
-        localStorage.setItem('thitipra_fonts', JSON.stringify(fonts));
-        renderFontsTable();
-      }
-    }
+        function editQA(idx) {
+            const item = qaList[idx];
+            document.getElementById('edit-qa-idx').value = idx;
+            document.getElementById('qa-q').value = item.q;
+            document.getElementById('qa-a').value = item.a;
+            document.getElementById('qaModal').classList.remove('hidden');
+        }
 
-    function renderOrdersGrid() {
-      const grid = document.getElementById('orders-grid');
-      grid.innerHTML = '';
-      document.getElementById('count-orders').innerText = orders.length;
+        function deleteQA(idx) {
+            if(confirm('ต้องการลบข้อความ Q&A นี้?')) {
+                qaList.splice(idx, 1);
+                localStorage.setItem('thitipra_qa', JSON.stringify(qaList));
+                renderQAList();
+            }
+        }
 
-      orders.forEach((o, i) => {
-        const isApp = (o.status === 'approved');
-        const card = document.createElement('div');
-        card.className = "bg-white p-4 rounded-2xl border shadow-sm space-y-2 text-xs";
-        card.innerHTML = `
-          <div class="flex justify-between font-bold">
-            <span class="text-[#FF9AA2]">#${o.id}</span>
-            <span class="px-2 py-0.5 rounded-full ${isApp?'bg-green-100 text-green-700':'bg-amber-100 text-amber-700'}">${isApp?'อนุมัติแล้ว':'รอตรวจสอบ'}</span>
-          </div>
-          <p class="font-bold text-slate-800">${o.fontName || o.font} (${o.license})</p>
-          <p class="text-slate-500">ลูกค้า: ${o.customerEmail || o.name}</p>
-          <p class="text-slate-500">ยอด: ${o.amount || o.price} | วันที่: ${o.date}</p>
-          <button onclick="approveOrder(${i})" ${isApp?'disabled':''} class="w-full py-1.5 bg-green-500 hover:bg-green-600 disabled:opacity-40 text-white font-bold rounded-xl mt-2">
-            ${isApp?'อนุมัติเรียบร้อย':'อนุมัติยอดเงิน'}
-          </button>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    function approveOrder(idx) {
-      orders[idx].status = 'approved';
-      localStorage.setItem('thitipra_orders', JSON.stringify(orders));
-      renderOrdersGrid();
-    }
-
-    function renderCMSList() {
-      const list = document.getElementById('cms-list');
-      list.innerHTML = '';
-      cms.forEach((c, idx) => {
-        const item = document.createElement('div');
-        item.className = "p-4 bg-white border rounded-2xl flex justify-between items-center text-xs";
-        item.innerHTML = `
-          <div>
-            <h4 class="font-bold text-slate-800">${c.title} <span class="text-rose-400 font-normal">(${c.layout==='card'?'การ์ดแยกกล่อง':'ข้อความยาว'})</span></h4>
-            <p class="text-slate-400">${c.subtitle||''}</p>
-          </div>
-          <div class="flex gap-1">
-            <button onclick="editCms(${idx})" class="p-1 text-slate-500 hover:text-[#FF9AA2]"><i class="fas fa-edit"></i></button>
-            <button onclick="deleteCms(${idx})" class="p-1 text-slate-500 hover:text-rose-600"><i class="fas fa-trash"></i></button>
-          </div>
-        `;
-        list.appendChild(item);
-      });
-    }
-
-    function openCmsModal() {
-      document.getElementById('edit-cms-id').value = '';
-      document.getElementById('c-title').value = '';
-      document.getElementById('c-subtitle').value = '';
-      document.getElementById('c-layout').value = 'card';
-      document.getElementById('c-content').value = '';
-      document.getElementById('cmsModal').classList.remove('hidden');
-    }
-
-    function closeCmsModal() { document.getElementById('cmsModal').classList.add('hidden'); }
-
-    function saveCms(e) {
-      e.preventDefault();
-      const idx = document.getElementById('edit-cms-id').value;
-      const cmsObj = {
-        id: 'c_' + Date.now(),
-        title: document.getElementById('c-title').value.trim(),
-        subtitle: document.getElementById('c-subtitle').value.trim(),
-        layout: document.getElementById('c-layout').value,
-        content: document.getElementById('c-content').value.trim()
-      };
-
-      if(idx !== '') cms[idx] = cmsObj; else cms.push(cmsObj);
-      localStorage.setItem('thitipra_cms', JSON.stringify(cms));
-      closeCmsModal();
-      renderCMSList();
-    }
-
-    function editCms(idx) {
-      const c = cms[idx];
-      document.getElementById('edit-cms-id').value = idx;
-      document.getElementById('c-title').value = c.title;
-      document.getElementById('c-subtitle').value = c.subtitle;
-      document.getElementById('c-layout').value = c.layout;
-      document.getElementById('c-content').value = c.content;
-      document.getElementById('cmsModal').classList.remove('hidden');
-    }
-
-    function deleteCms(idx) {
-      if(confirm('ต้องการลบหัวข้อนี้?')) {
-        cms.splice(idx, 1);
-        localStorage.setItem('thitipra_cms', JSON.stringify(cms));
-        renderCMSList();
-      }
-    }
-
-    function renderSettings() {
-      document.getElementById('setting-line-url').value = settings.lineUrl;
-      document.getElementById('setting-myshop-url').value = settings.myshopUrl;
-    }
-
-    function saveSettings(e) {
-      e.preventDefault();
-      settings.lineUrl = document.getElementById('setting-line-url').value.trim();
-      settings.myshopUrl = document.getElementById('setting-myshop-url').value.trim();
-      localStorage.setItem('thitipra_settings', JSON.stringify(settings));
-      alert('บันทึกการตั้งค่าเรียบร้อยแล้ว!');
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      if (sessionStorage.getItem('thitipra_admin') === 'true') {
-        renderDashboard();
-      }
-    });
-  </script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('thitipra_admin_auth') === 'true') {
+                renderDashboard();
+            }
+        });
+    </script>
 </body>
 </html>
