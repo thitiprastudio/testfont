@@ -60,8 +60,10 @@
 </head>
 <body class="text-brand-text font-sans antialiased">
 
+    <!-- Overlay สำหรับ Sidebar Menu -->
     <div id="menu-overlay" onclick="toggleMenu()" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300"></div>
 
+    <!-- Sidebar Menu Drawer -->
     <div id="side-menu" class="fixed inset-y-0 left-0 w-72 bg-white/95 backdrop-blur-md shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 ease-in-out border-r border-pink-200">
         <div class="p-5 h-full flex flex-col">
             <div class="flex justify-between items-center mb-4 border-b border-pink-100 pb-3">
@@ -77,10 +79,26 @@
                     <span class="text-brand-dark"><i class="fas fa-columns"></i></span> โหมดเปรียบเทียบ (VS Mode)
                 </button>
                 <button onclick="switchTab('page-customer', 1); toggleMenu();" class="w-full text-left flex items-center gap-3 p-2.5 bg-pink-50 hover:bg-pink-100 rounded-xl transition text-pink-700 font-semibold border border-pink-100">
-                    <span class="text-brand-dark"><i class="fas fa-folder-open"></i></span> ประวัติสั่งซื้อ & ไดรฟ์ฟอนต์
+                    <span class="text-brand-dark"><i class="fas fa-folder-open"></i></span> ประวัติสั่งซื้อ & ใบเสร็จ / ไดรฟ์
                 </button>
 
-                <div id="sidebarDynamicLinks" class="space-y-1.5 pt-2 border-t border-pink-100"></div>
+                <div class="border-t border-b border-pink-100 py-2 my-2 space-y-1">
+                    <button onclick="openDynamicNotice('external'); toggleMenu();" class="w-full text-left flex items-center gap-2.5 p-2 bg-gradient-to-r from-amber-50 to-pink-50 hover:from-amber-100 rounded-xl text-amber-900 border border-amber-200">
+                        <span class="text-amber-500"><i class="fas fa-store"></i></span>
+                        <div>
+                            <div class="font-bold">สั่งซื้อฟอนต์เครืออื่นๆ</div>
+                            <div class="text-[9px] text-pink-500">ตัวแทนจำหน่ายอย่างถูกต้อง ✨</div>
+                        </div>
+                    </button>
+                    <button onclick="openDynamicNotice('usage'); toggleMenu();" class="w-full text-left flex items-center gap-2.5 p-2 hover:bg-pink-50 rounded-xl">
+                        <span class="text-brand-dark"><i class="fas fa-scale-balanced"></i></span> เงื่อนไข & ประเภทการใช้งาน
+                    </button>
+                    <button onclick="openDynamicNotice('rules'); toggleMenu();" class="w-full text-left flex items-center gap-2.5 p-2 hover:bg-pink-50 rounded-xl">
+                        <span class="text-brand-dark"><i class="fas fa-shield-halved"></i></span> กฎและข้อห้ามลิขสิทธิ์
+                    </button>
+                </div>
+
+                <div id="sidebarDynamicLinks" class="space-y-1.5 pt-1"></div>
 
                 <a href="admin.html" class="block w-full text-left p-2.5 bg-brand-light hover:bg-pink-200 rounded-xl transition text-brand-dark font-bold border border-pink-200 mt-2">
                     <i class="fas fa-user-shield mr-1.5"></i> ระบบหลังบ้าน (แอดมิน)
@@ -93,8 +111,10 @@
         </div>
     </div>
 
+    <!-- App Container -->
     <div class="app-container flex flex-col">
         
+        <!-- ==================== PAGE 1: หน้าหลัก (HOME) ==================== -->
         <div id="page-home" class="page active">
             <div class="gradient-bg pt-8 px-5 pb-20 relative rounded-b-[40px]">
                 <div class="stars-bg absolute inset-0 opacity-40"></div>
@@ -140,10 +160,14 @@
                     </div>
                 </div>
 
-                <div class="space-y-3" id="fontList"></div>
+                <!-- Font Cards List (ดึงจาก Supabase) -->
+                <div class="space-y-3" id="fontList">
+                    <div class="text-center py-8 text-xs text-slate-400">กำลังโหลดคลังฟอนต์...</div>
+                </div>
             </div>
         </div>
 
+        <!-- ==================== PAGE 2: เข้าสู่ระบบลูกค้า ==================== -->
         <div id="page-customer" class="page">
             <div class="gradient-bg pt-8 px-5 pb-16 relative rounded-b-[40px] text-center">
                 <div class="text-brand-text font-outfit text-xl font-bold">คลังฟอนต์ของฉัน</div>
@@ -165,16 +189,17 @@
             </div>
         </div>
 
+        <!-- ==================== PAGE 3: คำถาม Q&A (ฟิลแชท) ==================== -->
         <div id="page-qa" class="page">
             <div class="gradient-bg pt-8 px-5 pb-16 relative rounded-b-[40px] text-center">
                 <div class="text-brand-text font-outfit text-xl font-bold">ถาม-ตอบ Q&A</div>
                 <p class="text-xs text-brand-subtext mt-1">รวมข้อสงสัยที่พบบ่อย สไตล์ห้องแชทสนทนา</p>
             </div>
 
-            <div class="px-4 -mt-8 relative z-10 space-y-3" id="qaChatContainer">
-                </div>
+            <div class="px-4 -mt-8 relative z-10 space-y-3" id="qaChatContainer"></div>
         </div>
 
+        <!-- ==================== PAGE 4: ติดต่อ (ไลน์@) ==================== -->
         <div id="page-contact" class="page">
             <div class="gradient-bg pt-8 px-5 pb-16 relative rounded-b-[40px] text-center">
                 <div class="text-brand-text font-outfit text-xl font-bold">ติดต่อสอบถาม</div>
@@ -191,6 +216,7 @@
             </div>
         </div>
 
+        <!-- ==================== BOTTOM NAVIGATION ==================== -->
         <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-brand-light px-4 py-2.5 z-40 shadow-nav max-w-[440px] mx-auto rounded-t-3xl">
             <div class="flex justify-around items-center text-[10px]">
                 <div class="flex flex-col items-center gap-0.5 cursor-pointer text-brand-main" onclick="switchTab('page-home', 0)" id="nav-item-0">
@@ -214,6 +240,7 @@
 
     </div>
 
+    <!-- Modals: Tester, VS Mode, Order, Notice -->
     <div id="fontModal" class="modal">
         <div class="modal-content">
             <button onclick="closeModal('fontModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -254,6 +281,7 @@
         </div>
     </div>
 
+    <!-- VS Modal -->
     <div id="vsModal" class="modal">
         <div class="modal-content" style="max-width: 550px;">
             <button onclick="closeModal('vsModal')" class="absolute top-4 right-4 text-gray-400 hover:text-purple-600 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -285,6 +313,7 @@
         </div>
     </div>
 
+    <!-- Order Modal -->
     <div id="orderLicenseModal" class="modal">
         <div class="modal-content">
             <button onclick="closeModal('orderLicenseModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -381,6 +410,7 @@
         </div>
     </div>
 
+    <!-- Notice Modal -->
     <div id="dynamicPageModal" class="modal">
         <div class="modal-content">
             <button onclick="closeModal('dynamicPageModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -393,49 +423,12 @@
     </div>
 
     <script>
-        const defaultFonts = [
-            { th: "สเตฟานี่", en: "Stephanie", p: "79.-", c: "169.-", b: "700.-", file: "fonts/Stephanie.ttf" },
-            { th: "แอนโทนี่", en: "Anthony", p: "79.-", c: "169.-", b: "700.-", file: "fonts/Anthony.ttf" },
-            { th: "ลิลลี่", en: "Lily", p: "79.-", c: "169.-", b: "700.-", file: "fonts/BRLily.ttf" },
-            { th: "เฮอร์ไมโอนี่", en: "Hermione", p: "79.-", c: "169.-", b: "700.-", file: "fonts/Hermione.ttf" },
-            { th: "ทริกซี่", en: "Trixie", p: "79.-", c: "169.-", b: "700.-", file: "fonts/Trixie.ttf" },
-            { th: "เรนนี่", en: "Rainy", p: "79.-", c: "169.-", b: "700.-", file: "fonts/rainy.ttf" },
-            { th: "บังทัน", en: "Bangtan", p: "79.-", c: "169.-", b: "700.-", file: "fonts/Bangtan.ttf" },
-            { th: "เซลีน", en: "Selene", p: "89.-", c: "89.-", b: "700.-", file: "fonts/BRSelene.ttf" },
-            { th: "เฟลิกซ์", en: "Felix", p: "79.-", c: "169.-", b: "700.-", file: "fonts/Felix.ttf" },
-            { th: "ซิดนีย์", en: "Sydney", p: "79.-", c: "169.-", b: "700.-", file: "fonts/Sydney.ttf" },
-            { th: "อโมรี่", en: "Amory", p: "79.-", c: "169.-", b: "700.-", file: "fonts/Amory.ttf" },
-            { th: "ไคลี่", en: "Kylie", p: "79.-", c: "169.-", b: "700.-", file: "fonts/Kylie.ttf" },
-            { th: "เดมี่", en: "Demi", p: "79.-", c: "169.-", b: "700.-", file: "fonts/Demi.ttf" },
-            { th: "เคธี่", en: "Katie", p: "79.-", c: "169.-", b: "700.-", file: "fonts/Katie.ttf" },
-            { th: "เดซี่", en: "Daisy", p: "79.-", c: "169.-", b: "700.-", file: "fonts/Daisy.ttf" },
-            { th: "ลูก้า", en: "Luca", p: "79.-", c: "169.-", b: "700.-", file: "fonts/Luca.ttf" },
-            { th: "ซินดี้", en: "Sindy", p: "89.-", c: "89.-", b: "700.-", file: "fonts/BRSindy.ttf" },
-            { th: "ไรเดอร์", en: "Ryder", p: "89.-", c: "89.-", b: "700.-", file: "fonts/BRRyder.ttf" },
-            { th: "เคซี่", en: "Casey", p: "79.-", c: "79.-", b: "700.-", file: "fonts/BRCasey.ttf" },
-            { th: "ฮันนี่", en: "Honey", p: "79.-", c: "169.-", b: "700.-", file: "fonts/honey.ttf" },
-            { th: "เจสซิก้า", en: "Jessica", p: "79.-", c: "169.-", b: "700.-", file: "fonts/Jessica.ttf" },
-            { th: "ทีกัฟฟี่", en: "Teagaulfy", p: "79.-", c: "169.-", b: "700.-", file: "fonts/Teagaulfy.ttf" },
-            { th: "ซันจิ", en: "Sanji", p: "79.-", c: "169.-", b: "700.-", file: "fonts/BRSanji.ttf" },
-            { th: "เจลลี่แบร์", en: "Jellybear", p: "79.-", c: "169.-", b: "700.-", file: "fonts/BRJellybear.ttf" },
-            { th: "ยูมะ", en: "Yuma", p: "89.-", c: "89.-", b: "700.-", file: "fonts/BRYuma.ttf" },
-            { th: "ลีโอน่า", en: "Liona", p: "79.-", c: "79.-", b: "700.-", file: "fonts/BRLiona.ttf" },
-            { th: "ฟูจิน", en: "Fujin", p: "79.-", c: "79.-", b: "700.-", file: "fonts/BRFujin.ttf" },
-            { th: "คูก้า", en: "Kuga", p: "79.-", c: "169.-", b: "700.-", file: "fonts/BRKuga.ttf" },
-            { th: "ไอรีน", en: "Irene", p: "79.-", c: "79.-", b: "700.-", file: "fonts/BRIrene.ttf" },
-            { th: "โนร่า", en: "Nora", p: "79.-", c: "169.-", b: "700.-", file: "fonts/BRNora-Regular.ttf" },
-            { th: "ชิคาโก", en: "Chicago", p: "79.-", c: "169.-", b: "700.-", file: "fonts/BRChicago.ttf" },
-            { th: "เบอร์ลิน", en: "Berlin", p: "89.-", c: "89.-", b: "700.-", file: "fonts/BRBerlin.ttf" },
-            { th: "ลอนดอน", en: "London", p: "79.-", c: "169.-", b: "700.-", file: "fonts/PRHLondon.ttf" },
-            { th: "เอเธนส์", en: "Athens", p: "99.-", c: "99.-", b: "700.-", file: "fonts/PRHAthens.ttf" },
-            { th: "มอร์แกน", en: "Morgan", p: "89.-", c: "89.-", b: "700.-", file: "fonts/BRMorgan-Regular.ttf" },
-            { th: "สเปน", en: "Spain", p: "79.-", c: "79.-", b: "700.-", file: "fonts/BRSpain.ttf" },
-            { th: "ฟีเรนเซ", en: "Firenze", p: "79.-", c: "169.-", b: "700.-", file: "fonts/PRHFirenze.ttf" },
-            { th: "สลีพ", en: "Sleep", p: "79.-", c: "79.-", b: "700.-", file: "fonts/BRSleep-Regular.ttf" },
-            { th: "โรม", en: "Roma", p: "79.-", c: "79.-", b: "700.-", file: "fonts/BRRoma.ttf" },
-            { th: "พริมโรส", en: "Primrose", p: "79.-", c: "169.-", b: "700.-", file: "fonts/BRPrimrose.ttf" },
-            { th: "ชินจัง", en: "Chinchan", p: "79.-", c: "169.-", b: "700.-", file: "fonts/BRShinchan-Regular.ttf" }
-        ];
+        const SUPABASE_URL = 'https://czyjemcsufzrvkcfzfwv.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_z10rntPACdi5LPL7lZe4yg_Ka2eCXPY';
+        let supabaseClient = null;
+        if (typeof supabase !== 'undefined') {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
 
         const defaultQA = [
             { q: "สั่งซื้อแล้วใช้เวลานานไหมกว่าจะได้ฟอนต์?", a: "แอดมินจะตรวจสอบสลิปและดึงอีเมลเข้า Google Drive ให้ภายใน 1-3 ชั่วโมงค่ะ ✨" },
@@ -449,7 +442,7 @@
             { id: 'c3', title: 'กฎและข้อห้ามลิขสิทธิ์', subtitle: 'ข้อห้ามเคร่งครัด', layout: 'text', content: '1. ห้ามส่งไฟล์ฟอนต์ต่อ ต้อง Create outline เป็นชิ้นงานสำเร็จเท่านั้น\n2. ห้ามแยกตัวอักษรทำสติ๊กเกอร์ไลน์เดี่ยวๆ ขาย\n3. ห้ามใช้ AI ดัดแปลงหรือเทรนโมเดลฟอนต์เลียนแบบ ฝ่าฝืนปรับ 10,000.- / ไฟล์' }
         ];
 
-        let fontsList = JSON.parse(localStorage.getItem('thitipra_fonts')) || defaultFonts;
+        let fontsList = []; // โหลดจาก Supabase 100%
         let qaList = JSON.parse(localStorage.getItem('thitipra_qa')) || defaultQA;
         let cmsList = JSON.parse(localStorage.getItem('thitipra_cms')) || defaultCMS;
         let ordersList = JSON.parse(localStorage.getItem('thitipra_orders')) || [];
@@ -462,17 +455,35 @@
         let priceFilter = 'all';
 
         async function init() {
-            if(!localStorage.getItem('thitipra_fonts')) localStorage.setItem('thitipra_fonts', JSON.stringify(defaultFonts));
             if(!localStorage.getItem('thitipra_qa')) localStorage.setItem('thitipra_qa', JSON.stringify(defaultQA));
             if(!localStorage.getItem('thitipra_cms')) localStorage.setItem('thitipra_cms', JSON.stringify(defaultCMS));
             
             document.getElementById('mainContactLineLink').href = shopSettings.lineUrl;
 
-            loadDynamicFonts();
-            renderFonts();
+            await fetchFontsFromSupabase();
             renderQAChat();
             renderSidebarCMS();
             populateSelects();
+        }
+
+        async function fetchFontsFromSupabase() {
+            const list = document.getElementById('fontList');
+            if (supabaseClient) {
+                try {
+                    const { data, error } = await supabaseClient.from('fonts').select('*').order('created_at', { ascending: false });
+                    if (!error && data) {
+                        fontsList = data;
+                        localStorage.setItem('thitipra_fonts', JSON.stringify(fontsList));
+                    }
+                } catch(e) {
+                    fontsList = JSON.parse(localStorage.getItem('thitipra_fonts')) || [];
+                }
+            } else {
+                fontsList = JSON.parse(localStorage.getItem('thitipra_fonts')) || [];
+            }
+
+            loadDynamicFonts();
+            renderFonts();
         }
 
         async function loadDynamicFonts() {
@@ -492,8 +503,13 @@
             const term = document.getElementById('fontSearch').value.toLowerCase();
             list.innerHTML = '';
 
+            if (fontsList.length === 0) {
+                list.innerHTML = `<div class="text-center py-8 text-xs text-slate-400">ยังไม่มีฟอนต์ในระบบ (สามารถเพิ่มผ่านหน้าแอดมิน)</div>`;
+                return;
+            }
+
             const filtered = fontsList.filter(f => {
-                const match = f.th.toLowerCase().includes(term) || f.en.toLowerCase().includes(term);
+                const match = f.th?.toLowerCase().includes(term) || f.en?.toLowerCase().includes(term);
                 const isSingle = (f.p === f.c);
                 if (priceFilter === 'single') return match && isSingle;
                 if (priceFilter === 'split') return match && !isSingle;
@@ -538,7 +554,6 @@
                         </div>
                         <div class="w-7 h-7 bg-pink-200 rounded-full flex items-center justify-center text-pink-700 text-xs shrink-0"><i class="fas fa-user"></i></div>
                     </div>
-
                     <div class="flex items-start gap-2">
                         <div class="w-7 h-7 bg-brand-main rounded-full flex items-center justify-center text-white text-xs shrink-0"><i class="fas fa-heart"></i></div>
                         <div class="bg-white border border-pink-100 text-gray-700 p-3 rounded-2xl rounded-tl-none text-xs shadow-xs max-w-[82%] space-y-1">
@@ -626,7 +641,7 @@
             else totalEl.innerText = `฿700`;
         }
 
-        function handleSendOrderWithSlip(e) {
+        async function handleSendOrderWithSlip(e) {
             e.preventDefault();
             if (!currentFont) return;
             const email = document.getElementById('orderCustomerEmail').value.trim();
@@ -648,22 +663,41 @@
             ordersList.unshift(newOrder);
             localStorage.setItem('thitipra_orders', JSON.stringify(ordersList));
 
+            // Sync ขึ้น Supabase ตาราง orders ถ้ามี
+            if (supabaseClient) {
+                try {
+                    await supabaseClient.from('orders').insert([newOrder]);
+                } catch(e) {}
+            }
+
             closeModal('orderLicenseModal');
 
-            // เด้งส่งข้อมูลเข้าเครื่องแอดมินอัตโนมัติผ่าน LINE
+            // เด้งเข้า LINE แอดมินอัตโนมัติ
             const msg = `🛒✨ [แจ้งโอนเงินสั่งซื้อฟอนต์ ${orderId}]%0A- ฟอนต์: ${encodeURIComponent(newOrder.fontName)}%0A- สิทธิ์: ${license}%0A- ยอดเงิน: ${price}%0A- อีเมลรับ Google Drive: ${encodeURIComponent(email)}%0A⏰ (แนบสลิปเรียบร้อยแล้ว รอดึงเมลเข้าไดรฟ์ภายใน 1-3 ชม.)`;
             window.open(`${shopSettings.lineUrl}/?${msg}`, '_blank');
             alert(`บันทึกคำสั่งซื้อ ${orderId} เรียบร้อยแล้ว! แอดมินได้รับข้อมูลแล้วและจะดึงเมลเข้า Drive ให้ภายใน 1-3 ชั่วโมงค่ะ`);
         }
 
-        function handleCustomerVaultAccess(e) {
+        async function handleCustomerVaultAccess(e) {
             e.preventDefault();
             const email = document.getElementById('vaultCheckEmail').value.trim().toLowerCase();
-            const results = ordersList.filter(o => o.customerEmail.toLowerCase() === email);
             const container = document.getElementById('vaultResultList');
             container.classList.remove('hidden');
-            container.innerHTML = '';
+            container.innerHTML = 'กำลังค้นหาประวัติ...';
 
+            let results = [];
+            if (supabaseClient) {
+                try {
+                    const { data } = await supabaseClient.from('orders').select('*').ilike('customerEmail', email);
+                    if (data && data.length > 0) results = data;
+                } catch(e) {}
+            }
+
+            if (results.length === 0) {
+                results = ordersList.filter(o => o.customerEmail?.toLowerCase() === email);
+            }
+
+            container.innerHTML = '';
             if (results.length === 0) {
                 container.innerHTML = `<div class="text-center text-gray-400 py-3 text-xs">ไม่พบประวัติสั่งซื้อของอีเมลนี้</div>`;
                 return;
@@ -738,13 +772,39 @@
             }
         }
 
+        function openDynamicNotice(type) {
+            const title = type === 'usage' ? 'เงื่อนไข & ประเภทการใช้งาน' : type === 'rules' ? 'กฎและข้อห้ามลิขสิทธิ์' : 'สั่งซื้อฟอนต์เครืออื่นๆ';
+            const icon = type === 'usage' ? 'fas fa-scale-balanced' : type === 'rules' ? 'fas fa-shield-halved' : 'fas fa-store';
+            let content = '';
+            
+            if (type === 'usage') {
+                content = `👤 Personal Use: สำหรับใช้ส่วนตัว จดสรุป ปริ้นอ่านเอง
+💼 Commercial Use: สำหรับแม่ค้าออนไลน์ โฆษณา รีวิว ยิงแอด ป้ายสินค้า
+🏢 Business Use: นิติบุคคล/บริษัท/ฟรีแลนซ์ ไม่เกิน 5 เครื่อง`;
+            } else if (type === 'rules') {
+                content = `1. ห้ามแจกจ่ายหรือขายต่อไฟล์ฟอนต์เด็ดขาด
+2. ห้ามดราฟหรือเทรน AI จากตัวอักษรของฟอนต์
+3. หากตรวจพบการละเมิดปรับตามกฎร้าน 10,000 บาท/ไฟล์ หรือดำเนินคดีตามกฎหมาย`;
+            } else {
+                content = `ตัวแทนจำหน่ายอย่างถูกต้อง ✨
+- รับสิทธิ์แท้ 100% ปลอดภัย
+- อัปเดตไฟล์ฟรีตลอดชีพ
+- ออกใบเสร็จรับเงินได้`;
+            }
+
+            document.getElementById('dynamicModalTitle').innerText = title;
+            document.getElementById('dynamicModalIcon').className = `${icon} text-brand-dark`;
+            document.getElementById('dynamicModalContent').innerHTML = `<div class="p-3 bg-[#FFF3B0] text-[#8B7355] rounded-xl whitespace-pre-line leading-relaxed">${content}</div>`;
+            document.getElementById('dynamicPageModal').style.display = 'flex';
+        }
+
         function renderSidebarCMS() {
             const container = document.getElementById('sidebarDynamicLinks');
             container.innerHTML = '';
             cmsList.forEach(c => {
                 const btn = document.createElement('button');
-                btn.className = "w-full text-left p-2.5 hover:bg-pink-50 rounded-xl transition flex items-center gap-2.5";
-                btn.innerHTML = `<span class="text-brand-dark"><i class="fas fa-bookmark"></i></span> <div><div class="font-bold text-xs">${c.title}</div><div class="text-[9px] text-pink-500">${c.subtitle||''}</div></div>`;
+                btn.className = "w-full text-left p-2 hover:bg-pink-50 rounded-xl transition flex items-center gap-2";
+                btn.innerHTML = `<span class="text-brand-dark"><i class="fas fa-sparkles text-[10px]"></i></span> <div><div class="font-bold text-xs">${c.title}</div><div class="text-[9px] text-pink-500">${c.subtitle||''}</div></div>`;
                 btn.onclick = () => { toggleMenu(); openCMSModal(c); };
                 container.appendChild(btn);
             });
@@ -752,7 +812,7 @@
 
         function openCMSModal(c) {
             document.getElementById('dynamicModalTitle').innerText = c.title;
-            document.getElementById('dynamicModalIcon').className = 'fas fa-sparkles';
+            document.getElementById('dynamicModalIcon').className = 'fas fa-sparkles text-brand-dark';
             const body = document.getElementById('dynamicModalContent');
             if (c.layout === 'card') {
                 const lines = c.content.split('\n').filter(l => l.trim().length > 0);
