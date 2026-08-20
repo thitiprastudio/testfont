@@ -3,750 +3,803 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pinkjulieland - Mobile Shop</title>
+    <title>ThitipraStudio - Font Preview & Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Prompt', 'sans-serif'],
-                        outfit: ['Outfit', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            dark: '#D9779B',     
-                            main: '#FF9EBB',     
-                            light: '#FFF0F5',    
-                            text: '#4A332A',     
-                            subtext: '#8A6F65'   
-                        }
-                    },
-                    boxShadow: {
-                        'app': '0 -10px 40px -15px rgba(255, 158, 187, 0.15), 0 10px 40px -15px rgba(255, 158, 187, 0.15)',
-                        'nav': '0 -5px 20px -5px rgba(255, 158, 187, 0.2)'
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&family=Slackey&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --color-pink-bg: #ffe4ef;
+            --color-pink-dot: #ffffff;
+            --color-pink-dark: #ff85b3;
+            --color-pink-light: #ffb8d1;
+            --color-brown-dark: #5c3a21;
+            --color-brown-light: #7b5338;
+            --line-green: #06C755;
+            --gold-cream: #FFF3B0;
+            --gold-pastel: #F6D365;
+            --success-bg: #D4EDDA;
+            --success-border: #C3E6CB;
+        }
+
         body {
-            background-color: #FAFAFA;
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Mitr', sans-serif;
+            background-color: var(--color-pink-bg);
+            background-image: radial-gradient(var(--color-pink-dot) 15%, transparent 16%), radial-gradient(var(--color-pink-dot) 15%, transparent 16%);
+            background-size: 24px 24px;
+            background-position: 0 0, 12px 12px;
+            color: var(--color-brown-dark);
+            scroll-behavior: smooth;
         }
-        .app-container {
-            max-width: 430px;
-            margin: 0 auto;
-            min-height: 100vh;
-            background-color: #FFF0F5;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.05);
-            overflow-x: hidden;
+
+        .font-slackey { font-family: 'Slackey', 'Mitr', cursive; }
+        .text-shadow-cute { text-shadow: 2px 2px 0px #fff, 3px 3px 0px var(--color-pink-light); }
+
+        .clean-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 40px;
+            box-shadow: 0 10px 40px rgba(255, 133, 179, 0.15);
         }
-        .gradient-bg {
-            background: linear-gradient(180deg, #FF8DAF 0%, #FFB6C1 100%);
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--color-pink-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--color-pink-dark); border-radius: 10px; }
+
+        .modal-enter { animation: modalFadeIn 0.3s ease-out forwards; }
+        .modal-exit { animation: modalFadeOut 0.2s ease-in forwards; }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
-        .stars-bg {
-            background-image: 
-                radial-gradient(circle at 15% 30%, white 1px, transparent 1.5px),
-                radial-gradient(circle at 85% 20%, white 1px, transparent 1.5px),
-                radial-gradient(circle at 30% 60%, white 2px, transparent 2.5px),
-                radial-gradient(circle at 75% 70%, white 1.5px, transparent 2px);
-            background-size: 100% 100%;
+        @keyframes modalFadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.95); }
         }
-        .hero-image-placeholder {
-            width: 190px;
-            height: 190px;
-            background-color: white;
-            border-radius: 50%;
-            border: 4px solid white;
-            box-shadow: 0 10px 20px rgba(255, 158, 187, 0.4);
-            margin: 0 auto;
-            position: relative;
-            z-index: 20;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+
+        .slider-track { display: flex; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .slide { min-width: 100%; }
+
+        .font-card {
+            background: white;
+            border-radius: 24px;
+            border: 2px solid #ffe4ef;
             overflow: hidden;
+            cursor: pointer;
+            transition: 0.25s all ease;
+            box-shadow: 0 4px 15px rgba(255, 133, 179, 0.08);
         }
-        .page {
-            display: none;
-            animation: fadeIn 0.3s ease-out forwards;
-            padding-bottom: 90px;
+        .font-card:hover {
+            border-color: var(--color-pink-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 133, 179, 0.2);
         }
-        .page.active {
-            display: block;
+
+        .preview-area-card {
+            padding: 24px 10px;
+            text-align: center;
+            font-size: 1.8rem;
+            min-height: 80px;
+            overflow: hidden;
+            white-space: nowrap;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        .price-split-style { background-color: var(--gold-cream) !important; color: #8B7355 !important; border-top: 1.5px solid var(--gold-pastel) !important; }
+        .price-single-style { background-color: var(--success-bg) !important; color: #155724 !important; border-top: 1.5px solid var(--success-border) !important; }
+
+        .tester-container {
+            width: 100%;
+            background: white;
+            border: 2.5px dashed var(--color-pink-dark);
+            border-radius: 24px;
+            position: relative;
+            margin-top: 10px;
+            overflow: hidden;
+            min-height: 240px;
+            display: flex;
+            flex-direction: column;
         }
-        /* Custom Scrollbar for template list */
-        #template-list::-webkit-scrollbar {
-            width: 4px;
+        .tester-bg-watermark {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('IMG_5814.png') no-repeat center;
+            background-size: contain;
+            opacity: 0.12;
+            z-index: 1;
+            pointer-events: none;
         }
-        #template-list::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        #template-list::-webkit-scrollbar-thumb {
-            background: #FF9EBB;
-            border-radius: 10px;
+        #testerDisplay, #displayLeft, #displayRight {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            width: 100%;
+            word-wrap: break-word;
+            padding: 40px 15px 30px;
+            flex-grow: 1;
+            max-height: 320px;
+            overflow-y: auto;
+            box-sizing: border-box;
         }
     </style>
 </head>
-<body class="text-brand-text font-sans antialiased">
+<body class="min-h-screen pb-12">
 
-    <div class="app-container flex flex-col">
-        
-        <!-- ==================== PAGE 1: HOME ==================== -->
-        <div id="page-home" class="page active">
-            <!-- Header Section -->
-            <div class="gradient-bg pt-10 px-6 pb-24 relative rounded-b-[40px]">
-                <div class="stars-bg absolute inset-0 opacity-40"></div>
-                <div class="flex justify-between items-center mb-6 relative z-10">
-                    <div class="text-brand-text font-outfit text-2xl font-bold tracking-wide flex flex-col brand-title">
-                        PINKJULIELAND
-                        <span class="text-xs font-medium tracking-widest text-brand-subtext mt-1">Mobile Shop</span>
-                    </div>
-                    <div class="relative">
-                        <i class="fa-regular fa-bell text-brand-text text-xl"></i>
-                        <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-brand-main rounded-full border-2 border-white"></span>
-                    </div>
-                </div>
-                
-                <div class="text-center mb-2 z-10 relative">
-                    <h1 class="text-lg font-semibold text-brand-text flex justify-center items-center">
-                        Welcome to my shop 
-                        <svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 inline-block text-white ml-1 drop-shadow-sm"><path d="M12 10.5C11.5 8 9 6 6 6 3 6 2 8 2 10.5 2 13 5 14 8 13.5L10 14.5C9.5 17 8 20 6 21 8.5 21 11 19 12 16 13 19 15.5 21 18 21 16 20 14.5 17 14 14.5L16 13.5C19 14 22 13 22 10.5 22 8 21 6 18 6 15 6 12.5 8 12 10.5Z" /></svg>
-                    </h1>
-                    <p class="text-sm font-medium text-brand-subtext mt-1">ร้านจูรับทำเว็บไซต์ครบวงจร และจำหน่ายแอป</p>
-                </div>
-                
-                <!-- อัปเดตลิงก์รูปภาพโดยตรงจากเว็บฝากรูปแล้วค่ะ ปังชัวร์! -->
-                <div class="hero-image-placeholder mt-4 mb-[-80px]">
-                    <img src="https://i.postimg.cc/Ssm1y82k/att-wk7qrx-RHAp1Ej-HFxr8ZWJOqko-Id-NEvk-Y6mf5-n2Id-W4.jpg" alt="Pinkjulieland Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23FF9EBB\'><path d=\'M16 6V4C16 1.79 14.21 0 12 0C9.79 0 8 1.79 8 4V6H2V22C2 23.1 2.9 24 4 24H20C21.1 24 22 23.1 22 22V6H16ZM10 4C10 2.9 10.9 2 12 2C13.1 2 14 2.9 14 4V6H10V4ZM20 22H4V8H20V22Z\'/></svg>'">
-                </div>
+    <!-- Overlay สำหรับ Sidebar Menu -->
+    <div id="menu-overlay" onclick="toggleMenu()" class="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300"></div>
+
+    <!-- Sidebar Menu 🎀 -->
+    <div id="side-menu" class="fixed inset-y-0 left-0 w-72 bg-white/95 backdrop-blur-md shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 ease-in-out border-r border-pink-200">
+        <div class="p-6 h-full flex flex-col">
+            <div class="flex justify-between items-center mb-6 border-b border-pink-100 pb-4">
+                <span class="font-slackey text-xl text-[#ff85b3] text-shadow-cute">THITIPRA MENU</span>
+                <button onclick="toggleMenu()" class="text-pink-300 hover:text-pink-500 bg-pink-50 p-1.5 rounded-full transition">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
             </div>
+            
+            <div class="space-y-2.5 font-medium text-[#5c3a21] flex-1 overflow-y-auto pr-1">
+                <a href="#fonts-section" onclick="toggleMenu()" class="flex items-center gap-3 p-3 hover:bg-pink-50 rounded-2xl transition text-[15px]">
+                    <span class="text-[#ff85b3]"><i class="fas fa-font"></i></span> แคตตาล็อกฟอนต์ทั้งหมด
+                </a>
+                <button onclick="openVS(); toggleMenu();" class="w-full text-left flex items-center gap-3 p-3 hover:bg-pink-50 rounded-2xl transition text-[15px]">
+                    <span class="text-[#ff85b3]"><i class="fas fa-columns"></i></span> โหมดเปรียบเทียบ (VS Mode)
+                </button>
+                <button onclick="openCustomerPortal(); toggleMenu();" class="w-full text-left flex items-center gap-3 p-3 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-2xl transition text-[15px] font-bold border border-purple-200">
+                    <span class="text-purple-600"><i class="fas fa-folder-open"></i></span> คลังฟอนต์ของฉัน (เข้าไดรฟ์)
+                </button>
 
-            <!-- Content Area -->
-            <div class="bg-white rounded-t-[35px] -mt-16 relative z-10 pt-10 px-5 shadow-app pb-6">
-                <!-- Fast Menu -->
-                <div class="text-center mb-4 mt-12">
-                    <span class="text-brand-main font-semibold text-sm tracking-wide bg-brand-light px-4 py-1.5 rounded-full inline-block border border-brand-main/20">
-                        Fast Menu
-                        <svg class="w-3.5 h-3.5 inline-block text-brand-main ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>
-                    </span>
-                </div>
-                
-                <div class="grid grid-cols-4 gap-3 mb-8">
-                    <!-- Menu Items -->
-                    <div class="flex flex-col items-center gap-2 cursor-pointer group" onclick="switchTab('page-services', 1)">
-                        <div class="w-14 h-14 rounded-2xl bg-brand-light group-hover:bg-[#FFD1E0] flex items-center justify-center text-brand-main text-xl shadow-sm border border-brand-main/10 transition-colors">
-                            <i class="fa-solid fa-laptop-code"></i>
-                        </div>
-                        <span class="text-[10px] text-center text-brand-text font-medium leading-tight">รับทำ<br>เว็บไซต์</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2 cursor-pointer group" onclick="switchTab('page-goodnotes', 2)">
-                        <div class="w-14 h-14 rounded-2xl bg-[#F5ECE9] group-hover:bg-[#EFE5E2] flex items-center justify-center text-[#8A6F65] text-xl shadow-sm border border-[#EFE5E2] transition-colors">
-                            <i class="fa-solid fa-book-open"></i>
-                        </div>
-                        <span class="text-[10px] text-center text-brand-text font-medium leading-tight">แอป<br>Goodnotes</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2 cursor-pointer group" onclick="switchTab('page-course', -1)">
-                        <div class="w-14 h-14 rounded-2xl bg-[#EFE5E2] group-hover:bg-[#E0D4CF] flex items-center justify-center text-brand-text text-xl shadow-sm border border-[#E0D4CF] transition-colors">
-                            <i class="fa-solid fa-graduation-cap"></i>
-                        </div>
-                        <span class="text-[10px] text-center text-brand-text font-medium leading-tight">คอร์ส<br>สอนเว็บ</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2 cursor-pointer group" onclick="switchTab('page-contact', 3)">
-                        <div class="w-14 h-14 rounded-2xl bg-brand-light group-hover:bg-[#FFD1E0] flex items-center justify-center text-brand-main text-xl shadow-sm border border-brand-main/10 transition-colors">
-                            <i class="fa-regular fa-comment-dots"></i>
-                        </div>
-                        <span class="text-[10px] text-center text-brand-text font-medium leading-tight">ช่องทาง<br>ติดต่อ</span>
-                    </div>
-                </div>
+                <div id="dynamicMenuItems" class="space-y-2.5 border-t border-b border-pink-100 py-2.5 my-2.5"></div>
 
-                <!-- Steps & Rules (Global) -->
-                <div class="space-y-3 mb-8">
-                    <div class="border border-brand-light rounded-2xl bg-white shadow-sm overflow-hidden">
-                        <div class="w-full flex justify-between items-center p-4 text-left font-medium text-sm text-brand-text">
-                            <span class="flex items-center gap-2"><i class="fa-solid fa-list-ol text-brand-main"></i> ขั้นตอนการสั่ง & เงื่อนไข</span>
-                        </div>
-                        <div class="px-4 py-3 text-sm text-brand-subtext bg-brand-light/40 border-t border-brand-light">
-                            <ul class="space-y-2 list-disc pl-4 pb-2">
-                                <li>ตามปกติรองาน 4-8 ชั่วโมง แล้วแต่คิว</li>
-                                <li>งานเร่ง *2 ของราคา</li>
-                                <li>สามารถแคปหน้าเว็บที่อยากได้ของร้านเรามาเป็นเรฟได้ หากไม่แคปและแก้เยอะ จะกระทบคิวถัดไป</li>
-                                <li><span class="text-brand-main font-medium">เน้นย้ำ:</span> หลังจากส่งงานให้รีเช็ค ตอบกลับภายในไม่เกิน 30 นาที</li>
-                                <li>เขียนรายละเอียดร้านค้า หรือพิมพ์ข้อมูลร้านส่งมาได้เลย</li>
-                                <li>หากมีโลโก้ให้แนบลิงก์ Google Drive เท่านั้น ระบุให้ชัดเจน</li>
-                                <li>ชำระเงินราคาเริ่มต้น 129.- ส่งงานให้เช็ค หากเกินจากนี้จะแจ้งยอดคงค้าง</li>
-                                <li class="text-xs text-brand-subtext/70 mt-2 list-none -ml-4">ในอนาคตอาจมีการเปลี่ยนลิงก์ หากนำไปเปลี่ยนโดเมนแล้วมีค่าใช้จ่าย ทางร้านไม่รับผิดชอบทุกกรณี</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="border border-[#EFE5E2] rounded-2xl bg-white shadow-sm overflow-hidden">
-                        <div class="w-full flex justify-between items-center p-4 text-left font-medium text-sm text-brand-text">
-                            <span class="flex items-center gap-2"><i class="fa-solid fa-shield-halved text-brand-text"></i> กฎของร้าน</span>
-                        </div>
-                        <div class="px-4 py-3 text-sm text-brand-text bg-[#F5ECE9]/50 border-t border-[#EFE5E2]">
-                            <ul class="space-y-2 pb-2">
-                                <li><i class="fa-solid fa-xmark mr-1"></i> โอนเงินแล้วไม่คืนเงินทุกกรณี</li>
-                                <li><i class="fa-solid fa-xmark mr-1"></i> ยกเลิกหลังตรวจงานแล้ว ไม่คืนเงิน</li>
-                                <li><i class="fa-solid fa-xmark mr-1"></i> งดจิกงดเร่งทุกกรณีนะคะ</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                <button onclick="checkAdminStatus(); toggleMenu();" class="w-full text-left flex items-center gap-3 p-3 bg-pink-50 hover:bg-pink-100 rounded-2xl transition text-[15px] text-pink-600 font-bold border border-pink-200">
+                    <span><i class="fas fa-user-shield text-pink-500"></i></span> ระบบหลังบ้าน (แอดมิน)
+                </button>
+            </div>
+            
+            <div class="mt-auto border-t border-pink-100 pt-4 text-center">
+                <p class="font-slackey text-xs text-pink-400">BR & PRH FONT NETWORK</p>
             </div>
         </div>
-
-        <!-- ==================== PAGE 2: ALL SERVICES (GRID) ==================== -->
-        <div id="page-services" class="page">
-            <div class="gradient-bg pt-10 px-6 pb-20 relative rounded-b-[40px]">
-                <div class="flex justify-between items-center mb-6">
-                    <div class="w-8 h-8 bg-brand-light/80 rounded-full flex items-center justify-center text-brand-main backdrop-blur-md shadow-sm cursor-pointer border border-brand-main/20" onclick="switchTab('page-home', 0)">
-                        <i class="fa-solid fa-chevron-left text-sm"></i>
-                    </div>
-                    <div class="text-brand-text font-outfit text-xl font-bold tracking-wide brand-title">PINKJULIELAND</div>
-                    <div class="w-8"></div>
-                </div>
-                <div class="text-center mb-2 z-10 relative">
-                    <h1 class="font-outfit text-sm font-medium text-brand-subtext">All Services</h1>
-                    <div class="text-2xl font-bold mt-1 text-brand-text flex justify-center items-center">
-                        บริการทั้งหมด 
-                        <svg class="w-5 h-5 inline-block text-white ml-1 drop-shadow-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-                    </div>
-                </div>
-            </div>
-
-            <div class="px-5 -mt-10 relative z-10 pb-8">
-                <!-- Grid Menu -->
-                <div class="bg-white rounded-[24px] shadow-app p-5 border border-brand-light">
-                    <div class="grid grid-cols-4 gap-y-6 gap-x-2">
-                        <!-- Templates -->
-                        <div class="flex flex-col items-center gap-2 cursor-pointer group" onclick="toggleCategory('bright')">
-                            <div class="w-12 h-12 rounded-xl bg-brand-light group-hover:bg-[#FFD1E0] flex items-center justify-center text-brand-main text-xl shadow-sm border border-brand-light transition-colors">
-                                <i class="fa-solid fa-sun"></i>
-                            </div>
-                            <span class="text-[10px] text-center text-brand-text font-medium">โทนสดใส</span>
-                        </div>
-                        <div class="flex flex-col items-center gap-2 cursor-pointer group" onclick="toggleCategory('dark')">
-                            <div class="w-12 h-12 rounded-xl bg-[#F5ECE9] group-hover:bg-[#EFE5E2] flex items-center justify-center text-[#8A6F65] text-xl shadow-sm border border-[#F5ECE9] transition-colors">
-                                <i class="fa-solid fa-moon"></i>
-                            </div>
-                            <span class="text-[10px] text-center text-brand-text font-medium">โทนมืด</span>
-                        </div>
-                        <div class="flex flex-col items-center gap-2 cursor-pointer group" onclick="toggleCategory('pastel')">
-                            <div class="w-12 h-12 rounded-xl bg-brand-light group-hover:bg-[#FFD1E0] flex items-center justify-center text-brand-text text-xl shadow-sm border border-brand-light transition-colors">
-                                <i class="fa-solid fa-candy-cane"></i>
-                            </div>
-                            <span class="text-[10px] text-center text-brand-text font-medium">พาสเทล</span>
-                        </div>
-                        <!-- Links to other pages -->
-                        <div class="flex flex-col items-center gap-2 cursor-pointer group" onclick="switchTab('page-course', -1)">
-                            <div class="w-12 h-12 rounded-xl bg-[#EFE5E2] group-hover:bg-[#E0D4CF] flex items-center justify-center text-brand-text text-xl shadow-sm border border-[#EFE5E2] transition-colors">
-                                <i class="fa-solid fa-chalkboard-user"></i>
-                            </div>
-                            <span class="text-[10px] text-center text-brand-text font-medium">คอร์สสอน</span>
-                        </div>
-                        <div class="flex flex-col items-center gap-2 cursor-pointer group" onclick="switchTab('page-goodnotes', 2)">
-                            <div class="w-12 h-12 rounded-xl bg-brand-light group-hover:bg-[#FFD1E0] flex items-center justify-center text-brand-main text-xl shadow-sm border border-brand-light transition-colors">
-                                <i class="fa-solid fa-star"></i>
-                            </div>
-                            <span class="text-[10px] text-center text-brand-text font-medium">GN ถาวร</span>
-                        </div>
-                        <div class="flex flex-col items-center gap-2 cursor-pointer group" onclick="switchTab('page-goodnotes', 2)">
-                            <div class="w-12 h-12 rounded-xl bg-[#F5ECE9] group-hover:bg-[#EFE5E2] flex items-center justify-center text-[#8A6F65] text-xl shadow-sm border border-[#F5ECE9] transition-colors">
-                                <i class="fa-solid fa-check-circle"></i>
-                            </div>
-                            <span class="text-[10px] text-center text-brand-text font-medium">GN รายปี</span>
-                        </div>
-                        <div class="flex flex-col items-center gap-2 cursor-pointer group" onclick="switchTab('page-goodnotes', 2)">
-                            <div class="w-12 h-12 rounded-xl bg-[#EFE5E2] group-hover:bg-[#E0D4CF] flex items-center justify-center text-brand-text text-xl shadow-sm border border-[#EFE5E2] transition-colors">
-                                <i class="fa-solid fa-crown"></i>
-                            </div>
-                            <span class="text-[10px] text-center text-brand-text font-medium">GN Pro</span>
-                        </div>
-                        <div class="flex flex-col items-center gap-2 cursor-pointer group" onclick="switchTab('page-contact', 3)">
-                            <div class="w-12 h-12 rounded-full bg-brand-light group-hover:bg-[#FFD1E0] flex items-center justify-center text-brand-main text-xl shadow-sm border border-brand-main/20 transition-colors">
-                                <i class="fa-solid fa-ellipsis"></i>
-                            </div>
-                            <span class="text-[10px] text-center text-brand-text font-medium">ติดต่อ</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Template Content Container -->
-                <div id="template-links-container" class="hidden bg-white rounded-[24px] shadow-app border border-brand-light p-5 mt-4">
-                    <h3 id="template-title" class="font-bold text-brand-text text-sm mb-3 flex items-center"></h3>
-                    <div id="template-list" class="space-y-2 max-h-[300px] overflow-y-auto pr-1"></div>
-                </div>
-
-                <div class="border border-[#EFE5E2] rounded-2xl bg-white shadow-sm overflow-hidden mb-3 mt-4">
-                    <div class="w-full flex justify-between items-center p-4 text-left font-medium text-sm text-brand-text bg-[#F5ECE9]/60">
-                        <span class="flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation text-brand-text w-4"></i> กฎกลุ่ม (อ่านก่อนตัดสินใจ)</span>
-                    </div>
-                    <div class="px-4 py-3 text-[11px] text-brand-text bg-[#F5ECE9]/30 border-t border-[#EFE5E2]">
-                        <div class="space-y-3 pb-2 leading-relaxed">
-                            <p class="font-bold text-brand-text text-xs"><i class="fa-solid fa-thumbtack mr-1 text-brand-main"></i> กฎสำคัญของกลุ่มคอร์ส</p>
-                            <ul class="space-y-2 text-brand-subtext">
-                                <li class="flex items-start gap-1.5"><i class="fa-solid fa-lock text-brand-main mt-0.5"></i> <span><strong class="text-brand-text">เนื้อหาทั้งหมดเป็นลิขสิทธิ์ของคอร์ส:</strong> ห้ามนำออกนอกกลุ่มโดยเด็ดขาด</span></li>
-                                <li class="flex items-start gap-1.5"><i class="fa-solid fa-ban text-brand-text mt-0.5"></i> <span>ห้ามส่งต่อคลิปบทเรียน / ห้ามแจกไฟล์ทุกชนิด</span></li>
-                                <li class="flex items-start gap-1.5"><i class="fa-solid fa-ban text-brand-text mt-0.5"></i> <span>ห้ามนำเนื้อหาไปขายต่อ / ห้ามอัปโหลดลงที่อื่นทุกกรณี</span></li>
-                                <li class="flex items-start gap-1.5"><i class="fa-solid fa-bullhorn text-brand-main mt-0.5"></i> <span>ห้ามฝากร้าน โฆษณา แชร์สิ่งที่ไม่เกี่ยวข้อง (ลบทันที)</span></li>
-                                <li class="flex items-start gap-1.5"><i class="fa-solid fa-book text-brand-text mt-0.5"></i> <span><strong>ดูบทเรียนให้ครบก่อนสอบถาม:</strong> คำถามที่มีในบทเรียนแล้ว ทีมงานจะไม่ตอบซ้ำ</span></li>
-                            </ul>
-                            <div class="bg-[#F5ECE9] p-3 rounded-xl border border-[#EFE5E2] text-brand-text font-bold text-center mt-2">
-                                <i class="fa-solid fa-triangle-exclamation mr-1 text-brand-main"></i> หากตรวจพบการละเมิดกฎ<br>
-                                ปรับ 5,000.- ต่อ 1 กรณี<br>
-                                <span class="text-[10px] font-medium">(หากมีการเผยแพร่เนื้อหา ข้อความละ 500.- ดำเนินการทันที)</span>
-                            </div>
-                            <div class="border-t border-[#EFE5E2] pt-3 text-center">
-                                <strong class="text-brand-text flex items-center justify-center mb-2 text-xs"><i class="fa-solid fa-location-dot mr-1 text-brand-main"></i> เงื่อนไขเพิ่มเติม <i class="fa-solid fa-location-dot ml-1 text-brand-main"></i></strong>
-                                ขอความกรุณาไม่นำสิ่งที่สอนไปประยุกต์ใช้กับ <span class="text-brand-main font-bold">“ผลงานผู้อื่นโดยตรง”</span> นะคะ ให้ยึดตามเนื้อหา หรือออกแบบสไตล์ตัวเอง ไม่อ้างอิงผลงานท่านอื่นค่ะ
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- ==================== PAGE 3: WEBSITE DESIGN ==================== -->
-        <div id="page-website" class="page">
-            <div class="gradient-bg pt-10 px-6 pb-20 relative rounded-b-[40px]">
-                <div class="flex justify-between items-center mb-6">
-                    <div class="w-8 h-8 bg-brand-light/80 rounded-full flex items-center justify-center text-brand-main backdrop-blur-md shadow-sm cursor-pointer border border-brand-main/20" onclick="switchTab('page-home', 0)">
-                        <i class="fa-solid fa-chevron-left text-sm"></i>
-                    </div>
-                    <div class="text-brand-text font-outfit text-xl font-bold tracking-wide brand-title">PINKJULIELAND</div>
-                    <div class="w-8"></div>
-                </div>
-                <div class="text-center mb-2 z-10 relative">
-                    <h1 class="font-outfit text-sm font-medium text-brand-subtext">Website Services</h1>
-                    <div class="text-2xl font-bold mt-1 text-brand-text flex justify-center items-center">
-                        รับทำเว็บไซต์ <i class="fa-solid fa-laptop-code ml-2 text-white drop-shadow-sm"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="px-5 -mt-10 relative z-10 pb-8 space-y-4">
-                <div class="bg-white rounded-[24px] shadow-app border border-brand-light p-6">
-                    <div class="text-center mb-4">
-                        <span class="bg-brand-light text-brand-main text-[10px] font-bold px-3 py-1 rounded-full border border-brand-main/20">HOT DEAL <i class="fa-solid fa-fire text-brand-text ml-1"></i></span>
-                        <h3 class="text-lg font-bold text-brand-text mt-3 mb-1">ออกแบบเว็บไซต์ร้านค้า</h3>
-                        <p class="text-xs text-brand-subtext">สวยปัง คุมโทน เพิ่มยอดขายให้ร้านคุณ</p>
-                    </div>
-                    
-                    <div class="bg-brand-light/20 rounded-xl p-4 border border-brand-light space-y-2 mb-4">
-                        <div class="flex justify-between items-center border-b border-brand-light pb-2">
-                            <span class="text-sm font-medium text-brand-text"><i class="fa-solid fa-star text-brand-main text-[10px] mr-1"></i> เริ่มต้น</span>
-                            <span class="text-lg font-bold text-brand-main">129.-</span>
-                        </div>
-                        <ul class="text-xs text-brand-subtext space-y-2 pt-2">
-                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-brand-text mt-0.5"></i> ออกแบบให้ตามเรฟ/บรีฟ</li>
-                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-brand-text mt-0.5"></i> แถมฟรีโดเมนพร้อมใช้ (ลิงก์สั้น)</li>
-                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-brand-text mt-0.5"></i> จ่ายครั้งเดียว ไม่มีรายเดือน</li>
-                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-brand-text mt-0.5"></i> งานเร่งด่วน x2 ของราคาปกติ</li>
-                        </ul>
-                    </div>
-                    
-                    <button onclick="switchTab('page-contact', 3)" class="w-full bg-brand-main hover:bg-brand-dark text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-pink-300 transition-all text-sm flex items-center justify-center gap-2">
-                        ทักแชทสั่งทำเลย <i class="fa-regular fa-paper-plane"></i>
-                    </button>
-                </div>
-
-                <!-- CARD: คอร์สสอนทำเว็บ -->
-                <div class="bg-white rounded-[24px] shadow-app border border-brand-light p-6">
-                    <div class="text-center mb-4">
-                        <span class="bg-[#F5ECE9] text-brand-text text-[10px] font-bold px-3 py-1 rounded-full border border-[#EFE5E2]">BEST SELLER <i class="fa-solid fa-fire text-brand-main ml-1"></i></span>
-                        <h3 class="text-lg font-bold text-brand-text mt-3 mb-1">คอร์สสอนทำ “เว็บร้าน” สไตล์พิ้งจู</h3>
-                        <p class="text-[11px] text-brand-subtext">ไม่ต้องมีพื้นฐาน ไม่ต้องงมเอง <i class="fa-solid fa-heart text-brand-main ml-1"></i></p>
-                    </div>
-                    
-                    <div class="bg-[#F5ECE9]/30 rounded-xl p-4 border border-[#EFE5E2] space-y-2 mb-4">
-                        <div class="flex justify-between items-center border-b border-[#EFE5E2] pb-2">
-                            <span class="text-sm font-medium text-brand-text"><i class="fa-solid fa-sparkles text-brand-text text-[10px] mr-1"></i> เข้าตลอดชีพเพียง</span>
-                            <span class="text-lg font-bold text-brand-text">459.-</span>
-                        </div>
-                        <ul class="text-[10px] text-brand-subtext space-y-2 pt-2">
-                            <li class="flex items-start gap-2"><i class="fa-solid fa-play text-brand-text mt-0.5"></i> คลิปสอนทำจริงแบบละเอียด</li>
-                            <li class="flex items-start gap-2"><i class="fa-solid fa-note-sticky text-brand-text mt-0.5"></i> โน้ตสรุป + ทริคสำคัญ อ่านง่าย</li>
-                            <li class="flex items-start gap-2"><i class="fa-solid fa-palette text-brand-text mt-0.5"></i> เทมเพลต 50+ แบบ ใช้ต่อทันที!</li>
-                        </ul>
-                    </div>
-                    
-                    <button onclick="switchTab('page-course', -1)" class="w-full bg-brand-text hover:bg-[#3A2821] text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-[#EFE5E2] transition-all text-sm flex items-center justify-center gap-2">
-                        ดูรายละเอียดคอร์สเต็มๆ <i class="fa-solid fa-arrow-right ml-1"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ==================== PAGE 4: GOODNOTES ==================== -->
-        <div id="page-goodnotes" class="page">
-            <div class="gradient-bg pt-10 px-6 pb-20 relative rounded-b-[40px]">
-                <div class="flex justify-between items-center mb-6">
-                    <div class="w-8 h-8 bg-brand-light/80 rounded-full flex items-center justify-center text-brand-main backdrop-blur-md shadow-sm cursor-pointer border border-brand-main/20" onclick="switchTab('page-home', 0)">
-                        <i class="fa-solid fa-chevron-left text-sm"></i>
-                    </div>
-                    <div class="text-brand-text font-outfit text-xl font-bold tracking-wide brand-title">PINKJULIELAND</div>
-                    <div class="w-8"></div>
-                </div>
-                <div class="text-center mb-2 z-10 relative">
-                    <h1 class="font-outfit text-sm font-medium text-brand-subtext">Premium Apps</h1>
-                    <div class="text-2xl font-bold mt-1 text-brand-text flex justify-center items-center">
-                        แอป Goodnotes <i class="fa-solid fa-pen-nib ml-2 text-white drop-shadow-sm"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="px-5 -mt-10 relative z-10 pb-8 space-y-4">
-                <div class="bg-white rounded-[24px] shadow-app border border-brand-light p-5">
-                    <p class="text-xs text-brand-subtext text-center mb-4">สายจดสรุป สายเรียนห้ามพลาด! อัปเดตฟรีตลอดชีพ โหลดไว้ใช้ยังไงก็คุ้ม <i class="fa-solid fa-heart text-brand-main ml-1"></i></p>
-                    
-                    <div class="space-y-3">
-                        <!-- รายการ 1 -->
-                        <div class="border border-brand-light rounded-xl p-3 flex items-center justify-between bg-white hover:bg-brand-light/30 transition-colors">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-lg bg-brand-light flex items-center justify-center text-brand-main text-lg"><i class="fa-solid fa-infinity"></i></div>
-                                <div>
-                                    <div class="text-sm font-bold text-brand-text">GN ถาวร (IOS)</div>
-                                    <div class="text-[10px] text-brand-subtext">โหลดผ่าน Apple ID ร้าน</div>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-brand-main font-bold text-sm">69.-</div>
-                                <button onclick="switchTab('page-contact', 3)" class="text-[9px] bg-brand-light text-brand-main px-2 py-1 rounded-md mt-1 font-bold">สั่งซื้อ</button>
-                            </div>
-                        </div>
-
-                        <!-- รายการ 2 -->
-                        <div class="border border-[#EFE5E2] rounded-xl p-3 flex items-center justify-between bg-white hover:bg-[#F5ECE9]/30 transition-colors">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-lg bg-[#F5ECE9] flex items-center justify-center text-[#8A6F65] text-lg"><i class="fa-solid fa-calendar-check"></i></div>
-                                <div>
-                                    <div class="text-sm font-bold text-brand-text">GN รายปี (IOS)</div>
-                                    <div class="text-[10px] text-brand-subtext">ใช้งาน 1 ปีเต็มสุดคุ้ม</div>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-[#8A6F65] font-bold text-sm">49.-</div>
-                                <button onclick="switchTab('page-contact', 3)" class="text-[9px] bg-[#F5ECE9] text-[#8A6F65] px-2 py-1 rounded-md mt-1 font-bold">สั่งซื้อ</button>
-                            </div>
-                        </div>
-
-                        <!-- รายการ 3 -->
-                        <div class="border border-[#EFE5E2] rounded-xl p-3 flex items-center justify-between bg-white hover:bg-[#F5ECE9]/30 transition-colors relative overflow-hidden">
-                            <div class="absolute top-0 right-0 bg-brand-text text-white text-[8px] font-bold px-2 py-0.5 rounded-bl-lg">BEST SELLER</div>
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-lg bg-[#EFE5E2] flex items-center justify-center text-brand-text text-lg"><i class="fa-solid fa-crown"></i></div>
-                                <div>
-                                    <div class="text-sm font-bold text-brand-text">GN Pro (Full)</div>
-                                    <div class="text-[10px] text-brand-subtext">ปลดล็อกครบทุกฟังก์ชัน</div>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-brand-text font-bold text-sm">99.-</div>
-                                <button onclick="switchTab('page-contact', 3)" class="text-[9px] bg-[#EFE5E2] text-brand-text px-2 py-1 rounded-md mt-1 font-bold">สั่งซื้อ</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ==================== PAGE 5: COURSE DETAILS ==================== -->
-        <div id="page-course" class="page">
-            <div class="gradient-bg pt-10 px-6 pb-20 relative rounded-b-[40px]">
-                <div class="flex justify-between items-center mb-6">
-                    <div class="w-8 h-8 bg-brand-light/80 rounded-full flex items-center justify-center text-brand-main backdrop-blur-md shadow-sm cursor-pointer border border-brand-main/20" onclick="switchTab('page-home', 0)">
-                        <i class="fa-solid fa-chevron-left text-sm"></i>
-                    </div>
-                    <div class="text-brand-text font-outfit text-xl font-bold tracking-wide brand-title">PINKJULIELAND</div>
-                    <div class="w-8"></div>
-                </div>
-                <div class="text-center mb-2 z-10 relative">
-                    <h1 class="font-outfit text-sm font-medium text-brand-subtext">Learning Class</h1>
-                    <div class="text-2xl font-bold mt-1 text-brand-text flex justify-center items-center">
-                        คอร์สสอนทำเว็บ <i class="fa-solid fa-graduation-cap ml-2 text-white drop-shadow-sm"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="px-5 -mt-10 relative z-10 pb-8 space-y-4">
-                <!-- Main Course Card -->
-                <div class="bg-white rounded-[24px] shadow-app border border-brand-light p-6">
-                    <div class="text-center mb-4">
-                        <span class="bg-[#F5ECE9] text-brand-text text-[10px] font-bold px-3 py-1 rounded-full border border-[#EFE5E2]">BEST SELLER <i class="fa-solid fa-fire text-brand-main ml-1"></i></span>
-                        <h3 class="text-lg font-bold text-brand-text mt-3 mb-1">คอร์สสอนทำ “เว็บร้าน” สไตล์พิ้งจู</h3>
-                        <p class="text-[11px] text-brand-subtext leading-relaxed">
-                            จาก 0 <i class="fa-solid fa-arrow-right mx-1 text-[9px]"></i> ทำเว็บใช้งานได้จริง!<br>
-                            ไม่ต้องมีพื้นฐาน ไม่ต้องงมเอง <i class="fa-solid fa-sparkles text-brand-main ml-1"></i><br>
-                            สอนครบทุกขั้นตอน ดูรอบเดียวทำตามได้เลย
-                        </p>
-                    </div>
-                    
-                    <div class="bg-[#F5ECE9]/30 rounded-xl p-4 border border-[#EFE5E2] space-y-3 mb-4">
-                        <ul class="text-[11px] text-brand-text space-y-2">
-                            <li class="flex items-start gap-2"><div class="w-4 flex justify-center mt-0.5"><i class="fa-solid fa-play text-brand-main"></i></div> <span><strong>คลิปสอนทำจริงแบบละเอียด</strong></span></li>
-                            <li class="flex items-start gap-2"><div class="w-4 flex justify-center mt-0.5"><i class="fa-solid fa-note-sticky text-brand-main"></i></div> <span><strong>โน้ตสรุป + ทริคสำคัญ</strong> อ่านง่าย</span></li>
-                            <li class="flex items-start gap-2"><div class="w-4 flex justify-center mt-0.5"><i class="fa-solid fa-palette text-brand-main"></i></div> <span><strong>เทมเพลตเว็บ 50+ แบบ</strong> เอาไปใช้ต่อได้ทันที!</span></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="bg-brand-light/30 border border-brand-light rounded-xl p-3 mb-4 text-center">
-                        <span class="text-brand-subtext text-[11px]">เข้าได้ตลอดชีพในราคาเพียง</span><br>
-                        <span class="text-brand-main font-bold text-2xl">459.-</span>
-                        <p class="text-[9px] text-brand-subtext mt-1">คุ้มมากสำหรับสายทำเว็บ/หารายได้เสริม! <i class="fa-solid fa-heart text-brand-main ml-0.5"></i></p>
-                    </div>
-
-                    <a href="https://drive.google.com/drive/folders/1fj024BhkgC1ctJeiwyZUG3USteSdzWzr" target="_blank" class="w-full bg-white hover:bg-brand-light/50 text-brand-text font-semibold py-3 rounded-xl shadow-sm transition-all text-[11px] flex items-center justify-center gap-2 mb-3 border border-brand-light">
-                        <i class="fa-regular fa-folder-open text-brand-main text-sm"></i> ดูตัวอย่างภายในกลุ่ม
-                    </a>
-                    
-                    <button onclick="switchTab('page-contact', 3)" class="w-full bg-brand-text hover:bg-[#3A2821] text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-[#EFE5E2] transition-all text-sm flex items-center justify-center gap-2">
-                        ทักแชทสมัครเรียนเลย <i class="fa-solid fa-hand-sparkles ml-1"></i>
-                    </button>
-                </div>
-
-                <!-- Who is this for -->
-                <div class="border border-[#EFE5E2] rounded-2xl bg-white shadow-sm overflow-hidden">
-                    <div class="w-full flex justify-between items-center p-4 text-left font-medium text-sm text-brand-text bg-[#F5ECE9]/60">
-                        <span class="flex items-center gap-2"><i class="fa-solid fa-users text-brand-main w-4"></i> คอร์สนี้เหมาะกับใคร?</span>
-                    </div>
-                    <div class="px-4 py-3 text-[11px] text-brand-text bg-[#F5ECE9]/30 border-t border-[#EFE5E2]">
-                        <p class="text-brand-subtext mb-3 leading-relaxed text-center">เหมาะกับพ่อค้าแม่ค้าหลายสายงาน มีหน้าเว็บรวบรวมรายละเอียดครบ จบในที่เดียว ช่วยลดการตอบซ้ำ และเพิ่มความน่าเชื่อถือ</p>
-                        <div class="space-y-3">
-                            <div class="bg-white p-3 rounded-xl border border-brand-light shadow-sm">
-                                <p class="font-bold text-brand-text mb-1"><i class="fa-solid fa-star text-brand-main text-[10px] mr-1"></i> ขายป้าย / ขายสติกเกอร์</p>
-                                <p class="text-brand-subtext">แสดงผลงาน เรตราคา โทนสี ขั้นตอนสั่งงาน และกฎกติกาครบจบ</p>
-                            </div>
-                            <div class="bg-white p-3 rounded-xl border border-brand-light shadow-sm">
-                                <p class="font-bold text-brand-text mb-1"><i class="fa-solid fa-star text-brand-main text-[10px] mr-1"></i> ปล่อยเช่ารหัส / รับเติมเกม</p>
-                                <p class="text-brand-subtext">แสดงแพ็กเกจ เรตราคา มีฟอร์มให้ลูกค้าคัดลอกไปจอง ลดการตอบซ้ำ</p>
-                            </div>
-                            <div class="bg-white p-3 rounded-xl border border-brand-light shadow-sm">
-                                <p class="font-bold text-brand-text mb-1"><i class="fa-solid fa-star text-brand-main text-[10px] mr-1"></i> สายคอมมิชชั่น / ทั่วไป</p>
-                                <p class="text-brand-subtext">แจ้งรายละเอียด เงื่อนไข พร้อมปุ่มกดเช็คคิวผ่าน Sheet ปรับใช้ได้หมด!</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Scope -->
-                <div class="border border-[#EFE5E2] rounded-2xl bg-white shadow-sm overflow-hidden">
-                    <div class="w-full flex justify-between items-center p-4 text-left font-medium text-sm text-brand-text bg-[#F5ECE9]/60">
-                        <span class="flex items-center gap-2"><i class="fa-solid fa-circle-info text-brand-main w-4"></i> ขอบเขตการสอน (ควรอ่าน)</span>
-                    </div>
-                    <div class="px-4 py-3 text-[11px] text-brand-subtext bg-[#F5ECE9]/30 border-t border-[#EFE5E2] leading-relaxed">
-                        <ul class="space-y-2">
-                            <li class="flex items-start gap-1.5"><i class="fa-solid fa-check text-brand-main mt-0.5"></i> <span>ภายในคอร์สมีเทมเพลตให้ใช้งานจำนวนมาก พร้อมสอนวิธีใช้งานครบทุกขั้นตอน <strong class="text-brand-text">ไม่ต้องเขียนโค้ดเอง</strong></span></li>
-                            <li class="flex items-start gap-1.5"><i class="fa-solid fa-check text-brand-main mt-0.5"></i> <span>เหมาะสำหรับผู้ไม่มีพื้นฐาน นำไปต่อยอดใช้งานได้จริง เน้นการใช้งานเทมเพลตและเทคนิคต่างๆ</span></li>
-                            <li class="flex items-start gap-1.5"><i class="fa-solid fa-triangle-exclamation text-brand-text mt-0.5"></i> <span><strong class="text-brand-text">ไม่ได้สอนสร้างเทมเพลตหรือเขียนโค้ดขึ้นมาใหม่</strong> (ไม่ลงลึกระดับผู้พัฒนา) ไม่ได้สอนจับมือเขียนโค้ด</span></li>
-                            <li class="flex items-start gap-1.5"><i class="fa-solid fa-check text-brand-main mt-0.5"></i> <span>เหมาะกับคนที่ต้องการความสะดวกสบาย มีตัวเลือกเยอะ อนาคตจะยังคงรูปแบบการสอนเน้นประยุกต์ใช้เป็นหลักค่ะ</span></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Rules -->
-                <div class="border border-[#EFE5E2] rounded-2xl bg-white shadow-sm overflow-hidden">
-                    <div class="w-full flex justify-between items-center p-4 text-left font-medium text-sm text-brand-text bg-[#F5ECE9]/60">
-                        <span class="flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation text-brand-text w-4"></i> กฎกลุ่ม (อ่านก่อนตัดสินใจ)</span>
-                    </div>
-                    <div class="px-4 py-3 text-[11px] text-brand-text bg-[#F5ECE9]/30 border-t border-[#EFE5E2]">
-                        <div class="space-y-3 pb-2 leading-relaxed">
-                            <p class="font-bold text-brand-text text-xs"><i class="fa-solid fa-thumbtack mr-1 text-brand-main"></i> กฎสำคัญของกลุ่มคอร์ส</p>
-                            <ul class="space-y-2 text-brand-subtext">
-                                <li class="flex items-start gap-1.5"><i class="fa-solid fa-lock text-brand-main mt-0.5"></i> <span><strong class="text-brand-text">เนื้อหาทั้งหมดเป็นลิขสิทธิ์ของคอร์ส:</strong> ห้ามนำออกนอกกลุ่มโดยเด็ดขาด</span></li>
-                                <li class="flex items-start gap-1.5"><i class="fa-solid fa-ban text-brand-text mt-0.5"></i> <span>ห้ามส่งต่อคลิปบทเรียน / ห้ามแจกไฟล์ทุกชนิด</span></li>
-                                <li class="flex items-start gap-1.5"><i class="fa-solid fa-ban text-brand-text mt-0.5"></i> <span>ห้ามนำเนื้อหาไปขายต่อ / ห้ามอัปโหลดลงที่อื่นทุกกรณี</span></li>
-                                <li class="flex items-start gap-1.5"><i class="fa-solid fa-bullhorn text-brand-main mt-0.5"></i> <span>ห้ามฝากร้าน โฆษณา แชร์สิ่งที่ไม่เกี่ยวข้อง (ลบทันที)</span></li>
-                                <li class="flex items-start gap-1.5"><i class="fa-solid fa-book text-brand-text mt-0.5"></i> <span><strong>ดูบทเรียนให้ครบก่อนสอบถาม:</strong> คำถามที่มีในบทเรียนแล้ว ทีมงานจะไม่ตอบซ้ำ</span></li>
-                            </ul>
-                            <div class="bg-[#F5ECE9] p-3 rounded-xl border border-[#EFE5E2] text-brand-text font-bold text-center mt-2">
-                                <i class="fa-solid fa-triangle-exclamation mr-1 text-brand-main"></i> หากตรวจพบการละเมิดกฎ<br>
-                                ปรับ 5,000.- ต่อ 1 กรณี<br>
-                                <span class="text-[10px] font-medium">(หากมีการเผยแพร่เนื้อหา ข้อความละ 500.- ดำเนินการทันที)</span>
-                            </div>
-                            <div class="border-t border-[#EFE5E2] pt-3 text-center">
-                                <strong class="text-brand-text flex items-center justify-center mb-2 text-xs"><i class="fa-solid fa-location-dot mr-1 text-brand-main"></i> เงื่อนไขเพิ่มเติม <i class="fa-solid fa-location-dot ml-1 text-brand-main"></i></strong>
-                                ขอความกรุณาไม่นำสิ่งที่สอนไปประยุกต์ใช้กับ <span class="text-brand-main font-bold">“ผลงานผู้อื่นโดยตรง”</span> นะคะ ให้ยึดตามเนื้อหา หรือออกแบบสไตล์ตัวเอง ไม่อ้างอิงผลงานท่านอื่นค่ะ
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ==================== PAGE 6: CONTACT ==================== -->
-        <div id="page-contact" class="page">
-            <div class="gradient-bg pt-10 px-6 pb-20 relative rounded-b-[40px]">
-                <div class="flex justify-between items-center mb-6">
-                    <div class="w-8 h-8 bg-brand-light/80 rounded-full flex items-center justify-center text-brand-main backdrop-blur-md shadow-sm cursor-pointer border border-brand-main/20" onclick="switchTab('page-home', 0)">
-                        <i class="fa-solid fa-chevron-left text-sm"></i>
-                    </div>
-                    <div class="text-brand-text font-outfit text-xl font-bold tracking-wide brand-title">PINKJULIELAND</div>
-                    <div class="w-8"></div>
-                </div>
-                <div class="text-center mb-2 z-10 relative">
-                    <h1 class="font-outfit text-sm font-medium text-brand-subtext">Contact Us</h1>
-                    <div class="text-2xl font-bold mt-1 text-brand-text flex justify-center items-center">
-                        ช่องทางติดต่อ <i class="fa-regular fa-comments ml-2 text-white drop-shadow-sm"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="px-5 -mt-10 relative z-10 pb-8">
-                <div class="bg-white rounded-[24px] shadow-app border border-brand-light p-8 flex justify-center gap-8">
-                    <a href="https://www.facebook.com/profile.php?id=61554192600355" target="_blank" class="flex flex-col items-center gap-2 group">
-                        <div class="w-16 h-16 rounded-full border-2 border-brand-light bg-brand-light/30 text-brand-main flex items-center justify-center text-3xl group-hover:bg-[#8A6F65] group-hover:text-white group-hover:border-[#8A6F65] transition-all shadow-sm">
-                            <i class="fa-brands fa-facebook-f"></i>
-                        </div>
-                        <span class="text-xs font-semibold text-brand-text group-hover:text-[#8A6F65] transition-colors">Facebook</span>
-                    </a>
-                    <a href="https://lin.ee/t0qYbAl" target="_blank" class="flex flex-col items-center gap-2 group">
-                        <div class="w-16 h-16 rounded-full border-2 border-brand-light bg-brand-light/30 text-brand-main flex items-center justify-center text-3xl group-hover:bg-brand-text group-hover:text-white group-hover:border-brand-text transition-all shadow-sm">
-                            <i class="fa-brands fa-line"></i>
-                        </div>
-                        <span class="text-xs font-semibold text-brand-text group-hover:text-brand-text transition-colors">Line</span>
-                    </a>
-                    <a href="https://www.instagram.com/pinkjulie.land" target="_blank" class="flex flex-col items-center gap-2 group">
-                        <div class="w-16 h-16 rounded-full border-2 border-brand-light bg-brand-light/30 text-brand-main flex items-center justify-center text-3xl group-hover:bg-brand-main group-hover:text-white group-hover:border-brand-main transition-all shadow-sm">
-                            <i class="fa-brands fa-instagram"></i>
-                        </div>
-                        <span class="text-xs font-semibold text-brand-text group-hover:text-brand-main transition-colors">Instagram</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- ==================== BOTTOM NAVIGATION ==================== -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-brand-light px-6 py-3 z-50 shadow-nav max-w-[430px] mx-auto rounded-t-3xl">
-            <div class="flex justify-between items-end pb-2">
-                <div class="flex flex-col items-center gap-1 cursor-pointer w-1/4 text-brand-main" onclick="switchTab('page-home', 0)" id="nav-item-0">
-                    <i class="fa-solid fa-house text-xl mb-0.5"></i>
-                    <span class="text-[9px] font-semibold">หน้าแรก</span>
-                </div>
-                <div class="flex flex-col items-center gap-1 cursor-pointer w-1/4 text-brand-subtext hover:text-brand-main transition-colors" onclick="switchTab('page-website', 1)" id="nav-item-1">
-                    <i class="fa-solid fa-laptop-code text-xl mb-0.5"></i>
-                    <span class="text-[9px] font-medium">รับทำเว็บ</span>
-                </div>
-                <div class="relative w-1/4 flex justify-center" onclick="switchTab('page-services', -1)">
-                    <div class="absolute -top-10 w-14 h-14 bg-gradient-to-tr from-brand-main to-pink-300 rounded-full flex items-center justify-center text-white text-2xl shadow-lg shadow-pink-300/50 border-4 border-white cursor-pointer transform hover:scale-105 transition-transform">
-                        <i class="fa-solid fa-layer-group"></i>
-                    </div>
-                    <span class="text-[9px] font-bold text-brand-main mt-5">บริการทั้งหมด</span>
-                </div>
-                <div class="flex flex-col items-center gap-1 cursor-pointer w-1/4 text-brand-subtext hover:text-brand-main transition-colors" onclick="switchTab('page-goodnotes', 2)" id="nav-item-2">
-                    <i class="fa-solid fa-book-open text-xl mb-0.5"></i>
-                    <span class="text-[9px] font-medium">แอป GN</span>
-                </div>
-                <div class="flex flex-col items-center gap-1 cursor-pointer w-1/4 text-brand-subtext hover:text-brand-main transition-colors" onclick="switchTab('page-contact', 3)" id="nav-item-3">
-                    <i class="fa-regular fa-comment-dots text-xl mb-0.5"></i>
-                    <span class="text-[9px] font-medium">ติดต่อ</span>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    <!-- Script for Tab Switching & Templates -->
+    <!-- Top Bar -->
+    <div class="w-full bg-white/90 backdrop-blur-md border-b border-pink-200 py-3 px-4 flex justify-between items-center text-xs font-slackey text-pink-400 font-medium tracking-wider sticky top-0 z-30 shadow-sm">
+        <div class="flex items-center gap-2">
+            <button onclick="toggleMenu()" class="p-1.5 hover:bg-pink-100 rounded-lg text-pink-500 transition">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <span>THITIPRA STUDIO ></span>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="openCustomerPortal()" class="bg-purple-100 hover:bg-purple-200 text-purple-700 px-3.5 py-1.5 rounded-full text-[11px] font-sans font-semibold transition flex items-center gap-1.5 shadow-sm border border-purple-200">
+                <i class="fas fa-cloud-download-alt"></i> คลังฟอนต์ของฉัน
+            </button>
+            <button onclick="checkAdminStatus()" class="bg-[#ffe4ef] hover:bg-[#ff85b3] text-[#ff85b3] hover:text-white px-3.5 py-1.5 rounded-full text-[11px] font-sans font-semibold transition flex items-center gap-1.5 shadow-sm border border-pink-200">
+                <i class="fas fa-lock"></i> แอดมิน
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto mt-6 sm:mt-8 px-4 relative z-0">
+        <div class="clean-box p-6 sm:p-10 border border-white">
+            
+            <div class="text-center mb-8 flex flex-col items-center relative">
+                <div class="relative w-24 h-24 sm:w-28 sm:h-28 mb-3 cursor-pointer select-none" onclick="checkAdminStatus()">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-[#ff85b3] to-[#ffb8d1] rounded-full opacity-40 blur-md"></div>
+                    <img src="IPCB5121.PNG" alt="Logo" class="relative w-full h-full object-cover rounded-full border-4 border-white shadow-md z-10 transition-transform active:scale-95">
+                </div>
+                <h1 class="font-slackey text-3xl sm:text-4xl font-bold text-[#ff85b3] text-shadow-cute mb-2">ThitipraStudio</h1>
+                <h2 class="font-slackey text-sm sm:text-base text-[#5c3a21] bg-[#ffe4ef] px-5 py-1.5 rounded-full shadow-sm">
+                    🎨 เว็บเครือ BR & PRH ทดลองพิมพ์และระบบส่งฟอนต์อัตโนมัติ
+                </h2>
+            </div>
+
+            <!-- Image Slider Section -->
+            <div class="mb-10 relative rounded-3xl overflow-hidden shadow-md group">
+                <div class="slider-track" id="slider-track">
+                    <div class="slide bg-gradient-to-r from-pink-200 to-pink-100 h-40 sm:h-52 flex flex-col items-center justify-center text-center p-4">
+                        <span class="font-slackey text-2xl sm:text-3xl text-[#5c3a21] mb-2">ฟอนต์ลายมือน่ารัก ลิขสิทธิ์แท้</span>
+                        <span class="text-xs sm:text-sm text-[#7b5338] bg-white/60 px-4 py-1 rounded-full">ระบบดึงอีเมลเข้า Google Drive อัตโนมัติ</span>
+                    </div>
+                    <div class="slide bg-gradient-to-r from-[#ffe4ef] to-[#ffb8d1] h-40 sm:h-52 flex flex-col items-center justify-center text-center p-4">
+                        <span class="font-slackey text-2xl sm:text-3xl text-[#5c3a21] mb-2">โหมดทดลองพิมพ์ & VS Mode</span>
+                        <span class="text-xs sm:text-sm text-[#7b5338] bg-white/60 px-4 py-1 rounded-full">พิมพ์ข้อความจริงเทียบไซส์ก่อนสั่งซื้อ</span>
+                    </div>
+                </div>
+                <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2" id="slider-dots">
+                    <button class="w-4 h-2 rounded-full bg-[#ff85b3] transition-all"></button>
+                    <button class="w-2 h-2 rounded-full bg-white/60 transition-all"></button>
+                </div>
+            </div>
+
+            <!-- กล่องเงื่อนไขลิขสิทธิ์ -->
+            <div class="mb-8 p-4 bg-[#fff0f5] border border-pink-200 rounded-2xl text-center text-xs sm:text-sm">
+                <p class="text-gray-700 font-semibold mb-1">
+                    👤 <span class="text-red-500">บุคคลทั่วไป:</span> 1 การสั่งซื้อ/อีเมล = ใช้ได้ 1 บุคคลเท่านั้น (ดึงสิทธิ์เฉพาะอีเมลที่แจ้ง)
+                </p>
+                <div class="bg-white/80 p-2.5 rounded-xl border border-pink-100 text-[#8B7355] text-xs inline-block">
+                    🏢 บริษัท/องค์กร/หจก. (จำกัดไม่เกิน 5 เครื่อง): เริ่มต้น <span class="text-red-500 font-bold">700.-</span>
+                </div>
+            </div>
+
+            <!-- แถบควบคุม & ค้นหา -->
+            <div class="mb-8 space-y-4">
+                <div class="flex justify-center">
+                    <button onclick="openVS()" class="bg-[#E6CCFF] hover:bg-purple-200 text-purple-900 font-bold px-6 py-2.5 rounded-full text-xs sm:text-sm transition shadow-sm flex items-center gap-2">
+                        ❤️ โหมดเปรียบเทียบฟอนต์ (VS Mode) 🎶
+                    </button>
+                </div>
+
+                <div class="flex gap-2 flex-wrap justify-center text-xs">
+                    <button id="btn-all" class="filter-btn px-4 py-2 rounded-full border border-pink-400 bg-pink-400 text-white font-medium transition" onclick="setPriceFilter('all')">ฟอนต์ทั้งหมด</button>
+                    <button id="btn-split" class="filter-btn px-4 py-2 rounded-full border border-pink-400 bg-white text-pink-500 font-medium transition" onclick="setPriceFilter('split')">ราคาแยกส่วนตัว & พาณิชย์</button>
+                    <button id="btn-single" class="filter-btn px-4 py-2 rounded-full border border-pink-400 bg-white text-pink-500 font-medium transition" onclick="setPriceFilter('single')">ใช้ได้ทั้ง 2 รูปแบบ</button>
+                </div>
+
+                <div class="max-w-md mx-auto relative">
+                    <input type="text" id="fontSearch" placeholder="🔍 ค้นหาชื่อฟอนต์..." oninput="filterFonts()" 
+                           class="w-full bg-white border-2 border-pink-100 rounded-full py-2.5 px-5 text-sm focus:outline-none focus:border-pink-400 shadow-sm">
+                </div>
+            </div>
+
+            <!-- แคตตาล็อกฟอนต์ -->
+            <div id="fonts-section">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="fontList"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ==================== MODALS ==================== -->
+
+    <!-- Modal 1: ทดลองพิมพ์เดี่ยว -->
+    <div id="fontModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-50 px-4">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-2xl border border-[#ff85b3] shadow-2xl modal-enter relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('fontModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full p-1.5">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+
+            <div class="text-center">
+                <select id="singleFontSelect" class="w-full bg-white border border-pink-200 rounded-xl p-2.5 text-xs text-center mb-2" onchange="changeSingleFont(this.value)"></select>
+                <h2 id="modalFontName" class="text-2xl font-bold text-[#ff85b3] mb-3"></h2>
+
+                <div class="flex justify-center gap-2 mb-3">
+                    <button type="button" id="weightBtn-normal" onclick="changeWeight('normal')" class="px-4 py-1.5 rounded-full text-xs font-bold border border-pink-300 bg-[#ff85b3] text-white">ปกติ (Regular)</button>
+                    <button type="button" id="weightBtn-bold" onclick="changeWeight('bold')" class="px-4 py-1.5 rounded-full text-xs font-bold border border-pink-300 bg-white text-pink-600">หนา (Bold)</button>
+                    <button type="button" id="weightBtn-light" onclick="changeWeight('light')" class="px-4 py-1.5 rounded-full text-xs font-bold border border-pink-300 bg-white text-pink-600">บาง (Light)</button>
+                </div>
+
+                <input type="text" id="testerInput" class="w-full border-2 border-pink-100 rounded-xl p-2.5 text-sm text-center mb-3 focus:outline-pink-400" placeholder="พิมพ์ข้อความทดสอบที่นี่..." oninput="refreshDisplay()">
+
+                <div class="tester-container">
+                    <div class="tester-bg-watermark"></div>
+                    <div id="testerDisplay">ฐิติประสตูดิโอ ThitipraStudio</div>
+                    <div id="modalPriceDisplay" class="p-3 text-xs font-semibold"></div>
+                </div>
+
+                <!-- ปุ่มแจ้งโอนเงิน & รับสิทธิ์ไดรฟ์ -->
+                <div class="flex flex-col gap-2 mt-4 text-xs font-semibold">
+                    <button type="button" onclick="openOrderModal()" class="w-full bg-gradient-to-r from-pink-400 to-pink-500 hover:from-pink-500 hover:to-pink-600 text-white p-3.5 rounded-2xl text-center font-bold transition flex items-center justify-center gap-2 shadow-md text-sm">
+                        💳 โอนเงิน / แจ้งสลิปเพื่อดึงเข้า Google Drive
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 7: ฟอร์มสั่งซื้อ โอนเงิน และแนบสลิปเพื่อดึงอีเมลเข้าไดรฟ์ -->
+    <div id="orderLicenseModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-50 px-4">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-lg border-2 border-pink-300 shadow-2xl modal-enter relative max-h-[92vh] overflow-y-auto">
+            <button onclick="closeModal('orderLicenseModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full p-1.5">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+
+            <div class="text-center mb-4">
+                <span class="text-xs bg-pink-100 text-pink-600 font-bold px-3 py-1 rounded-full">สั่งซื้อ & ดึงสิทธิ์ Google Drive</span>
+                <h3 class="font-slackey text-xl text-[#5c3a21] mt-2" id="orderModalFontTitle">ชื่อฟอนต์</h3>
+            </div>
+
+            <!-- กล่องข้อมูลบัญชีธนาคารสำหรับโอนเงิน -->
+            <div class="p-3.5 bg-gradient-to-r from-pink-50 to-pink-100 rounded-2xl border border-pink-200 text-xs mb-4 text-center">
+                <p class="font-bold text-gray-800">🏦 บัญชีสำหรับโอนเงิน</p>
+                <p class="text-sm font-bold text-pink-600 my-1">ธนาคารกสิกรไทย (K-Bank)</p>
+                <p class="font-mono text-base font-bold text-gray-900 bg-white py-1 px-3 rounded-xl border border-pink-200 inline-block">123-4-56789-0</p>
+                <p class="text-gray-600 mt-1">ชื่อบัญชี: ฐิติประ สตูดิโอ (Thitipra Studio)</p>
+            </div>
+
+            <form onsubmit="handleSubmitOrder(event)" class="space-y-4 text-xs">
+                <!-- เลือกสิทธิ์ -->
+                <div class="space-y-2">
+                    <label class="block font-bold text-gray-700">1. เลือกสิทธิ์การใช้งาน</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <label class="p-2.5 rounded-xl border-2 text-center cursor-pointer bg-pink-50 border-pink-200">
+                            <input type="radio" name="licenseSelect" value="personal" checked class="accent-pink-500 block mx-auto mb-1">
+                            <span class="font-bold block text-[11px]">ส่วนตัว</span>
+                            <span class="text-pink-600 font-bold" id="orderPricePersonal">฿79</span>
+                        </label>
+                        <label class="p-2.5 rounded-xl border-2 text-center cursor-pointer bg-yellow-50 border-yellow-200">
+                            <input type="radio" name="licenseSelect" value="commercial" class="accent-pink-500 block mx-auto mb-1">
+                            <span class="font-bold block text-[11px]">เชิงพาณิชย์</span>
+                            <span class="text-amber-700 font-bold" id="orderPriceCommercial">฿169</span>
+                        </label>
+                        <label class="p-2.5 rounded-xl border-2 text-center cursor-pointer bg-purple-50 border-purple-200">
+                            <input type="radio" name="licenseSelect" value="business" class="accent-pink-500 block mx-auto mb-1">
+                            <span class="font-bold block text-[11px]">นิติบุคคล</span>
+                            <span class="text-purple-700 font-bold">฿700</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- ช่องกรอก Gmail -->
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">2. อีเมล Gmail ของคุณ (เพื่อดึงสิทธิ์เข้า Google Drive เฉพาะเมลนี้)</label>
+                    <input required type="email" id="orderCustomerEmail" class="w-full border-2 border-pink-200 rounded-xl p-3 text-xs focus:outline-pink-400 bg-white" placeholder="yourname@gmail.com">
+                </div>
+
+                <!-- แนบรูปสลิปการโอนเงิน -->
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">3. แนบหลักฐานสลิปการโอนเงิน</label>
+                    <input required type="file" id="orderSlipFile" accept="image/*" class="w-full border border-pink-200 rounded-xl p-2 bg-white text-xs">
+                </div>
+
+                <div class="p-3 bg-green-50 border border-green-200 rounded-xl text-[11px] text-green-800">
+                    ✅ เมื่อแอดมินตรวจสอบสลิป ระบบจะดึงอีเมลนี้เข้า Google Drive อัตโนมัติทันที และสามารถล็อกอินเข้ามาดูย้อนหลังได้ตลอดเวลา
+                </div>
+
+                <button type="submit" id="btnSubmitOrder" class="w-full bg-[#ff85b3] hover:bg-pink-500 text-white font-bold py-3.5 rounded-2xl transition shadow-md text-sm">
+                    🚀 ยืนยันการสั่งซื้อและแจ้งชำระเงิน
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 8: Customer Portal (เข้าดูคลังฟอนต์ย้อนหลัง) -->
+    <div id="customerPortalModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-50 px-4">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-lg border-2 border-purple-300 shadow-2xl modal-enter relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('customerPortalModal')" class="absolute top-4 right-4 text-gray-400 hover:text-purple-600 bg-gray-50 rounded-full p-1.5">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+
+            <div class="text-center mb-4">
+                <span class="text-xs bg-purple-100 text-purple-700 font-bold px-3 py-1 rounded-full">Customer Access</span>
+                <h3 class="font-slackey text-xl text-purple-900 mt-2">คลังฟอนต์และสิทธิ์ Google Drive ของฉัน</h3>
+                <p class="text-xs text-gray-500">กรอก Gmail ที่เคยสั่งซื้อเพื่อเข้าถึงลิงก์ดาวน์โหลดไดรฟ์ย้อนหลัง</p>
+            </div>
+
+            <form onsubmit="handleCustomerLogin(event)" class="space-y-3 mb-6 text-xs">
+                <div class="flex gap-2">
+                    <input required type="email" id="portalEmailInput" class="flex-1 border-2 border-purple-200 rounded-xl p-2.5 focus:outline-purple-400 bg-white" placeholder="กรอก Gmail ที่ใช้สั่งซื้อ">
+                    <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-5 rounded-xl font-bold transition">ค้นหา</button>
+                </div>
+            </form>
+
+            <div id="portalOrderList" class="space-y-2.5 text-xs">
+                <div class="text-center text-gray-400 py-6">กรุณากรอกอีเมลเพื่อดูรายการฟอนต์ของคุณ</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 6: Admin Dashboard (จัดการฟอนต์ + อนุมัติสลิปและดึงสิทธิ์ไดรฟ์) -->
+    <div id="adminDashboardModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-50 px-4">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-3xl border-2 border-pink-300 shadow-2xl modal-enter relative max-h-[90vh] overflow-y-auto">
+            
+            <div class="flex justify-between items-center mb-4 border-b pb-3 flex-wrap gap-2">
+                <div class="flex gap-2 flex-wrap items-center">
+                    <button onclick="switchAdminTab('orders')" id="tabBtnOrders" class="font-slackey text-xs sm:text-sm px-4 py-1.5 rounded-full bg-[#ff85b3] text-white">รายการสั่งซื้อ & อนุมัติสลิป</button>
+                    <button onclick="switchAdminTab('fonts')" id="tabBtnFonts" class="font-slackey text-xs sm:text-sm px-4 py-1.5 rounded-full bg-gray-100 text-gray-600">จัดการฟอนต์</button>
+                    <button onclick="switchAdminTab('menus')" id="tabBtnMenus" class="font-slackey text-xs sm:text-sm px-4 py-1.5 rounded-full bg-gray-100 text-gray-600">Sidebar Menu</button>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="closeModal('adminDashboardModal')" class="text-xs bg-pink-100 text-pink-600 px-3.5 py-1.5 rounded-full hover:bg-pink-200 font-bold">กลับหน้าหลัก</button>
+                    <button type="button" onclick="adminLogout()" class="text-xs bg-red-50 text-red-500 px-3.5 py-1.5 rounded-full hover:bg-red-100">ออกจากระบบ</button>
+                </div>
+            </div>
+
+            <!-- Tab 0: อนุมัติสลิป & ยิงสิทธิ์ Google Drive อัตโนมัติ -->
+            <div id="adminTabOrders" class="space-y-3 text-xs">
+                <h4 class="font-bold text-gray-700 text-sm flex justify-between items-center">
+                    <span>รายการแจ้งโอนเงินรอตรวจสอบ (<span id="pendingOrdersCount">0</span>)</span>
+                    <button onclick="loadAdminOrders()" class="text-pink-500 font-normal hover:underline"><i class="fas fa-sync"></i> รีเฟรช</button>
+                </h4>
+                <div id="adminOrdersContainer" class="space-y-2 max-h-96 overflow-y-auto pr-1"></div>
+            </div>
+
+            <!-- Tab 1: จัดการฟอนต์ (ใส่ Folder ID ของ Google Drive ได้) -->
+            <div id="adminTabFonts" class="hidden">
+                <form id="fontForm" onsubmit="handleSaveFont(event)" class="space-y-3 text-xs bg-pink-50/40 p-4 rounded-2xl border border-pink-100 mb-6">
+                    <h4 id="formTitle" class="font-bold text-gray-700 text-sm mb-2"><i class="fas fa-plus-circle text-pink-400"></i> เพิ่มฟอนต์ใหม่</h4>
+                    <input type="hidden" id="editFontId" value="">
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">ชื่อภาษาไทย</label>
+                            <input required type="text" id="newFontTh" class="w-full border border-pink-200 rounded-xl p-2 bg-white" placeholder="เช่น สเตฟานี่">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">ชื่อภาษาอังกฤษ</label>
+                            <input required type="text" id="newFontEn" class="w-full border border-pink-200 rounded-xl p-2 bg-white" placeholder="เช่น Stephanie">
+                        </div>
+                    </div>
+
+                    <!-- ช่องใส่ Google Drive Folder ID เพื่อให้ระบบดึงสิทธิ์อัตโนมัติ -->
+                    <div class="p-3 bg-yellow-50/60 rounded-xl border border-yellow-200 space-y-2">
+                        <label class="block font-bold text-amber-900">📁 Google Drive Folder ID (สำหรับดึงสิทธิ์อีเมลอัตโนมัติ):</label>
+                        <input required type="text" id="newFontFolderId" class="w-full border border-yellow-300 rounded-lg p-2 bg-white" placeholder="ไอดีโฟลเดอร์ เช่น 1A2b3C4d5E6f_G7h8I9j">
+                        <span class="text-[10px] text-gray-500 block">* ดูจากลิงก์โฟลเดอร์ Google Drive: drive.google.com/drive/folders/<b>ตรงนี้คือ Folder ID</b></span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">ราคาส่วนตัว</label>
+                            <input required type="text" id="newFontP" class="w-full border border-pink-200 rounded-xl p-2 bg-white" placeholder="79.-">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">ราคาเชิงพาณิชย์</label>
+                            <input required type="text" id="newFontC" class="w-full border border-pink-200 rounded-xl p-2 bg-white" placeholder="169.-">
+                        </div>
+                    </div>
+
+                    <div class="border-t border-pink-100 pt-3">
+                        <label class="block font-medium text-gray-600 mb-1">ไฟล์ฟอนต์สำหรับทดลองพิมพ์ (.ttf / .otf)</label>
+                        <input type="file" id="fileRegular" accept=".ttf,.otf" class="w-full text-[10px]">
+                    </div>
+
+                    <button type="submit" id="saveBtn" class="w-full bg-[#ff85b3] text-white font-bold py-2.5 rounded-xl">+ บันทึกฟอนต์</button>
+                </form>
+                <div id="adminFontList" class="space-y-2 max-h-60 overflow-y-auto"></div>
+            </div>
+
+            <!-- Tab 2: จัดการ Sidebar -->
+            <div id="adminTabMenus" class="hidden">
+                <div id="adminMenuList" class="space-y-2"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal 5: Admin Login -->
+    <div id="adminLoginModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-50 px-4">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-sm border-2 border-pink-300 shadow-2xl modal-enter relative">
+            <button onclick="closeModal('adminLoginModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full p-1.5">✕</button>
+            <h3 class="font-slackey text-xl text-center text-[#ff85b3] mb-4">ADMIN ACCESS</h3>
+            <form onsubmit="handleAdminLogin(event)" class="space-y-3 text-xs">
+                <input required type="text" id="adminEmail" class="w-full border border-pink-200 rounded-xl p-2.5" placeholder="brprh หรืออีเมล">
+                <input required type="password" id="adminPass" class="w-full border border-pink-200 rounded-xl p-2.5" placeholder="Password">
+                <button type="submit" class="w-full bg-[#ff85b3] text-white font-bold py-2.5 rounded-xl">เข้าสู่ระบบ</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
     <script>
-        const templates = {
-            bright: [
-                { name: "✨ ธีมสดใส - ลูกอม", url: "https://t03.cozyw75.workers.dev" },
-                { name: "✨ ธีมสดใส - ผลไม้", url: "https://t04.cozyw75.workers.dev" },
-                { name: "✨ ธีมสดใส - ท้องฟ้า", url: "https://t05.cozyw75.workers.dev" }
-            ],
-            dark: [
-                { name: "🌙 ธีมมืด - หรูหรา", url: "https://t06.cozyw75.workers.dev" },
-                { name: "🌙 ธีมมืด - มินิมอล", url: "https://t07.cozyw75.workers.dev" },
-                { name: "🌙 ธีมมืด - คลาสสิค", url: "https://t08.cozyw75.workers.dev" }
-            ],
-            pastel: [
-                { name: "🎀 ธีมพาสเทล - หวานแหวว", url: "https://t09.cozyw75.workers.dev" },
-                { name: "🎀 ธีมพาสเทล - ละมุน", url: "https://t10.cozyw75.workers.dev" },
-                { name: "🎀 ธีมพาสเทล - เจ้าหญิง", url: "https://t11.cozyw75.workers.dev" }
-            ]
-        };
+        /* 1. ตั้งค่า Supabase & Google Apps Script Webhook */
+        const SUPABASE_URL = 'https://czyjemcsufzrvkcfzfwv.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_z10rntPACdi5LPL7lZe4yg_Ka2eCXPY';
+        
+        // วาง Web App URL จาก Google Apps Script ที่ Deploy มา
+        const GOOGLE_APPS_SCRIPT_WEBHOOK = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
 
-        const titles = {
-            bright: "<i class='fa-solid fa-sun text-brand-main mr-2'></i> เทมเพลตโทนสดใส",
-            dark: "<i class='fa-solid fa-moon text-[#8A6F65] mr-2'></i> เทมเพลตโทนมืด",
-            pastel: "<i class='fa-solid fa-candy-cane text-brand-text mr-2'></i> เทมเพลตพาสเทล"
-        };
+        let supabaseClient = null;
+        if (typeof supabase !== 'undefined') {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
 
-        function switchTab(pageId, navIndex) {
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            document.getElementById(pageId).classList.add('active');
-            window.scrollTo(0, 0);
+        let fonts = [];
+        let currentFont = null;
+        let currentWeight = 'normal';
+        let isAdminLoggedIn = false;
 
-            if(pageId !== 'page-services') {
-                document.getElementById('template-links-container').classList.add('hidden');
+        async function init() {
+            await loadFontsOnline();
+            populateSelects();
+            filterFonts();
+        }
+
+        /* 2. การสั่งซื้อ โอนเงิน และส่งสลิป */
+        function openOrderModal() {
+            if (!currentFont) return;
+            document.getElementById('orderModalFontTitle').innerText = `${currentFont.th} (${currentFont.en})`;
+            document.getElementById('orderPricePersonal').innerText = `฿${currentFont.p}`;
+            document.getElementById('orderPriceCommercial').innerText = `฿${currentFont.c}`;
+            openModal('orderLicenseModal');
+        }
+
+        async function handleSubmitOrder(e) {
+            e.preventDefault();
+            if (!currentFont) return;
+
+            const email = document.getElementById('orderCustomerEmail').value.trim();
+            const slipFile = document.getElementById('orderSlipFile').files[0];
+            const license = document.querySelector('input[name="licenseSelect"]:checked').value;
+            const price = (license === 'personal') ? currentFont.p : (license === 'commercial') ? currentFont.c : '700.-';
+
+            const btn = document.getElementById('btnSubmitOrder');
+            btn.innerText = 'กำลังส่งข้อมูลและอัปโหลดสลิป...';
+            btn.disabled = true;
+
+            try {
+                // อัปโหลดสลิปขึ้น Supabase Storage
+                let slipUrl = '';
+                if (slipFile && supabaseClient) {
+                    const ext = slipFile.name.split('.').pop();
+                    const path = `slips/slip_${Date.now()}.${ext}`;
+                    const { error } = await supabaseClient.storage.from('font-files').upload(path, slipFile);
+                    if (!error) {
+                        const { data } = supabaseClient.storage.from('font-files').getPublicUrl(path);
+                        slipUrl = data.publicUrl;
+                    }
+                }
+
+                // บันทึกคำสั่งซื้อลงตาราง orders
+                if (supabaseClient) {
+                    await supabaseClient.from('orders').insert([{
+                        font_id: currentFont.id,
+                        font_name: `${currentFont.th} (${currentFont.en})`,
+                        license_type: license,
+                        price: price,
+                        customer_email: email,
+                        slip_url: slipUrl,
+                        folder_id: currentFont.folder_id || '',
+                        status: 'pending'
+                    }]);
+                }
+
+                alert('แจ้งชำระเงินเรียบร้อยแล้วค่ะ! แอดมินจะตรวจสอบสลิปและระบบจะดึงอีเมลเข้า Google Drive ทันที');
+                closeModal('orderLicenseModal');
+            } catch (err) {
+                alert('เกิดข้อผิดพลาด: ' + err.message);
+            } finally {
+                btn.innerText = '🚀 ยืนยันการสั่งซื้อและแจ้งชำระเงิน';
+                btn.disabled = false;
+            }
+        }
+
+        /* 3. ระบบลูกค้าล็อกอินเช็คคลังฟอนต์ย้อนหลัง */
+        function openCustomerPortal() {
+            openModal('customerPortalModal');
+        }
+
+        async function handleCustomerLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('portalEmailInput').value.trim();
+            const container = document.getElementById('portalOrderList');
+            container.innerHTML = '<div class="text-center py-4 text-purple-600">กำลังค้นหาข้อมูล...</div>';
+
+            if (!supabaseClient) return;
+
+            const { data, error } = await supabaseClient
+                .from('orders')
+                .select('*')
+                .eq('customer_email', email)
+                .order('created_at', { ascending: false });
+
+            if (error || !data || data.length === 0) {
+                container.innerHTML = `<div class="p-4 bg-red-50 text-red-600 rounded-xl text-center">ไม่พบประวัติการสั่งซื้อสำหรับอีเมล ${email}</div>`;
+                return;
             }
 
-            if (navIndex >= 0) {
-                for (let i = 0; i <= 3; i++) {
-                    const item = document.getElementById(`nav-item-${i}`);
-                    if (item) {
-                        if (i === navIndex) {
-                            item.classList.remove('text-brand-subtext');
-                            item.classList.add('text-brand-main');
-                            item.querySelector('span').classList.replace('font-medium', 'font-semibold');
-                        } else {
-                            item.classList.remove('text-brand-main');
-                            item.classList.add('text-brand-subtext');
-                            item.querySelector('span').classList.replace('font-semibold', 'font-medium');
+            container.innerHTML = '';
+            data.forEach(order => {
+                const isApproved = order.status === 'approved';
+                const item = document.createElement('div');
+                item.className = 'p-3.5 bg-purple-50/50 rounded-2xl border border-purple-100 flex justify-between items-center';
+                item.innerHTML = `
+                    <div>
+                        <div class="font-bold text-gray-800">${order.font_name}</div>
+                        <div class="text-[10px] text-gray-500">สิทธิ์: ${order.license_type} | สถานะ: ${isApproved ? '<span class="text-green-600 font-bold">อนุมัติแล้ว</span>' : '<span class="text-amber-600 font-bold">รอตรวจสอบสลิป</span>'}</div>
+                    </div>
+                    <div>
+                        ${isApproved && order.drive_url ? 
+                            `<a href="${order.drive_url}" target="_blank" class="bg-[#06C755] hover:bg-green-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 shadow-sm">
+                                <i class="fab fa-google-drive"></i> เข้าโฟลเดอร์ไดรฟ์
+                            </a>` : 
+                            `<span class="text-[11px] text-gray-400">รอเปิดสิทธิ์</span>`
                         }
-                    }
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        /* 4. ระบบหลังบ้านแอดมิน อนุมัติสลิป & สั่ง Google Apps Script ดึงเมลเข้าไดรฟ์ */
+        async function loadAdminOrders() {
+            const container = document.getElementById('adminOrdersContainer');
+            const badge = document.getElementById('pendingOrdersCount');
+            if (!supabaseClient) return;
+
+            const { data } = await supabaseClient.from('orders').select('*').order('created_at', { ascending: false });
+            if (!data) return;
+
+            const pending = data.filter(o => o.status === 'pending');
+            badge.innerText = pending.length;
+
+            container.innerHTML = '';
+            data.forEach(order => {
+                const isPending = order.status === 'pending';
+                const row = document.createElement('div');
+                row.className = `p-3 rounded-2xl border ${isPending ? 'bg-amber-50/60 border-amber-200' : 'bg-gray-50 border-gray-100'} flex justify-between items-center flex-wrap gap-2`;
+                row.innerHTML = `
+                    <div>
+                        <span class="font-bold text-gray-800">${order.font_name}</span> (${order.price})
+                        <div class="text-[11px] text-gray-600">เมลลูกค้า: <b>${order.customer_email}</b></div>
+                        ${order.slip_url ? `<a href="${order.slip_url}" target="_blank" class="text-pink-500 underline text-[10px]"><i class="fas fa-receipt"></i> ดูรูปสลิป</a>` : '<span class="text-[10px] text-gray-400">ไม่มีรูปสลิป</span>'}
+                    </div>
+                    <div class="flex items-center gap-2">
+                        ${isPending ? 
+                            `<button onclick="approveOrder('${order.id}', '${order.customer_email}', '${order.folder_id}')" class="bg-[#06C755] hover:bg-green-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs shadow-sm">
+                                ✅ อนุมัติ & ดึงสิทธิ์ไดรฟ์
+                            </button>` : 
+                            `<span class="text-green-600 font-bold text-xs"><i class="fas fa-check-circle"></i> อนุมัติแล้ว</span>`
+                        }
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        async function approveOrder(orderId, email, folderId) {
+            if (!confirm(`ยืนยันการอนุมัติและดึงอีเมล "${email}" เข้า Google Drive หรือไม่?`)) return;
+
+            let driveUrl = `https://drive.google.com/drive/folders/${folderId}`;
+
+            // ยิงคำสั่งไปยัง Google Apps Script เพื่อดึงสิทธิ์เมลเข้าโฟลเดอร์ทันที
+            if (GOOGLE_APPS_SCRIPT_WEBHOOK && !GOOGLE_APPS_SCRIPT_WEBHOOK.includes('YOUR_SCRIPT_ID')) {
+                try {
+                    const response = await fetch(GOOGLE_APPS_SCRIPT_WEBHOOK, {
+                        method: 'POST',
+                        body: JSON.stringify({ email: email, folder_id: folderId })
+                    });
+                    const resJson = await response.json();
+                    if (resJson.drive_url) driveUrl = resJson.drive_url;
+                } catch (e) {
+                    console.error('Google Drive Webhook Error:', e);
                 }
-            } else {
-                for (let i = 0; i <= 3; i++) {
-                    const item = document.getElementById(`nav-item-${i}`);
-                    if (item) {
-                        item.classList.remove('text-brand-main');
-                        item.classList.add('text-brand-subtext');
-                        item.querySelector('span').classList.replace('font-semibold', 'font-medium');
-                    }
+            }
+
+            // อัปเดตสถานะในตาราง orders
+            if (supabaseClient) {
+                await supabaseClient.from('orders').update({
+                    status: 'approved',
+                    drive_url: driveUrl
+                }).eq('id', orderId);
+            }
+
+            alert(`ดึงอีเมล ${email} เข้า Google Drive เรียบร้อยแล้ว`);
+            loadAdminOrders();
+        }
+
+        /* 5. ฟังก์ชันทั่วไป (โหลดฟอนต์, แสดงผล, Modal) */
+        async function loadFontsOnline() {
+            if (supabaseClient) {
+                const { data } = await supabaseClient.from('fonts').select('*').order('order_index', { ascending: true });
+                if (data) fonts = data;
+            }
+            for (const f of fonts) {
+                if (f.file_regular) {
+                    try {
+                        const fontFace = new FontFace(f.en, `url(${f.file_regular})`);
+                        await fontFace.load();
+                        document.fonts.add(fontFace);
+                    } catch (e) {}
                 }
             }
         }
 
-        function toggleCategory(cat) {
-            const container = document.getElementById('template-links-container');
-            const titleEl = document.getElementById('template-title');
-            const listEl = document.getElementById('template-list');
-
-            if (!container || !titleEl || !listEl) return;
-
-            titleEl.innerHTML = titles[cat];
-            listEl.innerHTML = '';
-
-            templates[cat].forEach(tmpl => {
-                const a = document.createElement('a');
-                a.href = tmpl.url;
-                a.target = '_blank';
-                a.className = 'block w-full p-3 mb-2 rounded-xl bg-brand-light/30 border border-brand-light hover:bg-[#FFD1E0] hover:border-[#FF9EBB] transition-colors text-xs font-medium text-brand-text flex justify-between items-center group';
-                a.innerHTML = `
-                    <span>${tmpl.name}</span>
-                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-brand-main opacity-50 group-hover:opacity-100 transition-opacity"></i>
-                `;
-                listEl.appendChild(a);
+        function populateSelects() {
+            const select = document.getElementById('singleFontSelect');
+            select.innerHTML = "";
+            fonts.forEach(f => {
+                select.innerHTML += `<option value="${f.en}">${f.th} (${f.en})</option>`;
             });
-
-            container.classList.remove('hidden');
-            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
+
+        function filterFonts() {
+            const list = document.getElementById('fontList');
+            list.innerHTML = "";
+            fonts.forEach((f, i) => {
+                const card = document.createElement('div');
+                card.className = 'font-card';
+                card.innerHTML = `
+                    <div class="px-4 pt-3 font-semibold text-gray-800 text-sm flex justify-between items-center" style="font-family:'${f.en}'">
+                        <span>${(i + 1).toString().padStart(2, '0')}. ${f.th} (${f.en})</span>
+                        <span class="text-[10px] text-pink-400"><i class="fas fa-hand-pointer"></i> ลองพิมพ์</span>
+                    </div>
+                    <div class="preview-area-card" style="font-family:'${f.en}'">สวัสดี hello</div>
+                    <div class="p-3 text-center text-xs price-split-style flex justify-between items-center">
+                        <span class="font-medium">ส่วนตัว: ${f.p} | พาณิชย์: ${f.c}</span>
+                        <button class="bg-white border border-[#06C755] text-[#06C755] px-2.5 py-1 rounded-full text-[11px]">สั่งซื้อ</button>
+                    </div>
+                `;
+                card.onclick = () => openModal(f);
+                list.appendChild(card);
+            });
+        }
+
+        function openModal(f) {
+            if (typeof f === 'string') {
+                document.getElementById(f).classList.remove('hidden');
+                document.getElementById(f).style.display = 'flex';
+                return;
+            }
+            currentFont = f;
+            document.getElementById('fontModal').classList.remove('hidden');
+            document.getElementById('fontModal').style.display = 'flex';
+            document.getElementById('singleFontSelect').value = f.en;
+            document.getElementById('modalFontName').innerText = `${f.th} (${f.en})`;
+            document.getElementById('modalFontName').style.fontFamily = f.en;
+            document.getElementById('modalPriceDisplay').innerText = `ส่วนตัว: ${f.p} | เชิงพาณิชย์: ${f.c}`;
+            refreshDisplay();
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('side-menu');
+            const overlay = document.getElementById('menu-overlay');
+            if (menu.classList.contains('-translate-x-full')) {
+                menu.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                overlay.classList.remove('opacity-0');
+            } else {
+                menu.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function refreshDisplay() {
+            const txt = document.getElementById('testerInput').value || "ฐิติประสตูดิโอ ThitipraStudio";
+            const display = document.getElementById('testerDisplay');
+            display.innerText = txt;
+            display.style.fontFamily = currentFont ? currentFont.en : 'sans-serif';
+        }
+
+        function checkAdminStatus() {
+            if (isAdminLoggedIn) {
+                loadAdminOrders();
+                openModal('adminDashboardModal');
+            } else {
+                openModal('adminLoginModal');
+            }
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('adminEmail').value.trim();
+            const p = document.getElementById('adminPass').value.trim();
+            if ((u === 'brprh' && p === 'pleng235') || (u === 'brprhfont@gmail.com' && p === 'brprhthitiprastudio')) {
+                isAdminLoggedIn = true;
+                closeModal('adminLoginModal');
+                loadAdminOrders();
+                openModal('adminDashboardModal');
+            } else {
+                alert('รหัสผ่านไม่ถูกต้อง');
+            }
+        }
+
+        function adminLogout() {
+            isAdminLoggedIn = false;
+            closeModal('adminDashboardModal');
+        }
+
+        function switchAdminTab(tab) {
+            ['orders', 'fonts', 'menus'].forEach(t => {
+                document.getElementById(`adminTab${t.charAt(0).toUpperCase() + t.slice(1)}`).classList.add('hidden');
+                document.getElementById(`tabBtn${t.charAt(0).toUpperCase() + t.slice(1)}`).className = 'font-slackey text-xs sm:text-sm px-4 py-1.5 rounded-full bg-gray-100 text-gray-600';
+            });
+            document.getElementById(`adminTab${tab.charAt(0).toUpperCase() + tab.slice(1)}`).classList.remove('hidden');
+            document.getElementById(`tabBtn${tab.charAt(0).toUpperCase() + tab.slice(1)}`).className = 'font-slackey text-xs sm:text-sm px-4 py-1.5 rounded-full bg-[#ff85b3] text-white';
+            if (tab === 'orders') loadAdminOrders();
+        }
+
+        init();
     </script>
 </body>
 </html>
-
