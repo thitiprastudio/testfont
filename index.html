@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ThitipraStudio & Pinkjulieland - Font Store</title>
+    <title>ThitipraStudio - Font Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -82,17 +82,19 @@
                     <span class="text-brand-dark"><i class="fas fa-columns"></i></span> โหมดเปรียบเทียบ (VS Mode)
                 </button>
                 <button onclick="switchTab('page-customer', 1); toggleMenu();" class="w-full text-left flex items-center gap-3 p-2.5 bg-pink-50 hover:bg-pink-100 rounded-xl transition text-pink-700 font-semibold border border-pink-100">
-                    <span class="text-brand-dark"><i class="fas fa-folder-open"></i></span> ประวัติสั่งซื้อ & ใบเสร็จ / ไดรฟ์
+                    <span class="text-brand-dark"><i class="fas fa-user-circle"></i></span> เข้าสู่ระบบลูกค้า / แอดมิน
                 </button>
 
                 <div class="border-t border-b border-pink-100 py-2 my-2 space-y-1">
-                    <button onclick="openDynamicNotice('external'); toggleMenu();" class="w-full text-left flex items-center gap-2.5 p-2 bg-gradient-to-r from-amber-50 to-pink-50 hover:from-amber-100 rounded-xl text-amber-900 border border-amber-200">
+                    <a href="https://thitiprastudio.pages.dev/" target="_blank" class="w-full text-left flex items-center gap-2.5 p-2 bg-gradient-to-r from-amber-50 to-pink-50 hover:from-amber-100 rounded-xl text-amber-900 border border-amber-200 block">
                         <span class="text-amber-500"><i class="fas fa-store"></i></span>
                         <div>
-                            <div class="font-bold">สั่งซื้อฟอนต์เครืออื่นๆ</div>
-                            <div class="text-[9px] text-pink-500">ตัวแทนจำหน่ายอย่างถูกต้อง ✨</div>
+                            <div class="font-bold flex items-center gap-1">
+                                สั่งซื้อฟอนต์เครืออื่นๆ <i class="fas fa-arrow-up-right-from-square text-[9px] text-pink-500"></i>
+                            </div>
+                            <div class="text-[9px] text-pink-500">ตัวแทนจำหน่ายอย่างถูกต้อง ✨ (คลิกเปิดเว็บ)</div>
                         </div>
-                    </button>
+                    </a>
                     <button onclick="openRulesModal('general'); toggleMenu();" class="w-full text-left flex items-center gap-2.5 p-2 hover:bg-pink-50 rounded-xl text-pink-700 font-semibold">
                         <span class="text-brand-dark"><i class="fas fa-scale-balanced"></i></span> เงื่อนไข & กฎการใช้งานฟอนต์
                     </button>
@@ -140,7 +142,7 @@
 
             <div class="bg-white rounded-t-[35px] -mt-14 relative z-10 pt-12 px-4 shadow-app pb-8">
                 
-                <!-- FEATURED FONTS SLIDER (แนะนำฟอนต์) -->
+                <!-- FEATURED FONTS SLIDER -->
                 <div id="featuredSection" class="mb-5 hidden">
                     <div class="flex items-center justify-between mb-2 px-1">
                         <span class="text-xs font-bold text-brand-dark flex items-center gap-1.5">
@@ -178,24 +180,100 @@
             </div>
         </div>
 
-        <!-- ==================== PAGE 2: เข้าสู่ระบบลูกค้า ==================== -->
+        <!-- ==================== PAGE 2: เข้าสู่ระบบ (ลูกค้า & แอดมิน) ==================== -->
         <div id="page-customer" class="page">
             <div class="gradient-bg pt-8 px-5 pb-16 relative rounded-b-[40px] text-center">
-                <div class="text-brand-text font-outfit text-xl font-bold">คลังฟอนต์ของฉัน</div>
-                <p class="text-xs text-brand-subtext mt-1">ตรวจสอบประวัติคำสั่งซื้อ & รับสิทธิ์ Google Drive</p>
+                <div class="text-brand-text font-outfit text-xl font-bold">ระบบสมาชิก & เข้าสู่ระบบ</div>
+                <p class="text-xs text-brand-subtext mt-1">เลือกระบบเข้าใช้งานสำหรับลูกค้า หรือ แอดมิน</p>
             </div>
             
             <div class="px-5 -mt-8 relative z-10 space-y-4">
                 <div class="bg-white rounded-3xl p-5 shadow-sm border border-pink-100 text-xs">
-                    <form onsubmit="handleCustomerVaultAccess(event)" class="space-y-3">
-                        <label class="block font-bold text-slate-700">กรอก Gmail ที่ใช้สั่งซื้อฟอนต์:</label>
-                        <input required type="email" id="vaultCheckEmail" class="w-full border-2 border-pink-100 p-2.5 rounded-xl outline-none focus:border-brand-main bg-slate-50 text-xs" placeholder="example@gmail.com">
-                        <button type="submit" class="w-full bg-brand-main hover:bg-brand-dark text-white font-bold py-2.5 rounded-xl shadow-sm transition">
-                            <i class="fas fa-search mr-1"></i> ตรวจสอบสิทธิ์ดาวน์โหลด
+                    
+                    <div class="flex bg-pink-50 p-1 rounded-2xl mb-4 font-bold text-[11px]">
+                        <button id="btn-tab-user" onclick="switchLoginSection('user')" class="flex-1 py-2 rounded-xl bg-brand-main text-white shadow-xs transition">
+                            <i class="fas fa-user mr-1"></i> ลูกค้าเข้าใช้งาน
                         </button>
-                    </form>
+                        <button id="btn-tab-admin" onclick="switchLoginSection('admin')" class="flex-1 py-2 rounded-xl text-brand-dark hover:bg-pink-100 transition">
+                            <i class="fas fa-user-shield mr-1"></i> แอดมินเข้าระบบ
+                        </button>
+                    </div>
 
-                    <div id="vaultResultList" class="mt-4 space-y-2 max-h-80 overflow-y-auto hidden pt-3 border-t"></div>
+                    <!-- ส่วนลูกค้า -->
+                    <div id="section-user-login" class="space-y-4">
+                        <div class="flex gap-2 justify-center border-b border-pink-100 pb-2.5 text-[11px]">
+                            <button id="btn-sub-vault" onclick="toggleUserSubTab('vault')" class="font-bold text-pink-600 border-b-2 border-brand-main pb-1">
+                                ตรวจสอบสิทธิ์ไดรฟ์
+                            </button>
+                            <button id="btn-sub-register" onclick="toggleUserSubTab('register')" class="text-gray-400 hover:text-brand-dark pb-1">
+                                ✨ สมัครสมาชิกใหม่
+                            </button>
+                        </div>
+
+                        <!-- ตรวจสอบสิทธิ์ไดรฟ์ -->
+                        <div id="user-vault-box">
+                            <form onsubmit="handleCustomerVaultAccess(event)" class="space-y-3">
+                                <label class="block font-bold text-slate-700">กรอก Gmail ที่ใช้สั่งซื้อ:</label>
+                                <input required type="email" id="vaultCheckEmail" class="w-full border-2 border-pink-100 p-2.5 rounded-xl outline-none focus:border-brand-main bg-slate-50 text-xs" placeholder="example@gmail.com">
+                                <button type="submit" class="w-full bg-brand-main hover:bg-brand-dark text-white font-bold py-2.5 rounded-xl shadow-sm transition">
+                                    <i class="fas fa-search mr-1"></i> ตรวจสอบสิทธิ์ดาวน์โหลดฟอนต์
+                                </button>
+                            </form>
+                            <div id="vaultResultList" class="mt-4 space-y-2 max-h-80 overflow-y-auto hidden pt-3 border-t"></div>
+                        </div>
+
+                        <!-- สมัครสมาชิกใหม่ (ลง Google Sheet) -->
+                        <div id="user-register-box" class="hidden">
+                            <form onsubmit="handleCustomerRegister(event)" class="space-y-2.5">
+                                <div class="bg-amber-50 text-amber-900 p-2 rounded-xl text-[10px] text-center font-medium">
+                                    📝 ข้อมูลจะถูกบันทึกลงในระบบ Google Sheet ของร้านทันที
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-slate-700 text-[10px] mb-1">ชื่อ - นามสกุล หรือชื่อเล่น *</label>
+                                    <input required type="text" id="regCustomerName" placeholder="เช่น น้องเพลง หรือ สมศรี ใจดี" class="w-full border border-pink-200 p-2 rounded-xl outline-none focus:border-brand-main bg-slate-50 text-xs">
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-slate-700 text-[10px] mb-1">เบอร์โทรศัพท์ หรือ LINE ID *</label>
+                                    <input required type="text" id="regCustomerContact" placeholder="เช่น 0891234567 หรือ @lineid" class="w-full border border-pink-200 p-2 rounded-xl outline-none focus:border-brand-main bg-slate-50 text-xs">
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-slate-700 text-[10px] mb-1">Gmail สำหรับใช้งาน Drive *</label>
+                                    <input required type="email" id="regCustomerEmail" placeholder="example@gmail.com" class="w-full border border-pink-200 p-2 rounded-xl outline-none focus:border-brand-main bg-slate-50 text-xs">
+                                </div>
+                                <div id="regProgress" class="hidden text-center text-xs text-pink-600 font-semibold py-1">
+                                    <i class="fas fa-spinner fa-spin mr-1"></i> กำลังบันทึกข้อมูลลง Google Sheet...
+                                </div>
+                                <button type="submit" id="btnSubmitRegister" class="w-full bg-[#06C755] hover:bg-green-600 text-white font-bold py-2.5 rounded-xl shadow-sm transition">
+                                    <i class="fas fa-paper-plane mr-1"></i> ยืนยันการสมัครสมาชิก
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- ส่วนแอดมิน -->
+                    <div id="section-admin-login" class="hidden space-y-3">
+                        <div class="text-center mb-2">
+                            <span class="text-[10px] bg-purple-100 text-purple-700 font-bold px-2 py-0.5 rounded-full">Admin Only</span>
+                            <h4 class="font-bold text-slate-800 text-sm mt-1">เข้าสู่ระบบจัดการแอดมิน</h4>
+                        </div>
+                        <form onsubmit="handleAdminTabLogin(event)" class="space-y-3">
+                            <div>
+                                <label class="block font-bold text-slate-700 text-[10px] mb-1">Username</label>
+                                <input required type="text" id="adminTabUser" placeholder="กรอก Username" class="w-full border border-pink-200 p-2 rounded-xl outline-none focus:border-purple-400 bg-slate-50 text-xs">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-700 text-[10px] mb-1">Password</label>
+                                <input required type="password" id="adminTabPass" placeholder="กรอก Password" class="w-full border border-pink-200 p-2 rounded-xl outline-none focus:border-purple-400 bg-slate-50 text-xs">
+                            </div>
+                            <div id="adminTabErr" class="hidden text-rose-500 text-[10px] text-center font-bold">
+                                Username หรือ Password ไม่ถูกต้อง!
+                            </div>
+                            <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 rounded-xl shadow-sm transition">
+                                <i class="fas fa-sign-in-alt mr-1"></i> เข้าสู่ระบบแอดมิน
+                            </button>
+                        </form>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -206,11 +284,10 @@
                 <div class="text-brand-text font-outfit text-xl font-bold">ถาม-ตอบ Q&A</div>
                 <p class="text-xs text-brand-subtext mt-1">รวมข้อสงสัยที่พบบ่อย สไตล์ห้องแชทสนทนา</p>
             </div>
-
             <div class="px-4 -mt-8 relative z-10 space-y-3" id="qaChatContainer"></div>
         </div>
 
-        <!-- ==================== PAGE 4: ติดต่อ (ไลน์@) ==================== -->
+        <!-- ==================== PAGE 4: ติดต่อ ==================== -->
         <div id="page-contact" class="page">
             <div class="gradient-bg pt-8 px-5 pb-16 relative rounded-b-[40px] text-center">
                 <div class="text-brand-text font-outfit text-xl font-bold">ติดต่อสอบถาม</div>
@@ -236,7 +313,7 @@
                 </div>
                 <div class="flex flex-col items-center gap-0.5 cursor-pointer text-brand-subtext hover:text-brand-main" onclick="switchTab('page-customer', 1)" id="nav-item-1">
                     <i class="fa-solid fa-user text-lg"></i>
-                    <span class="font-medium">เข้าสู่ระบบลูกค้า</span>
+                    <span class="font-medium">เข้าระบบ/สมัคร</span>
                 </div>
                 <div class="flex flex-col items-center gap-0.5 cursor-pointer text-brand-subtext hover:text-brand-main" onclick="switchTab('page-qa', 2)" id="nav-item-2">
                     <i class="fa-solid fa-comments text-lg"></i>
@@ -249,226 +326,6 @@
             </div>
         </div>
 
-    </div>
-
-    <!-- ==================== MODAL: กฎและเงื่อนไขการใช้งานฟอนต์ทั้งหมด ==================== -->
-    <div id="rulesModal" class="modal">
-        <div class="modal-content" style="max-width: 440px;">
-            <button onclick="closeModal('rulesModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
-            <div class="text-center mb-3">
-                <span class="text-[10px] bg-pink-100 text-pink-600 font-bold px-2.5 py-0.5 rounded-full">Terms & Conditions</span>
-                <h3 class="font-bold text-sm text-brand-text mt-1">📜 กฎและเงื่อนไขการใช้งานฟอนต์</h3>
-            </div>
-
-            <div class="flex gap-1 overflow-x-auto no-scrollbar pb-2 mb-2 border-b border-pink-100 text-[10px] font-bold">
-                <button type="button" id="tab-rule-general" onclick="switchRuleTab('general')" class="px-2.5 py-1.5 rounded-xl bg-brand-main text-white shrink-0 transition">กฎทั่วไป</button>
-                <button type="button" id="tab-rule-personal" onclick="switchRuleTab('personal')" class="px-2.5 py-1.5 rounded-xl bg-pink-50 text-pink-700 hover:bg-pink-100 shrink-0 transition">การใช้งานส่วนตัว</button>
-                <button type="button" id="tab-rule-commercial" onclick="switchRuleTab('commercial')" class="px-2.5 py-1.5 rounded-xl bg-pink-50 text-pink-700 hover:bg-pink-100 shrink-0 transition">เชิงพาณิชย์</button>
-                <button type="button" id="tab-rule-business" onclick="switchRuleTab('business')" class="px-2.5 py-1.5 rounded-xl bg-pink-50 text-pink-700 hover:bg-pink-100 shrink-0 transition">องค์กร / บริษัท</button>
-            </div>
-
-            <!-- กฎ 1: ทั่วไป -->
-            <div id="rule-content-general" class="space-y-3 text-xs">
-                <div class="p-2.5 bg-rose-50 border border-rose-200 rounded-2xl text-[11px] text-rose-800 font-medium">
-                    ⚠️ ซื้อสิทธิ์แบบใด ต้องใช้งานตามเงื่อนไขของสิทธิ์นั้น และ 1 การสั่งซื้อต่อ 1 อีเมล ใช้ได้ 1 บุคคลเท่านั้น
-                </div>
-
-                <div class="p-3 bg-white border-2 border-pink-100 rounded-2xl space-y-1.5 shadow-xs">
-                    <div class="flex items-center gap-1.5 text-brand-dark font-bold text-xs">
-                        <span class="bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded text-[10px]">01</span>
-                        <span>ข้อห้ามทุกเงื่อนไข</span>
-                    </div>
-                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
-                        <li>ห้ามส่งต่อไฟล์ฟอนต์ ต้องส่งงานเป็นไฟล์สำเร็จหรือ Create Outline ให้ฟอนต์เป็นวัตถุ เช่น PNG, PDF หรือ JPEG เท่านั้น</li>
-                        <li>ห้ามแยกตัวอักษรหรือเติมสีเพื่อนำไปทำสติ๊กเกอร์ไลน์ อิโมจิไลน์ หรือพิมพ์สติ๊กเกอร์ขาย และฟอนต์อิโมจิห้ามนำไปทำอิโมจิไลน์</li>
-                        <li>ห้ามคัดลอก ดัดแปลง ดราฟ ขาย ส่งต่อ แจก แถม หรือเปลี่ยนชื่อไฟล์ฟอนต์</li>
-                        <li>ห้ามนำไฟล์ไปลงกลุ่ม ขายสิทธิ์ขาด อัปโหลดขึ้นเว็บไซต์ หรือเผยแพร่ให้ผู้อื่นโดยไม่ได้รับอนุญาต</li>
-                    </ul>
-                </div>
-
-                <div class="p-3 bg-white border-2 border-pink-100 rounded-2xl space-y-1.5 shadow-xs">
-                    <div class="flex items-center gap-1.5 text-brand-dark font-bold text-xs">
-                        <span class="bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded text-[10px]">02</span>
-                        <span>ข้อมูลไฟล์และการติดตั้ง</span>
-                    </div>
-                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
-                        <li>รองรับ iPad, iPhone, Android, Windows และ Mac โดยควรตรวจสอบรุ่นอุปกรณ์ก่อนติดตั้ง</li>
-                        <li>ได้รับไฟล์ฟอนต์ TTF และใช้งานกับ Adobe, Photoshop, Microsoft 365 และโปรแกรมที่รองรับฟอนต์ได้</li>
-                        <li>สามารถลง Canva Pro ได้ตามระบบของ Canva โดยไฟล์ OTF สำหรับ Canva จะมี 1 ขนาดเมื่อฟอนต์นั้นรองรับ</li>
-                        <li>ทางร้านไม่สอนติดตั้ง กรุณาศึกษาวิธีติดตั้งและอ่านเงื่อนไขให้ครบก่อนสั่งซื้อ</li>
-                    </ul>
-                </div>
-
-                <div class="p-3 bg-white border-2 border-pink-100 rounded-2xl space-y-1.5 shadow-xs">
-                    <div class="flex items-center gap-1.5 text-brand-dark font-bold text-xs">
-                        <span class="bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded text-[10px]">03</span>
-                        <span>การสั่งซื้อและบทปรับ</span>
-                    </div>
-                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
-                        <li>สั่งซื้อและโอนเงินแล้ว ไม่คืนเงินทุกกรณี</li>
-                        <li>เปลี่ยนอีเมลหรือไฟล์ใน Google Drive สูญหาย ต้องซื้อใหม่เท่านั้น</li>
-                        <li>หากต้องการอัปเกรดสิทธิ์ สามารถชำระส่วนต่างตามราคาปัจจุบัน โดยต้องแนบแชตหรือสลิปการสั่งซื้อเดิม</li>
-                        <li class="text-rose-600 font-bold">หากพบการใช้งานผิดกฎ ปรับ 10,000 บาทต่อ 1 ไฟล์</li>
-                    </ul>
-                    <div class="pt-2 border-t border-pink-100 text-[10px] text-gray-500 space-y-0.5">
-                        <div><strong>ติดต่อ:</strong> Line: @wbk2012r</div>
-                        <div><strong>Facebook:</strong> เบบี้เรน’นน</div>
-                        <div><strong>Email:</strong> babyrainsticx@gmail.com</div>
-                        <div class="text-rose-500 font-semibold mt-1">หากไม่แน่ใจ กรุณาสอบถามก่อนใช้งาน (พบการใช้งานผิดกฎ ปรับ 10,000 บาท / 1 ไฟล์)</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- กฎ 2: ส่วนตัว -->
-            <div id="rule-content-personal" class="space-y-3 text-xs hidden">
-                <div class="p-2.5 bg-pink-50 border border-pink-200 rounded-2xl text-[11px] text-pink-900 font-medium">
-                    🌸 สำหรับงานที่ไม่มีรายได้ ไม่ขายของ ไม่โปรโมต และไม่เกี่ยวข้องกับธุรกิจหรือบริษัท
-                </div>
-
-                <div class="p-3 bg-white border-2 border-pink-100 rounded-2xl space-y-1.5 shadow-xs">
-                    <div class="flex items-center gap-1.5 text-pink-600 font-bold text-xs">
-                        <span class="bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded text-[10px]">01</span>
-                        <span>งานที่ใช้ได้</span>
-                    </div>
-                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
-                        <li><strong>งานการศึกษา:</strong> รายงาน การบ้าน โครงงาน Mind Map งานนำเสนอ โปสเตอร์วิชาการ และวิทยานิพนธ์ที่ไม่เกี่ยวกับองค์กรธุรกิจ</li>
-                        <li><strong>งานส่วนตัว:</strong> จดโน้ต Bullet Journal, To-do list, ไดอารี่ ปฏิทิน ข้อความตกแต่ง และงานพิมพ์สำหรับอ่านเอง</li>
-                        <li><strong>โซเชียลส่วนตัว:</strong> แต่งรูป สตอรี่ โพสต์ทั่วไป และวิดีโอที่ไม่มีสปอนเซอร์ ไม่มีรายได้ และไม่ใช่งานโปรโมตหรือรีวิว</li>
-                        <li><strong>อุปกรณ์ส่วนตัว:</strong> ตั้งฟอนต์ Android แอปจดโน้ต ทำธีมใช้เอง และ UI ภายในเครื่อง</li>
-                        <li><strong>งานศิลปะส่วนตัว:</strong> วาดรูป คอลลาจ Scrapbook งานพิมพ์ติดบ้าน และสติ๊กเกอร์ใช้เอง</li>
-                        <li><strong>เอกสารส่วนบุคคล:</strong> Resume ใช้เอง จดหมาย บันทึกส่วนตัว และ PDF ที่เก็บไว้ใช้เอง</li>
-                    </ul>
-                </div>
-
-                <div class="p-3 bg-white border-2 border-pink-100 rounded-2xl space-y-1.5 shadow-xs">
-                    <div class="flex items-center gap-1.5 text-pink-600 font-bold text-xs">
-                        <span class="bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded text-[10px]">02</span>
-                        <span>สิ่งที่ถือเป็นเชิงพาณิชย์</span>
-                    </div>
-                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
-                        <li>TikTok, YouTube, Facebook Reels หรือช่องทางอื่นที่เปิดสร้างรายได้ มีสปอนเซอร์ รีวิวสินค้า หรือโปรโมตสินค้า <strong>ต้องใช้สิทธิ์เชิงพาณิชย์</strong></li>
-                        <li>1 การสั่งซื้อต่อ 1 อีเมล ใช้ได้เฉพาะ 1 บุคคล ไม่สามารถแบ่งใช้ร่วมกันได้</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- กฎ 3: เชิงพาณิชย์ -->
-            <div id="rule-content-commercial" class="space-y-3 text-xs hidden">
-                <div class="p-2.5 bg-amber-50 border border-amber-200 rounded-2xl text-[11px] text-amber-900 font-medium">
-                    💼 สำหรับสร้างรายได้ โปรโมต ทำการตลาด และใช้ในธุรกิจ โดยผู้ซื้อ 1 อีเมลใช้ได้ 1 บุคคล
-                </div>
-
-                <div class="p-3 bg-white border-2 border-amber-100 rounded-2xl space-y-1.5 shadow-xs">
-                    <div class="flex items-center gap-1.5 text-amber-700 font-bold text-xs">
-                        <span class="bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded text-[10px]">01</span>
-                        <span>คอนเทนต์และงานขายออนไลน์</span>
-                    </div>
-                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
-                        <li>ใช้กับ TikTok, YouTube, Facebook, Instagram, Reels, Lemon8, สปอนเซอร์ รีวิวสินค้า Live ขายของ ปกคลิป เพจ และ CapCut ได้ แต่ห้ามนำไปทำแม่แบบที่แจกไฟล์ฟอนต์</li>
-                        <li>ใช้ตกแต่งป้ายร้านของตนเองหรือรับทำป้ายขายได้ โดยต้องประกอบเป็นชิ้นงานสำเร็จและมีการตกแต่งแล้ว</li>
-                        <li>งาน Sticker, Theme หรือ Emoji LINE ต้องเป็นงานสำเร็จและยังอยู่ภายใต้ข้อห้ามทั่วไปเรื่องการแยกหรือส่งต่อไฟล์ฟอนต์</li>
-                    </ul>
-                </div>
-
-                <div class="p-3 bg-white border-2 border-amber-100 rounded-2xl space-y-1.5 shadow-xs">
-                    <div class="flex items-center gap-1.5 text-amber-700 font-bold text-xs">
-                        <span class="bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded text-[10px]">02</span>
-                        <span>งานแบรนด์และสินค้าเพื่อขาย</span>
-                    </div>
-                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
-                        <li>ใช้กับโลโก้ แบรนดิ้ง ป้ายร้าน ป้ายเมนู โปสเตอร์โปรโมชัน แบนเนอร์โฆษณา ใบปลิว และสื่อเชิงพาณิชย์ได้</li>
-                        <li>ใช้กับเสื้อ แก้ว การ์ด กล่องสินค้า สติ๊กเกอร์ขาย PNG, Vector, Template, Wallpaper งานพิมพ์ ไดคัท และสกรีนได้ โดยต้องเป็นชิ้นงานสำเร็จ</li>
-                        <li>ใช้ทำดิจิทัลโปรดักต์ เช่น Template Canva, Mockup, Printable และ Portfolio template ได้ตามข้อห้ามทั่วไป</li>
-                    </ul>
-                </div>
-
-                <div class="p-3 bg-white border-2 border-amber-100 rounded-2xl space-y-1.5 shadow-xs">
-                    <div class="flex items-center gap-1.5 text-amber-700 font-bold text-xs">
-                        <span class="bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded text-[10px]">03</span>
-                        <span>สิทธิ์ส่วนตัวและเชิงพาณิชย์รวม</span>
-                    </div>
-                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
-                        <li>เหมาะสำหรับบุคคลเดียวที่ต้องการใช้ฟอนต์เดียวกันทั้งงานส่วนตัวและงานสร้างรายได้</li>
-                        <li>รวมสิทธิ์ส่วนตัวและเชิงพาณิชย์ตามเงื่อนไขด้านบน และสามารถขอใบรับรองสิทธิ์การใช้งานฟอนต์ได้</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- กฎ 4: องค์กร / บริษัท -->
-            <div id="rule-content-business" class="space-y-3 text-xs hidden">
-                <div class="p-2.5 bg-purple-50 border border-purple-200 rounded-2xl text-[11px] text-purple-900 font-medium">
-                    🏢 สำหรับบริษัท องค์กร หจก. หน่วยงาน ฟรีแลนซ์ที่ออกแบบให้องค์กร งานวิดีโอ และการฝังฟอนต์ในเว็บไซต์หรือแอป
-                </div>
-
-                <div class="p-3 bg-white border-2 border-purple-100 rounded-2xl space-y-1.5 shadow-xs">
-                    <div class="flex items-center gap-1.5 text-purple-700 font-bold text-xs">
-                        <span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded text-[10px]">01</span>
-                        <span>ไลเซนส์องค์กรต่อ 1 ฟอนต์</span>
-                    </div>
-                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
-                        <li><strong>500 บาท:</strong> บุคคลทั่วไปหรือฟรีแลนซ์ออกแบบให้บริษัท องค์กร หจก. หรือหน่วยงาน ใช้ได้ไม่เกิน 5 เครื่องต่อการสั่งซื้อ</li>
-                        <li><strong>700 บาท:</strong> ในนามบริษัท ใช้เชิงพาณิชย์เฉพาะภายในองค์กร ใช้ได้ไม่เกิน 5 เครื่องต่อการสั่งซื้อ</li>
-                        <li><strong>1,000 บาท:</strong> ในนามบริษัท ใช้เชิงพาณิชย์และรับออกแบบ ใช้ได้ไม่เกิน 5 เครื่องต่อการสั่งซื้อ</li>
-                        <li>หากต้องการเพิ่มจำนวนเครื่อง ชำระ 2 เท่าของราคาเงื่อนไขนั้น และรวมแล้วสูงสุดไม่เกิน 10 เครื่อง</li>
-                        <li>ทางร้านออกใบเสร็จรับเงินแบบไม่จด VAT และใบรับรองการใช้งานฟอนต์ให้ได้</li>
-                    </ul>
-                </div>
-
-                <div class="p-3 bg-white border-2 border-purple-100 rounded-2xl space-y-1.5 shadow-xs">
-                    <div class="flex items-center gap-1.5 text-purple-700 font-bold text-xs">
-                        <span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded text-[10px]">02</span>
-                        <span>งานวิดีโอในนามบริษัท</span>
-                    </div>
-                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
-                        <li><strong>ราคา 2,000 บาทต่อฟอนต์:</strong> สำหรับงานโปรดักชันเผยแพร่สาธารณะ เช่น TVC วิดีโอโปรโมต ภาพยนตร์ Motion Graphic, Trailer และสื่อยิงโฆษณา</li>
-                        <li>จำกัดไม่เกิน 5 เครื่องต่อ 1 การสั่งซื้อ</li>
-                    </ul>
-                </div>
-
-                <div class="p-3 bg-white border-2 border-purple-100 rounded-2xl space-y-1.5 shadow-xs">
-                    <div class="flex items-center gap-1.5 text-purple-700 font-bold text-xs">
-                        <span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded text-[10px]">03</span>
-                        <span>เว็บไซต์ / แอป / แพลตฟอร์มธุรกิจ</span>
-                    </div>
-                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
-                        <li><strong>เริ่มต้น 5,000 บาทต่อ 1 ฟอนต์:</strong> สำหรับฝังฟอนต์บนเว็บไซต์ แอป หรือแพลตฟอร์มที่มีผู้ใช้งานจำนวนมาก</li>
-                        <li>ครอบคลุมระบบที่บุคคลภายนอกเข้าถึงหรือสร้างรายได้จากสินค้าและบริการ เช่น E-commerce, Landing Page, เว็บไซต์บริษัท แอปขายสินค้า แอปบริการ และระบบสมาชิก</li>
-                        <li>รวม UI ที่ลูกค้าเห็น ข้อความบนหน้าเว็บ แบนเนอร์ในเว็บ และตัวหนังสือในระบบที่เปิดใช้งานสาธารณะ (รายละเอียดราคาขึ้นอยู่กับขอบเขตงาน)</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================== MODAL: ล็อกอินแอดมิน ==================== -->
-    <div id="adminLoginModal" class="modal">
-        <div class="modal-content">
-            <button onclick="closeModal('adminLoginModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
-            <div class="text-center mb-4">
-                <div class="w-12 h-12 bg-pink-100 text-brand-dark rounded-full flex items-center justify-center mx-auto text-xl mb-2">
-                    <i class="fas fa-lock"></i>
-                </div>
-                <h3 class="font-bold text-sm text-brand-text">เข้าสู่ระบบแอดมิน</h3>
-                <p class="text-[11px] text-gray-500">กรุณากรอกรหัสผ่านเพื่อจัดการคลังฟอนต์</p>
-            </div>
-
-            <form onsubmit="handleAdminLogin(event)" class="space-y-3 text-xs">
-                <div>
-                    <label class="block font-semibold text-gray-700 text-[11px] mb-1">Username</label>
-                    <input required type="text" id="adminUsername" placeholder="กรอก Username" class="w-full border-2 border-pink-100 rounded-xl p-2.5 focus:outline-brand-main bg-slate-50">
-                </div>
-                <div>
-                    <label class="block font-semibold text-gray-700 text-[11px] mb-1">Password</label>
-                    <input required type="password" id="adminPassword" placeholder="กรอก Password" class="w-full border-2 border-pink-100 rounded-xl p-2.5 focus:outline-brand-main bg-slate-50">
-                </div>
-                <div id="adminLoginErr" class="hidden text-rose-500 text-[11px] text-center font-semibold">
-                    Username หรือ Password ไม่ถูกต้อง!
-                </div>
-                <button type="submit" class="w-full bg-brand-main hover:bg-brand-dark text-white font-bold py-2.5 rounded-xl shadow-sm transition">
-                    เข้าสู่ระบบ
-                </button>
-            </form>
-        </div>
     </div>
 
     <!-- ==================== MODAL: เพิ่มฟอนต์ใหม่ ==================== -->
@@ -489,6 +346,14 @@
                 <div>
                     <label class="block font-semibold text-gray-700 text-[11px] mb-1">ชื่อฟอนต์ (ภาษาอังกฤษ - ใช้เป็น Font-Family) *</label>
                     <input required type="text" id="adminFontEn" placeholder="เช่น Nomsod, KanomPing (ห้ามเว้นวรรค)" class="w-full border-2 border-pink-100 rounded-xl p-2 focus:outline-brand-main bg-slate-50">
+                </div>
+
+                <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200">
+                    <label class="block font-bold text-emerald-900 text-[11px] mb-1">
+                        <i class="fab fa-google-drive text-emerald-600 mr-1"></i> ลิงก์โฟลเดอร์ Google Drive หรือ Folder ID *
+                    </label>
+                    <input required type="text" id="adminFontDrive" placeholder="https://drive.google.com/drive/folders/1abc... หรือ ใส่เฉพาะ ID" class="w-full border border-emerald-200 rounded-xl p-2 focus:outline-emerald-500 bg-white text-xs">
+                    <p class="text-[9px] text-emerald-700 mt-0.5">* ใช้สำหรับให้บอตดึงอีเมลลูกค้าเข้าไปดาวน์โหลดอัตโนมัติ</p>
                 </div>
 
                 <div class="p-3 bg-pink-50/50 rounded-2xl border border-pink-100 space-y-2">
@@ -543,11 +408,10 @@
                 <div>
                     <label class="block font-semibold text-gray-700 text-[11px] mb-1">ไฟล์ฟอนต์สำหรับทดลองพิมพ์ (.ttf, .otf, .woff) *</label>
                     <input required type="file" id="adminFontFile" accept=".ttf,.otf,.woff,.woff2" class="w-full text-slate-500 text-[10px] file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:bg-pink-100 file:text-brand-dark cursor-pointer border border-pink-100 rounded-xl p-1 bg-pink-50/30">
-                    <p class="text-[9px] text-gray-400 mt-0.5">* ไฟล์นี้จะนำมาใช้แสดงผลตัวหนังสือให้ลูกค้าทดลองพิมพ์สด</p>
                 </div>
 
                 <div id="adminUploadProgress" class="hidden text-center text-xs text-pink-600 font-semibold py-1">
-                    <i class="fas fa-spinner fa-spin mr-1"></i> กำลังอัปโหลดและบันทึกข้อมูล...
+                    <i class="fas fa-spinner fa-spin mr-1"></i> กำลังอัปโหลดและบันทึกข้อมูลลงฐานข้อมูลและ Google Sheet...
                 </div>
 
                 <button type="submit" id="adminSubmitBtn" class="w-full bg-brand-main hover:bg-brand-dark text-white font-bold py-2.5 rounded-xl shadow-sm transition">
@@ -557,7 +421,7 @@
         </div>
     </div>
 
-    <!-- Modals: Font Tester -->
+    <!-- Modals อื่นๆ (Tester, VS, Order, Rules) -->
     <div id="fontModal" class="modal">
         <div class="modal-content">
             <button onclick="closeModal('fontModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -598,39 +462,7 @@
         </div>
     </div>
 
-    <!-- Modals: VS Modal -->
-    <div id="vsModal" class="modal">
-        <div class="modal-content" style="max-width: 550px;">
-            <button onclick="closeModal('vsModal')" class="absolute top-4 right-4 text-gray-400 hover:text-purple-600 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
-            <h2 class="font-slackey text-base text-center text-purple-900 mb-2">Font Comparison (VS)</h2>
-            <input type="text" id="vsInput" class="w-full border-2 border-purple-100 rounded-xl p-2 text-xs text-center mb-2.5 focus:outline-purple-400" placeholder="พิมพ์ข้อความเดียวเปรียบเทียบ..." oninput="refreshVS()">
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <div class="space-y-1.5">
-                    <div class="tester-container" style="min-height: 140px; margin-top:0;">
-                        <div class="p-1.5 border-b border-pink-100 flex items-center gap-1 bg-pink-50/50 z-20">
-                            <select id="selectLeft" class="w-full text-[10px] p-1 rounded-lg border border-pink-200 bg-white" onchange="refreshVS()"></select>
-                        </div>
-                        <div id="displayLeft" style="padding: 15px 8px;">สวัสดี hello</div>
-                        <div id="priceLeft" class="p-1 text-center text-[10px] font-semibold"></div>
-                    </div>
-                    <button type="button" onclick="orderFontFromVS('selectLeft')" class="w-full bg-green-500 text-white font-bold py-1.5 rounded-xl text-[11px]">สั่งซื้อฟอนต์ซ้าย</button>
-                </div>
-                <div class="space-y-1.5">
-                    <div class="tester-container" style="min-height: 140px; margin-top:0;">
-                        <div class="p-1.5 border-b border-purple-100 flex items-center gap-1 bg-purple-50/50 z-20">
-                            <select id="selectRight" class="w-full text-[10px] p-1 rounded-lg border border-purple-200 bg-white" onchange="refreshVS()"></select>
-                        </div>
-                        <div id="displayRight" style="padding: 15px 8px;">สวัสดี hello</div>
-                        <div id="priceRight" class="p-1 text-center text-[10px] font-semibold"></div>
-                    </div>
-                    <button type="button" onclick="orderFontFromVS('selectRight')" class="w-full bg-green-500 text-white font-bold py-1.5 rounded-xl text-[11px]">สั่งซื้อฟอนต์ขวา</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modals: Order Modal -->
+    <!-- Order Modal -->
     <div id="orderLicenseModal" class="modal">
         <div class="modal-content">
             <button onclick="closeModal('orderLicenseModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -650,11 +482,6 @@
                                     <span class="font-bold text-pink-600 text-xs" id="orderPricePersonal">฿79</span>
                                 </div>
                                 <p class="text-[10px] text-pink-600 font-medium">ไม่เกี่ยวกับการเงิน รายได้ หรือผลกำไร</p>
-                                <ul class="text-[9px] text-gray-500 list-disc pl-3 mt-1 space-y-0.5">
-                                    <li>สำหรับการศึกษาใช้จดสรุป ทำงานส่งอาจารย์ (ปริ้นอ่านเองได้)</li>
-                                    <li>ตั้งฟอนต์เครื่อง Android ได้</li>
-                                    <li>ใช้แต่งวิดีโอ/ภาพลงในพื้นที่ส่วนตัว (ไม่ใช่พื้นที่ขายของ/โปรโมท/รีวิว/เพจ)</li>
-                                </ul>
                             </div>
                         </div>
                     </label>
@@ -668,12 +495,6 @@
                                     <span class="font-bold text-amber-700 text-xs" id="orderPriceCommercial">฿169</span>
                                 </div>
                                 <p class="text-[10px] text-amber-700 font-medium">มีเงิน รายได้ หรือผลกำไรเข้ามาเกี่ยวข้อง</p>
-                                <ul class="text-[9px] text-gray-500 list-disc pl-3 mt-1 space-y-0.5">
-                                    <li>ออกแบบผลงาน แต่งป้าย ลงในพื้นที่ขายของ สำหรับบุคคลทั่วไป</li>
-                                    <li>Sticker / Theme LINE (ต้องตกแต่งให้เรียบร้อยเท่านั้น)</li>
-                                    <li>สื่อออนไลน์ IG, FB, TikTok, Lemon8, CapCut, YouTube</li>
-                                    <li>สื่อสิ่งพิมพ์ ปริ้น ไดคัท สกรีน, โลโก้, ป้าย AD โฆษณา, รีวิวนายหน้า</li>
-                                </ul>
                             </div>
                         </div>
                     </label>
@@ -687,10 +508,6 @@
                                     <span class="font-bold text-purple-700 text-xs" id="orderPriceBusiness">฿700</span>
                                 </div>
                                 <p class="text-[10px] text-purple-700 font-medium">สำหรับบริษัท องค์กร และ หจก. (จำกัด 5 เครื่อง)</p>
-                                <ul class="text-[9px] text-gray-500 list-disc pl-3 mt-1 space-y-0.5">
-                                    <li>ใช้งานเชิงพาณิชย์เฉพาะภายในบริษัท หรือ มีการรับออกแบบให้ผู้อื่น</li>
-                                    <li>ออกใบเสร็จรับเงิน (ไม่จด VAT) + ใบรับรองสิทธิ์ (เช่น ฟรีแลนซ์ทำให้องค์กร)</li>
-                                </ul>
                             </div>
                         </div>
                     </label>
@@ -727,7 +544,74 @@
         </div>
     </div>
 
-    <!-- Modals: Notice Modal -->
+    <!-- VS Modal -->
+    <div id="vsModal" class="modal">
+        <div class="modal-content" style="max-width: 550px;">
+            <button onclick="closeModal('vsModal')" class="absolute top-4 right-4 text-gray-400 hover:text-purple-600 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
+            <h2 class="font-slackey text-base text-center text-purple-900 mb-2">Font Comparison (VS)</h2>
+            <input type="text" id="vsInput" class="w-full border-2 border-purple-100 rounded-xl p-2 text-xs text-center mb-2.5 focus:outline-purple-400" placeholder="พิมพ์ข้อความเดียวเปรียบเทียบ..." oninput="refreshVS()">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div class="space-y-1.5">
+                    <div class="tester-container" style="min-height: 140px; margin-top:0;">
+                        <div class="p-1.5 border-b border-pink-100 flex items-center gap-1 bg-pink-50/50 z-20">
+                            <select id="selectLeft" class="w-full text-[10px] p-1 rounded-lg border border-pink-200 bg-white" onchange="refreshVS()"></select>
+                        </div>
+                        <div id="displayLeft" style="padding: 15px 8px;">สวัสดี hello</div>
+                        <div id="priceLeft" class="p-1 text-center text-[10px] font-semibold"></div>
+                    </div>
+                    <button type="button" onclick="orderFontFromVS('selectLeft')" class="w-full bg-green-500 text-white font-bold py-1.5 rounded-xl text-[11px]">สั่งซื้อฟอนต์ซ้าย</button>
+                </div>
+                <div class="space-y-1.5">
+                    <div class="tester-container" style="min-height: 140px; margin-top:0;">
+                        <div class="p-1.5 border-b border-purple-100 flex items-center gap-1 bg-purple-50/50 z-20">
+                            <select id="selectRight" class="w-full text-[10px] p-1 rounded-lg border border-purple-200 bg-white" onchange="refreshVS()"></select>
+                        </div>
+                        <div id="displayRight" style="padding: 15px 8px;">สวัสดี hello</div>
+                        <div id="priceRight" class="p-1 text-center text-[10px] font-semibold"></div>
+                    </div>
+                    <button type="button" onclick="orderFontFromVS('selectRight')" class="w-full bg-green-500 text-white font-bold py-1.5 rounded-xl text-[11px]">สั่งซื้อฟอนต์ขวา</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rules Modal -->
+    <div id="rulesModal" class="modal">
+        <div class="modal-content" style="max-width: 440px;">
+            <button onclick="closeModal('rulesModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
+            <div class="text-center mb-3">
+                <span class="text-[10px] bg-pink-100 text-pink-600 font-bold px-2.5 py-0.5 rounded-full">Terms & Conditions</span>
+                <h3 class="font-bold text-sm text-brand-text mt-1">📜 กฎและเงื่อนไขการใช้งานฟอนต์</h3>
+            </div>
+            <div class="flex gap-1 overflow-x-auto no-scrollbar pb-2 mb-2 border-b border-pink-100 text-[10px] font-bold">
+                <button type="button" id="tab-rule-general" onclick="switchRuleTab('general')" class="px-2.5 py-1.5 rounded-xl bg-brand-main text-white shrink-0">กฎทั่วไป</button>
+                <button type="button" id="tab-rule-personal" onclick="switchRuleTab('personal')" class="px-2.5 py-1.5 rounded-xl bg-pink-50 text-pink-700 shrink-0">การใช้งานส่วนตัว</button>
+                <button type="button" id="tab-rule-commercial" onclick="switchRuleTab('commercial')" class="px-2.5 py-1.5 rounded-xl bg-pink-50 text-pink-700 shrink-0">เชิงพาณิชย์</button>
+                <button type="button" id="tab-rule-business" onclick="switchRuleTab('business')" class="px-2.5 py-1.5 rounded-xl bg-pink-50 text-pink-700 shrink-0">องค์กร / บริษัท</button>
+            </div>
+            <div id="rule-content-general" class="space-y-3 text-xs">
+                <div class="p-2.5 bg-rose-50 border border-rose-200 rounded-2xl text-[11px] text-rose-800 font-medium">⚠️ ซื้อสิทธิ์แบบใด ต้องใช้งานตามเงื่อนไขของสิทธิ์นั้น และ 1 การสั่งซื้อต่อ 1 อีเมล ใช้ได้ 1 บุคคลเท่านั้น</div>
+                <div class="p-3 bg-white border border-pink-100 rounded-2xl space-y-1"><div class="font-bold text-brand-dark">01 ข้อห้ามทุกเงื่อนไข</div><p class="text-[11px] text-gray-600">ห้ามส่งต่อไฟล์ฟอนต์ ต้องส่งงานเป็นไฟล์สำเร็จหรือ Create Outline เท่านั้น ห้ามนำไปดราฟ หรือทำสติ๊กเกอร์ไลน์แยกตัวอักษรเดี่ยวๆ</p></div>
+                <div class="p-3 bg-white border border-pink-100 rounded-2xl space-y-1"><div class="font-bold text-brand-dark">02 ข้อมูลไฟล์และการติดตั้ง</div><p class="text-[11px] text-gray-600">รองรับ iPad, iPhone, Android, Windows และ Mac ได้รับไฟล์ TTF ใช้กับ Adobe, Canva, Phonto ได้</p></div>
+                <div class="p-3 bg-white border border-pink-100 rounded-2xl space-y-1"><div class="font-bold text-brand-dark">03 การสั่งซื้อและบทปรับ</div><p class="text-[11px] text-gray-600">ซื้อแล้วไม่คืนเงิน หากพบการใช้งานผิดกฎ ปรับ 10,000 บาท/ไฟล์</p></div>
+            </div>
+            <div id="rule-content-personal" class="space-y-3 text-xs hidden">
+                <div class="p-2.5 bg-pink-50 border border-pink-200 rounded-2xl text-[11px] text-pink-900 font-medium">🌸 สำหรับงานที่ไม่มีรายได้ ไม่ขายของ ไม่โปรโมต</div>
+                <div class="p-3 bg-white border border-pink-100 rounded-2xl"><p class="text-[11px] text-gray-600">ใช้กับการศึกษา จดสรุป โซเชียลส่วนตัว ตั้งฟอนต์ในเครื่อง Android</p></div>
+            </div>
+            <div id="rule-content-commercial" class="space-y-3 text-xs hidden">
+                <div class="p-2.5 bg-amber-50 border border-amber-200 rounded-2xl text-[11px] text-amber-900 font-medium">💼 สำหรับสร้างรายได้ โปรโมต ทำการตลาด และใช้ในธุรกิจ</div>
+                <div class="p-3 bg-white border border-amber-100 rounded-2xl"><p class="text-[11px] text-gray-600">ใช้กับ TikTok, Reels, IG, ป้ายร้าน, โลโก้, ป้ายสินค้า, สื่อโฆษณา</p></div>
+            </div>
+            <div id="rule-content-business" class="space-y-3 text-xs hidden">
+                <div class="p-2.5 bg-purple-50 border border-purple-200 rounded-2xl text-[11px] text-purple-900 font-medium">🏢 สำหรับบริษัท องค์กร หจก. หน่วยงาน ไม่เกิน 5 เครื่อง</div>
+                <div class="p-3 bg-white border border-purple-100 rounded-2xl"><p class="text-[11px] text-gray-600">ออกใบเสร็จรับเงินแบบไม่จด VAT ได้ และขอใบรับรองสิทธิ์ได้</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notice Modal -->
     <div id="dynamicPageModal" class="modal">
         <div class="modal-content">
             <button onclick="closeModal('dynamicPageModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -747,8 +631,8 @@
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
 
-        // URL Web App จาก Google Apps Script สำหรับดึงเมลเข้า Google Drive ทันที
-        const GOOGLE_DRIVE_BOT_URL = 'https://script.google.com/macros/s/AKfycbxInjwV2XTnocxUbnUAcpkkT0sfU0Hr6i03DIb09HozhvK0C2dCYQaaYzrcB8Zy_lLedQ/exec';
+        // Web App URL ของ Google Apps Script ที่รวมการทำงานทั้งหมด
+        const GOOGLE_DRIVE_BOT_URL = 'https://script.google.com/macros/s/AKfycbwU3q3h7U6FsKNoMFR8WY6AluO8L73LowTMPxwKOve93z_yzJ5awP9w1EavjxkuQlFb/exec';
 
         let isAdminLoggedIn = sessionStorage.getItem('thitipra_admin_auth') === 'true';
 
@@ -897,51 +781,103 @@
             });
         }
 
-        function openRulesModal(defaultTab = 'general') {
-            document.getElementById('rulesModal').style.display = 'flex';
-            switchRuleTab(defaultTab);
+        function switchLoginSection(type) {
+            const btnUser = document.getElementById('btn-tab-user');
+            const btnAdmin = document.getElementById('btn-tab-admin');
+            const secUser = document.getElementById('section-user-login');
+            const secAdmin = document.getElementById('section-admin-login');
+
+            if (type === 'user') {
+                btnUser.className = "flex-1 py-2 rounded-xl bg-brand-main text-white shadow-xs transition";
+                btnAdmin.className = "flex-1 py-2 rounded-xl text-brand-dark hover:bg-pink-100 transition";
+                secUser.classList.remove('hidden');
+                secAdmin.classList.add('hidden');
+            } else {
+                btnAdmin.className = "flex-1 py-2 rounded-xl bg-purple-600 text-white shadow-xs transition";
+                btnUser.className = "flex-1 py-2 rounded-xl text-brand-dark hover:bg-pink-100 transition";
+                secAdmin.classList.remove('hidden');
+                secUser.classList.add('hidden');
+            }
         }
 
-        function switchRuleTab(tabName) {
-            const tabs = ['general', 'personal', 'commercial', 'business'];
-            tabs.forEach(t => {
-                const btn = document.getElementById(`tab-rule-${t}`);
-                const content = document.getElementById(`rule-content-${t}`);
-                if (btn && content) {
-                    if (t === tabName) {
-                        btn.className = "px-2.5 py-1.5 rounded-xl bg-brand-main text-white shrink-0 font-bold transition shadow-xs";
-                        content.classList.remove('hidden');
-                    } else {
-                        btn.className = "px-2.5 py-1.5 rounded-xl bg-pink-50 text-pink-700 hover:bg-pink-100 shrink-0 font-medium transition";
-                        content.classList.add('hidden');
-                    }
-                }
-            });
+        function toggleUserSubTab(sub) {
+            const vaultBox = document.getElementById('user-vault-box');
+            const regBox = document.getElementById('user-register-box');
+            const btnVault = document.getElementById('btn-sub-vault');
+            const btnReg = document.getElementById('btn-sub-register');
+
+            if (sub === 'vault') {
+                vaultBox.classList.remove('hidden');
+                regBox.classList.add('hidden');
+                btnVault.className = "font-bold text-pink-600 border-b-2 border-brand-main pb-1";
+                btnReg.className = "text-gray-400 hover:text-brand-dark pb-1";
+            } else {
+                vaultBox.classList.add('hidden');
+                regBox.classList.remove('hidden');
+                btnReg.className = "font-bold text-pink-600 border-b-2 border-brand-main pb-1";
+                btnVault.className = "text-gray-400 hover:text-brand-dark pb-1";
+            }
+        }
+
+        // สมัครสมาชิกใหม่ (ลง Google Sheet)
+        async function handleCustomerRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regCustomerName').value.trim();
+            const contact = document.getElementById('regCustomerContact').value.trim();
+            const email = document.getElementById('regCustomerEmail').value.trim().toLowerCase();
+            const btn = document.getElementById('btnSubmitRegister');
+            const prog = document.getElementById('regProgress');
+
+            btn.disabled = true;
+            prog.classList.remove('hidden');
+
+            try {
+                await fetch(GOOGLE_DRIVE_BOT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'register_user',
+                        customerName: name,
+                        customerContact: contact,
+                        customerEmail: email,
+                        registeredAt: new Date().toLocaleString('th-TH')
+                    })
+                });
+
+                alert(`ลงทะเบียนสำเร็จเรียบร้อยค่ะ! ข้อมูลของคุณ ${name} ถูกบันทึกลงระบบ Google Sheet แล้ว`);
+                e.target.reset();
+                toggleUserSubTab('vault');
+                document.getElementById('vaultCheckEmail').value = email;
+            } catch (err) {
+                alert('เกิดข้อผิดพลาดในการลงทะเบียน: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                prog.classList.add('hidden');
+            }
+        }
+
+        function handleAdminTabLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('adminTabUser').value.trim();
+            const p = document.getElementById('adminTabPass').value.trim();
+
+            if (u === 'BRPRH' && p === 'Pleng235') {
+                isAdminLoggedIn = true;
+                sessionStorage.setItem('thitipra_admin_auth', 'true');
+                document.getElementById('adminTabErr').classList.add('hidden');
+                document.getElementById('addFontModal').style.display = 'flex';
+            } else {
+                document.getElementById('adminTabErr').classList.remove('hidden');
+            }
         }
 
         function triggerAdminAddFont() {
             if (isAdminLoggedIn) {
                 document.getElementById('addFontModal').style.display = 'flex';
             } else {
-                document.getElementById('adminLoginErr').classList.add('hidden');
-                document.getElementById('adminLoginModal').style.display = 'flex';
-            }
-        }
-
-        function handleAdminLogin(e) {
-            e.preventDefault();
-            const u = document.getElementById('adminUsername').value.trim();
-            const p = document.getElementById('adminPassword').value.trim();
-
-            if (u === 'BRPRH' && p === 'Pleng235') {
-                isAdminLoggedIn = true;
-                sessionStorage.setItem('thitipra_admin_auth', 'true');
-                closeModal('adminLoginModal');
-                document.getElementById('adminUsername').value = '';
-                document.getElementById('adminPassword').value = '';
-                document.getElementById('addFontModal').style.display = 'flex';
-            } else {
-                document.getElementById('adminLoginErr').classList.remove('hidden');
+                switchTab('page-customer', 1);
+                switchLoginSection('admin');
             }
         }
 
@@ -957,6 +893,7 @@
             }
         }
 
+        // แอดมินเพิ่มฟอนต์ (ลงทั้ง Supabase และ Sheet)
         async function handleAdminAddFont(e) {
             e.preventDefault();
             const btn = document.getElementById('adminSubmitBtn');
@@ -964,6 +901,7 @@
             const fileInput = document.getElementById('adminFontFile');
             const th = document.getElementById('adminFontTh').value.trim();
             const en = document.getElementById('adminFontEn').value.trim().replace(/\s+/g, '');
+            const driveInput = document.getElementById('adminFontDrive').value.trim();
             const pricingType = document.querySelector('input[name="pricingType"]:checked').value;
             const isFeatured = document.getElementById('adminFontIsFeatured').checked;
 
@@ -999,6 +937,11 @@
                 return;
             }
 
+            let cleanFolderId = driveInput;
+            if (driveInput.includes('/folders/')) {
+                cleanFolderId = driveInput.split('/folders/')[1].split('?')[0];
+            }
+
             const file = fileInput.files[0];
             btn.disabled = true;
             progress.classList.remove('hidden');
@@ -1032,11 +975,14 @@
                     p: pricePersonal,
                     c: priceCommercial,
                     b: priceBiz,
+                    drive: driveInput,
+                    folder_id: cleanFolderId,
                     file: fontFileUrl,
                     featured: isFeatured,
                     created_at: new Date().toISOString()
                 };
 
+                // 1. บันทึกลง Supabase
                 if (supabaseClient) {
                     try {
                         await supabaseClient.from('fonts').insert([newFont]);
@@ -1045,6 +991,30 @@
                     }
                 }
 
+                // 2. ส่งข้อมูลฟอนต์ขึ้น Google Sheet
+                try {
+                    await fetch(GOOGLE_DRIVE_BOT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'add_font',
+                            createdAt: new Date().toLocaleString('th-TH'),
+                            fontTh: th,
+                            fontEn: en,
+                            priceP: pricePersonal,
+                            priceC: priceCommercial,
+                            priceB: priceBiz,
+                            driveLink: driveInput,
+                            fileUrl: fontFileUrl.startsWith('data:') ? 'ไฟล์อัปโหลดในระบบ (Base64)' : fontFileUrl,
+                            featured: isFeatured
+                        })
+                    });
+                } catch (sheetErr) {
+                    console.warn("Google Sheet sync error:", sheetErr);
+                }
+
+                // 3. บันทึกและโหลดฟอนต์ใช้งานสด
                 fontsList.unshift(newFont);
                 localStorage.setItem('thitipra_fonts', JSON.stringify(fontsList));
 
@@ -1056,7 +1026,7 @@
                 renderFonts();
                 populateSelects();
 
-                alert(`เพิ่มฟอนต์ "${th} (${en})" สำเร็จเรียบร้อยแล้วค่ะ!`);
+                alert(`เพิ่มฟอนต์ "${th} (${en})" สำเร็จ และส่งข้อมูลเข้า Google Sheet เรียบร้อยแล้วค่ะ!`);
                 e.target.reset();
                 document.getElementById('adminFontBizPrice1').value = '฿700';
                 document.getElementById('adminFontBizPrice2').value = '฿700';
@@ -1071,10 +1041,121 @@
             }
         }
 
+        // สั่งซื้อฟอนต์: บันทึกลง Google Sheet + ดึงเมลเข้า Drive + ส่งเมลตอบกลับ
+        async function handleSendOrderWithSlip(e) {
+            e.preventDefault();
+            if (!currentFont) return;
+
+            const email = document.getElementById('orderCustomerEmail').value.trim();
+            const license = document.querySelector('input[name="licenseSelect"]:checked').value;
+            const price = document.getElementById('paymentTotalAmount').innerText;
+            const orderId = `ORD-${Date.now().toString().slice(-6)}`;
+            const fontTitle = `${currentFont.th} (${currentFont.en})`;
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-1"></i> กำลังบันทึกออเดอร์และดึงเมลเข้า Drive...`;
+
+            const folderId = currentFont.folder_id || (currentFont.drive && currentFont.drive.includes('/folders/') ? currentFont.drive.split('/folders/')[1].split('?')[0] : currentFont.drive);
+
+            // ส่งข้อมูลคำสั่งซื้อไปให้ Google Apps Script เพื่อดึงเมลเข้า Drive และบันทึกลง Sheet แท็บ Orders
+            try {
+                await fetch(GOOGLE_DRIVE_BOT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'order_font',
+                        customerEmail: email,
+                        folderId: folderId || '',
+                        fontName: fontTitle,
+                        license: license,
+                        orderId: orderId,
+                        amount: price
+                    })
+                });
+            } catch (botErr) {
+                console.warn("Order Bot Sheet dispatch note:", botErr);
+            }
+
+            const newOrder = {
+                id: orderId,
+                fontName: fontTitle,
+                license: license,
+                amount: price,
+                customerEmail: email,
+                driveLink: currentFont.drive || '',
+                status: 'approved',
+                date: new Date().toLocaleString('th-TH')
+            };
+
+            ordersList.unshift(newOrder);
+            localStorage.setItem('thitipra_orders', JSON.stringify(ordersList));
+
+            if (supabaseClient) {
+                try {
+                    await supabaseClient.from('orders').insert([newOrder]);
+                } catch(e) {}
+            }
+
+            closeModal('orderLicenseModal');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+
+            const msg = `🛒✨ [แจ้งโอนเงินสั่งซื้อฟอนต์ ${orderId}]%0A- ฟอนต์: ${encodeURIComponent(fontTitle)}%0A- สิทธิ์: ${license}%0A- ยอดเงิน: ${price}%0A- อีเมลรับสิทธิ์: ${encodeURIComponent(email)}%0A⚡ ระบบบันทึกออเดอร์ลง Google Sheet และดึงเมลเข้า Drive เรียบร้อยแล้ว`;
+            window.open(`${shopSettings.lineUrl}/?${msg}`, '_blank');
+
+            alert(`สั่งซื้อสำเร็จ! บันทึกออเดอร์ลง Google Sheet และดึงอีเมล "${email}" เข้า Google Drive เรียบร้อยแล้วค่ะ สามารถตรวจสอบการแชร์ไฟล์ใน Gmail หรือ Google Drive ได้ทันที ✨`);
+        }
+
+        async function handleCustomerVaultAccess(e) {
+            e.preventDefault();
+            const email = document.getElementById('vaultCheckEmail').value.trim().toLowerCase();
+            const container = document.getElementById('vaultResultList');
+            container.classList.remove('hidden');
+            container.innerHTML = 'กำลังค้นหาประวัติ...';
+
+            let results = [];
+            if (supabaseClient) {
+                try {
+                    const { data } = await supabaseClient.from('orders').select('*').ilike('customerEmail', email);
+                    if (data && data.length > 0) results = data;
+                } catch(e) {}
+            }
+
+            if (results.length === 0) {
+                results = ordersList.filter(o => o.customerEmail?.toLowerCase() === email);
+            }
+
+            container.innerHTML = '';
+            if (results.length === 0) {
+                container.innerHTML = `<div class="text-center text-gray-400 py-3 text-xs">ไม่พบประวัติสั่งซื้อของอีเมลนี้</div>`;
+                return;
+            }
+
+            results.forEach(o => {
+                const isApproved = (o.status === 'approved');
+                container.innerHTML += `
+                    <div class="p-2.5 bg-pink-50/50 border border-pink-100 rounded-xl flex justify-between items-center text-xs">
+                        <div>
+                            <div class="font-bold text-slate-800">${o.fontName}</div>
+                            <div class="text-[9px] text-gray-500">สิทธิ์: ${o.license} | ${isApproved ? '<span class="text-green-600 font-bold">อนุมัติแล้ว</span>' : '<span class="text-amber-600 font-bold">รอดึงเมล</span>'}</div>
+                        </div>
+                        <div>
+                            ${isApproved && o.driveLink ? 
+                                `<a href="${o.driveLink}" target="_blank" class="bg-green-500 text-white font-bold px-2.5 py-1 rounded-lg text-[10px] flex items-center gap-1 shadow-xs"><i class="fab fa-google-drive"></i> เปิดไดรฟ์</a>` :
+                                `<span class="text-[10px] text-emerald-600 font-semibold">✓ ดึงเมลแล้ว</span>`
+                            }
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
         function renderQAChat() {
             const container = document.getElementById('qaChatContainer');
             container.innerHTML = '';
-            
             qaList.forEach(item => {
                 const wrap = document.createElement('div');
                 wrap.className = "space-y-2";
@@ -1174,117 +1255,6 @@
             else totalEl.innerText = `${currentFont.b || '฿700'}`;
         }
 
-        // ================= สั่งซื้อและส่งเฉพาะเมลลูกค้าไปดึงเข้า Google Drive ทันที =================
-        async function handleSendOrderWithSlip(e) {
-            e.preventDefault();
-            if (!currentFont) return;
-
-            const email = document.getElementById('orderCustomerEmail').value.trim();
-            const license = document.querySelector('input[name="licenseSelect"]:checked').value;
-            const price = document.getElementById('paymentTotalAmount').innerText;
-            const orderId = `ORD-${Date.now().toString().slice(-6)}`;
-            const fontTitle = `${currentFont.th} (${currentFont.en})`;
-
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-1"></i> กำลังดึงเมล ${email} เข้า Drive...`;
-
-            // ส่งข้อมูลไปให้ Google Apps Script เพื่อดึงเมลลูกค้าเข้าโฟลเดอร์ Google Drive
-            let botDispatched = false;
-            try {
-                await fetch(GOOGLE_DRIVE_BOT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        customerEmail: email, // ส่งเฉพาะอีเมลลูกค้า
-                        fontName: fontTitle,
-                        license: license,
-                        orderId: orderId,
-                        amount: price
-                    })
-                });
-                botDispatched = true;
-            } catch (botErr) {
-                console.warn("Bot Drive dispatch note:", botErr);
-            }
-
-            const newOrder = {
-                id: orderId,
-                fontName: fontTitle,
-                license: license,
-                amount: price,
-                customerEmail: email,
-                driveLink: currentFont.drive || '',
-                status: 'approved', // ปรับเป็นอนุมัติทันที
-                date: new Date().toLocaleString('th-TH')
-            };
-
-            ordersList.unshift(newOrder);
-            localStorage.setItem('thitipra_orders', JSON.stringify(ordersList));
-
-            if (supabaseClient) {
-                try {
-                    await supabaseClient.from('orders').insert([newOrder]);
-                } catch(e) {}
-            }
-
-            closeModal('orderLicenseModal');
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-
-            // เด้งแจ้งสรุปข้อมูลเข้า LINE แอดมิน
-            const msg = `🛒✨ [แจ้งโอนเงินสั่งซื้อฟอนต์ ${orderId}]%0A- ฟอนต์: ${encodeURIComponent(fontTitle)}%0A- สิทธิ์: ${license}%0A- ยอดเงิน: ${price}%0A- อีเมลรับสิทธิ์: ${encodeURIComponent(email)}%0A⚡ ระบบบอตส่งคำขอดึงเมลเข้า Google Drive เรียบร้อยแล้ว`;
-            window.open(`${shopSettings.lineUrl}/?${msg}`, '_blank');
-
-            alert(`สั่งซื้อสำเร็จ! ระบบได้ทำการดึงอีเมล "${email}" เข้า Google Drive เรียบร้อยแล้วค่ะ สามารถตรวจสอบการแชร์ไฟล์ใน Gmail หรือ Google Drive ได้ทันที ✨`);
-        }
-
-        async function handleCustomerVaultAccess(e) {
-            e.preventDefault();
-            const email = document.getElementById('vaultCheckEmail').value.trim().toLowerCase();
-            const container = document.getElementById('vaultResultList');
-            container.classList.remove('hidden');
-            container.innerHTML = 'กำลังค้นหาประวัติ...';
-
-            let results = [];
-            if (supabaseClient) {
-                try {
-                    const { data } = await supabaseClient.from('orders').select('*').ilike('customerEmail', email);
-                    if (data && data.length > 0) results = data;
-                } catch(e) {}
-            }
-
-            if (results.length === 0) {
-                results = ordersList.filter(o => o.customerEmail?.toLowerCase() === email);
-            }
-
-            container.innerHTML = '';
-            if (results.length === 0) {
-                container.innerHTML = `<div class="text-center text-gray-400 py-3 text-xs">ไม่พบประวัติสั่งซื้อของอีเมลนี้</div>`;
-                return;
-            }
-
-            results.forEach(o => {
-                const isApproved = (o.status === 'approved');
-                container.innerHTML += `
-                    <div class="p-2.5 bg-pink-50/50 border border-pink-100 rounded-xl flex justify-between items-center text-xs">
-                        <div>
-                            <div class="font-bold text-slate-800">${o.fontName}</div>
-                            <div class="text-[9px] text-gray-500">สิทธิ์: ${o.license} | ${isApproved ? '<span class="text-green-600 font-bold">อนุมัติแล้ว</span>' : '<span class="text-amber-600 font-bold">รอดึงเมล</span>'}</div>
-                        </div>
-                        <div>
-                            ${isApproved && o.driveLink ? 
-                                `<a href="${o.driveLink}" target="_blank" class="bg-green-500 text-white font-bold px-2.5 py-1 rounded-lg text-[10px] flex items-center gap-1 shadow-xs"><i class="fab fa-google-drive"></i> เปิดไดรฟ์</a>` :
-                                `<span class="text-[10px] text-emerald-600 font-semibold">✓ ดึงเมลแล้ว</span>`
-                            }
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
         function populateSelects() {
             ['singleFontSelect', 'selectLeft', 'selectRight'].forEach(id => {
                 const sel = document.getElementById(id);
@@ -1323,6 +1293,28 @@
         function orderFontFromVS(selId) {
             const fontEn = document.getElementById(selId).value;
             openOrderDirect(fontEn);
+        }
+
+        function openRulesModal(defaultTab = 'general') {
+            document.getElementById('rulesModal').style.display = 'flex';
+            switchRuleTab(defaultTab);
+        }
+
+        function switchRuleTab(tabName) {
+            const tabs = ['general', 'personal', 'commercial', 'business'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-rule-${t}`);
+                const content = document.getElementById(`rule-content-${t}`);
+                if (btn && content) {
+                    if (t === tabName) {
+                        btn.className = "px-2.5 py-1.5 rounded-xl bg-brand-main text-white shrink-0 font-bold transition shadow-xs";
+                        content.classList.remove('hidden');
+                    } else {
+                        btn.className = "px-2.5 py-1.5 rounded-xl bg-pink-50 text-pink-700 hover:bg-pink-100 shrink-0 font-medium transition";
+                        content.classList.add('hidden');
+                    }
+                }
+            });
         }
 
         function toggleMenu() {
