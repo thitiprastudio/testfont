@@ -94,7 +94,6 @@
                     <span class="text-brand-dark"><i class="fas fa-user-circle"></i></span> เข้าสู่ระบบลูกค้า / แอดมิน
                 </button>
 
-                <!-- แถบเมนูกฎและเงื่อนไขแบบแสดงรายละเอียดครบถ้วน -->
                 <div class="border-t border-b border-pink-100 py-2.5 my-2 space-y-1">
                     <div class="text-[10px] font-bold text-gray-400 px-2 mb-1">เงื่อนไขและกฎการใช้งาน</div>
                     <button onclick="openRulesModal('general'); toggleMenu();" class="w-full text-left flex items-center gap-2 p-2 hover:bg-pink-50 rounded-xl text-gray-700">
@@ -115,8 +114,6 @@
                     </a>
                 </div>
 
-                <div id="sidebarDynamicLinks" class="space-y-1.5 pt-1"></div>
-
                 <button onclick="triggerAdminAddFont(); toggleMenu();" class="w-full text-left p-2.5 bg-brand-light hover:bg-pink-200 rounded-xl transition text-brand-dark font-bold border border-pink-200 mt-2">
                     <i class="fas fa-user-lock mr-1.5"></i> จัดการระบบแอดมิน (Admin)
                 </button>
@@ -131,7 +128,7 @@
     <!-- App Container -->
     <div class="app-container flex flex-col">
         
-        <!-- ==================== PAGE 1: หน้าหลัก (HOME) ==================== -->
+        <!-- PAGE 1: หน้าหลัก (HOME) -->
         <div id="page-home" class="page active">
             <div class="gradient-bg pt-8 px-5 pb-20 relative rounded-b-[40px]">
                 <div class="stars-bg absolute inset-0 opacity-40"></div>
@@ -195,7 +192,7 @@
             </div>
         </div>
 
-        <!-- ==================== PAGE 2: เข้าสู่ระบบ / สมัครสมาชิก ==================== -->
+        <!-- PAGE 2: เข้าสู่ระบบ / สมัครสมาชิก -->
         <div id="page-customer" class="page">
             <div class="gradient-bg pt-8 px-5 pb-16 relative rounded-b-[40px] text-center">
                 <div class="text-brand-text font-outfit text-xl font-bold">เข้าสู่ระบบ & สมัครสมาชิก</div>
@@ -311,7 +308,7 @@
             </div>
         </div>
 
-        <!-- ==================== PAGE 3: คำถาม Q&A ==================== -->
+        <!-- PAGE 3: คำถาม Q&A -->
         <div id="page-qa" class="page">
             <div class="gradient-bg pt-8 px-5 pb-16 relative rounded-b-[40px] text-center">
                 <div class="text-brand-text font-outfit text-xl font-bold">ถาม-ตอบ Q&A</div>
@@ -320,7 +317,7 @@
             <div class="px-4 -mt-8 relative z-10 space-y-3" id="qaChatContainer"></div>
         </div>
 
-        <!-- ==================== PAGE 4: ติดต่อ ==================== -->
+        <!-- PAGE 4: ติดต่อ -->
         <div id="page-contact" class="page">
             <div class="gradient-bg pt-8 px-5 pb-16 relative rounded-b-[40px] text-center">
                 <div class="text-brand-text font-outfit text-xl font-bold">ติดต่อสอบถาม</div>
@@ -337,7 +334,7 @@
             </div>
         </div>
 
-        <!-- ==================== BOTTOM NAVIGATION ==================== -->
+        <!-- BOTTOM NAVIGATION -->
         <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-brand-light px-4 py-2.5 z-40 shadow-nav max-w-[440px] mx-auto rounded-t-3xl">
             <div class="flex justify-around items-center text-[10px]">
                 <div class="flex flex-col items-center gap-0.5 cursor-pointer text-brand-main" onclick="switchTab('page-home', 0)" id="nav-item-0">
@@ -375,6 +372,10 @@
                     <span><i class="fas fa-plus-circle mr-2 text-pink-500"></i> เพิ่มฟอนต์ใหม่ & ผูก Google Drive</span>
                     <i class="fas fa-chevron-right text-gray-400"></i>
                 </button>
+                <button onclick="closeModal('adminControlHubModal'); openFontManagerModal();" class="w-full text-left p-3 rounded-2xl bg-rose-50 hover:bg-rose-100 border border-rose-200 flex items-center justify-between font-bold text-rose-800 transition">
+                    <span><i class="fas fa-tasks mr-2 text-rose-500"></i> 📋 จัดการ/แก้ไข/ลบฟอนต์ที่ลงแล้ว</span>
+                    <i class="fas fa-chevron-right text-gray-400"></i>
+                </button>
                 <button onclick="closeModal('adminControlHubModal'); openThemeAndRulesModal();" class="w-full text-left p-3 rounded-2xl bg-amber-50 hover:bg-amber-100 border border-amber-200 flex items-center justify-between font-bold text-amber-900 transition">
                     <span><i class="fas fa-palette mr-2 text-amber-500"></i> ปรับแต่งสีเว็บ, ฟอนต์เว็บ & แก้ไขกฎ</span>
                     <i class="fas fa-chevron-right text-gray-400"></i>
@@ -386,7 +387,75 @@
         </div>
     </div>
 
-    <!-- ==================== MODAL: ปรับแต่งสีเว็บ ฟอนต์ และแก้ไขกฎ (Theme & Rules Manager) ==================== -->
+    <!-- ==================== MODAL: จัดการ/แก้ไข/ลบฟอนต์เดิม (Font Manager) ==================== -->
+    <div id="fontManagerModal" class="modal">
+        <div class="modal-content" style="max-width: 440px;">
+            <button onclick="closeModal('fontManagerModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
+            <div class="text-center mb-3">
+                <span class="text-[10px] bg-rose-100 text-rose-700 font-bold px-2.5 py-0.5 rounded-full">Font Manager</span>
+                <h3 class="font-bold text-sm text-brand-text mt-1">📋 รายการฟอนต์ทั้งหมดในระบบ</h3>
+                <p class="text-[10px] text-gray-500">สามารถแก้ไขข้อมูล ราคา ลิงก์ไดรฟ์ หรือลบฟอนต์ได้ที่นี่</p>
+            </div>
+
+            <div id="adminFontListContainer" class="space-y-2 max-h-96 overflow-y-auto pr-1">
+                <!-- รายการฟอนต์จะถูกเรนเดอร์ตรงนี้ -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: แก้ไขฟอนต์เดิม (Edit Font Modal) ==================== -->
+    <div id="editFontModal" class="modal">
+        <div class="modal-content">
+            <button onclick="closeModal('editFontModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
+            <div class="text-center mb-3">
+                <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-full">Edit Font</span>
+                <h3 class="font-bold text-sm text-brand-text mt-1">✏️ แก้ไขข้อมูลฟอนต์</h3>
+            </div>
+
+            <form onsubmit="handleSaveEditedFont(event)" class="space-y-2.5 text-xs">
+                <input type="hidden" id="editOldFontEn">
+                <div>
+                    <label class="block font-semibold text-gray-700 text-[10px] mb-0.5">ชื่อไทย *</label>
+                    <input required type="text" id="editFontTh" class="w-full border border-pink-200 rounded-xl p-2 bg-slate-50">
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 text-[10px] mb-0.5">ชื่ออังกฤษ (ห้ามเว้นวรรค) *</label>
+                    <input required type="text" id="editFontEn" class="w-full border border-pink-200 rounded-xl p-2 bg-slate-50">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-semibold text-gray-700 text-[10px] mb-0.5">ราคาส่วนตัว *</label>
+                        <input required type="text" id="editFontP" class="w-full border border-pink-200 rounded-xl p-2 bg-slate-50">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 text-[10px] mb-0.5">ราคาเชิงพาณิชย์ *</label>
+                        <input required type="text" id="editFontC" class="w-full border border-pink-200 rounded-xl p-2 bg-slate-50">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-semibold text-purple-800 text-[10px] mb-0.5">ราคาองค์กร / บริษัท *</label>
+                    <input required type="text" id="editFontB" class="w-full border border-purple-200 rounded-xl p-2 bg-slate-50">
+                </div>
+                <div>
+                    <label class="block font-semibold text-emerald-800 text-[10px] mb-0.5">ลิงก์ Google Drive สำหรับดึงเมล *</label>
+                    <input required type="text" id="editFontDrive" class="w-full border border-emerald-200 rounded-xl p-2 bg-slate-50">
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 text-[10px] mb-0.5">อัปโหลดไฟล์ฟอนต์ตัวอย่างใหม่ (.ttf, .otf) (ไม่ใส่=ใช้ของเดิม)</label>
+                    <input type="file" id="editFontFile" accept=".ttf,.otf,.woff,.woff2" class="w-full text-[10px] border border-pink-100 rounded-xl p-1 bg-pink-50/30">
+                </div>
+                <div class="flex items-center gap-2 p-2 bg-amber-50 rounded-xl border border-amber-200">
+                    <input type="checkbox" id="editFontFeatured" class="w-4 h-4 accent-amber-500 rounded">
+                    <label for="editFontFeatured" class="text-[10px] font-bold text-amber-900 cursor-pointer">⭐ ตั้งเป็นฟอนต์แนะนำ (โชว์แถบสไลด์)</label>
+                </div>
+                <button type="submit" id="btnSaveEditFont" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl shadow-sm transition">
+                    <i class="fas fa-save mr-1"></i> บันทึกการแก้ไขลง Google Sheet
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ปรับแต่งสีเว็บ ฟอนต์ และแก้ไขกฎ (Theme & Rules Manager) -->
     <div id="themeAndRulesModal" class="modal">
         <div class="modal-content" style="max-width: 440px;">
             <button onclick="closeModal('themeAndRulesModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -447,7 +516,7 @@
         </div>
     </div>
 
-    <!-- ==================== MODAL: เพิ่มฟอนต์ใหม่ ==================== -->
+    <!-- MODAL: เพิ่มฟอนต์ใหม่ -->
     <div id="addFontModal" class="modal">
         <div class="modal-content">
             <button onclick="closeModal('addFontModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -467,7 +536,6 @@
                     <input required type="text" id="adminFontEn" placeholder="เช่น Nomsod, KanomPing (ห้ามเว้นวรรค)" class="w-full border-2 border-pink-100 rounded-xl p-2 focus:outline-brand-main bg-slate-50">
                 </div>
 
-                <!-- รูปแบบราคาและลิงก์ Google Drive -->
                 <div class="p-3 bg-pink-50/50 rounded-2xl border border-pink-100 space-y-2">
                     <label class="block font-bold text-brand-dark text-[11px]">เลือกรูปแบบราคา & การผูกไดรฟ์:</label>
                     <div class="space-y-1.5">
@@ -538,8 +606,11 @@
                 </div>
 
                 <div>
-                    <label class="block font-semibold text-gray-700 text-[11px] mb-1">ไฟล์ฟอนต์สำหรับทดลองพิมพ์ (.ttf, .otf, .woff) *</label>
+                    <label class="block font-semibold text-gray-700 text-[11px] mb-1">
+                        ไฟล์ฟอนต์ตัวอย่างสำหรับทดลองพิมพ์ (.ttf, .otf, .woff) *
+                    </label>
                     <input required type="file" id="adminFontFile" accept=".ttf,.otf,.woff,.woff2" class="w-full text-slate-500 text-[10px] file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:bg-pink-100 file:text-brand-dark cursor-pointer border border-pink-100 rounded-xl p-1 bg-pink-50/30">
+                    <p class="text-[9px] text-gray-400 mt-0.5">* ไฟล์นี้จะถูกอัปโหลดไปเก็บใน Google Drive ของแอดมิน เพื่อใช้แสดงผลให้ลูกค้าทดลองพิมพ์สด</p>
                 </div>
 
                 <div id="adminUploadProgress" class="hidden text-center text-xs text-pink-600 font-semibold py-1">
@@ -771,7 +842,7 @@
     </div>
 
     <script>
-        // Web App URL ของ Google Apps Script (จัดการทุกอย่างผ่านตัวนี้)
+        // Web App URL ของ Google Apps Script
         const GOOGLE_DRIVE_BOT_URL = 'https://script.google.com/macros/s/AKfycbwU3q3h7U6FsKNoMFR8WY6AluO8L73LowTMPxwKOve93z_yzJ5awP9w1EavjxkuQlFb/exec';
 
         let isAdminLoggedIn = sessionStorage.getItem('thitipra_admin_auth') === 'true';
@@ -837,7 +908,6 @@
 
         // ================= ดึงฟอนต์จาก Google Sheet 100% =================
         async function fetchFontsFromGoogleSheet() {
-            const list = document.getElementById('fontList');
             try {
                 const res = await fetch(GOOGLE_DRIVE_BOT_URL);
                 const data = await res.json();
@@ -848,7 +918,7 @@
                     fontsList = JSON.parse(localStorage.getItem('thitipra_fonts')) || [];
                 }
             } catch(err) {
-                console.warn("กำลังใช้ข้อมูลฟอนต์สำรองในเครื่อง:", err);
+                console.warn("ใช้ข้อมูลฟอนต์สำรอง:", err);
                 fontsList = JSON.parse(localStorage.getItem('thitipra_fonts')) || [];
             }
 
@@ -865,9 +935,7 @@
                         const font = new FontFace(f.en, `url(${f.file})`);
                         await font.load();
                         document.fonts.add(font);
-                    } catch(e) {
-                        console.error('Error loading font:', f.en, e);
-                    }
+                    } catch(e) {}
                 }
             }
         }
@@ -953,6 +1021,143 @@
                 card.onclick = () => openModal(f);
                 list.appendChild(card);
             });
+        }
+
+        // ================= ฟังก์ชันจัดการฟอนต์เดิม (Admin Font Manager) =================
+        function openFontManagerModal() {
+            const container = document.getElementById('adminFontListContainer');
+            container.innerHTML = '';
+
+            if (fontsList.length === 0) {
+                container.innerHTML = '<div class="text-center py-6 text-gray-400 text-xs">ยังไม่มีฟอนต์ในระบบ</div>';
+            } else {
+                fontsList.forEach(f => {
+                    const item = document.createElement('div');
+                    item.className = "p-3 bg-pink-50/50 border border-pink-100 rounded-2xl flex items-center justify-between text-xs";
+                    item.innerHTML = `
+                        <div class="pr-2">
+                            <div class="font-bold text-slate-800">${f.th} (${f.en})</div>
+                            <div class="text-[10px] text-gray-500">ส่วนตัว: ${f.p} | พาณิชย์: ${f.c} | องค์กร: ${f.b || '฿700'}</div>
+                            <div class="text-[9px] text-emerald-600 truncate max-w-[200px]"><i class="fab fa-google-drive"></i> ${f.drive || '-'}</div>
+                        </div>
+                        <div class="flex gap-1.5 shrink-0">
+                            <button onclick="openEditFontModal('${f.en}')" class="bg-amber-100 hover:bg-amber-200 text-amber-800 px-2.5 py-1 rounded-lg text-[10px] font-bold">
+                                <i class="fas fa-edit"></i> แก้ไข
+                            </button>
+                            <button onclick="handleDeleteFont('${f.en}', '${f.th}')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-2.5 py-1 rounded-lg text-[10px] font-bold">
+                                <i class="fas fa-trash"></i> ลบ
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+            }
+
+            document.getElementById('fontManagerModal').style.display = 'flex';
+        }
+
+        function openEditFontModal(fontEn) {
+            const f = fontsList.find(item => item.en === fontEn);
+            if (!f) return;
+
+            document.getElementById('editOldFontEn').value = f.en;
+            document.getElementById('editFontTh').value = f.th;
+            document.getElementById('editFontEn').value = f.en;
+            document.getElementById('editFontP').value = f.p;
+            document.getElementById('editFontC').value = f.c;
+            document.getElementById('editFontB').value = f.b || '฿700';
+            document.getElementById('editFontDrive').value = f.drive || '';
+            document.getElementById('editFontFeatured').checked = (f.featured === true || f.featured === 'true' || f.featured === 'ใช่ (แนะนำ)');
+            document.getElementById('editFontFile').value = '';
+
+            document.getElementById('editFontModal').style.display = 'flex';
+        }
+
+        async function handleSaveEditedFont(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSaveEditFont');
+            const oldEn = document.getElementById('editOldFontEn').value;
+            const th = document.getElementById('editFontTh').value.trim();
+            const en = document.getElementById('editFontEn').value.trim().replace(/\s+/g, '');
+            const p = document.getElementById('editFontP').value.trim();
+            const c = document.getElementById('editFontC').value.trim();
+            const b = document.getElementById('editFontB').value.trim();
+            const drive = document.getElementById('editFontDrive').value.trim();
+            const featured = document.getElementById('editFontFeatured').checked;
+            const fileInput = document.getElementById('editFontFile');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> กำลังบันทึกการแก้ไข...';
+
+            let fileBase64 = null;
+            let fileName = null;
+            let fileType = null;
+
+            if (fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                fileName = `${Date.now()}_${en}.${file.name.split('.').pop()}`;
+                fileType = file.type;
+                fileBase64 = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            try {
+                await fetch(GOOGLE_DRIVE_BOT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'update_font',
+                        oldFontEn: oldEn,
+                        fontTh: th,
+                        fontEn: en,
+                        priceP: p.startsWith('฿') ? p : `฿${p}`,
+                        priceC: c.startsWith('฿') ? c : `฿${c}`,
+                        priceB: b.startsWith('฿') ? b : `฿${b}`,
+                        driveLink: drive,
+                        featured: featured,
+                        fileName: fileName,
+                        fileType: fileType,
+                        fileBase64: fileBase64
+                    })
+                });
+
+                alert(`บันทึกการแก้ไขฟอนต์ "${th}" เรียบร้อยแล้วค่ะ!`);
+                closeModal('editFontModal');
+                closeModal('fontManagerModal');
+                setTimeout(fetchFontsFromGoogleSheet, 1500);
+            } catch(err) {
+                alert('เกิดข้อผิดพลาดในการบันทึก: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save mr-1"></i> บันทึกการแก้ไขลง Google Sheet';
+            }
+        }
+
+        async function handleDeleteFont(fontEn, fontTh) {
+            if (!confirm(`คุณต้องการลบฟอนต์ "${fontTh} (${fontEn})" ออกจากระบบใช่หรือไม่?`)) return;
+
+            try {
+                await fetch(GOOGLE_DRIVE_BOT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'delete_font',
+                        fontEn: fontEn
+                    })
+                });
+
+                alert(`ลบฟอนต์ "${fontTh}" เรียบร้อยแล้วค่ะ`);
+                closeModal('fontManagerModal');
+                setTimeout(fetchFontsFromGoogleSheet, 1500);
+            } catch(err) {
+                alert('เกิดข้อผิดพลาดในการลบ: ' + err.message);
+            }
         }
 
         function togglePasswordVisibility(inputId, iconId) {
@@ -1127,7 +1332,6 @@
             }
         }
 
-        // ================= แอดมินเพิ่มฟอนต์ (ส่งไฟล์เข้า Google Drive + บันทึกลง Sheet) =================
         async function handleAdminAddFont(e) {
             e.preventDefault();
             const btn = document.getElementById('adminSubmitBtn');
@@ -1171,7 +1375,7 @@
             priceBiz = priceBiz.startsWith('฿') ? priceBiz : `฿${priceBiz}`;
 
             if (!fileInput.files || fileInput.files.length === 0) {
-                alert('กรุณาเลือกไฟล์ฟอนต์ค่ะ');
+                alert('กรุณาเลือกไฟล์ฟอนต์ตัวอย่าง (.ttf หรือ .otf) ค่ะ');
                 return;
             }
 
@@ -1180,7 +1384,6 @@
             progress.classList.remove('hidden');
 
             try {
-                // แปลงไฟล์เป็น Base64 ส่งไปเซฟลง Google Drive ของคุณโดยตรง
                 const fileBase64 = await new Promise((resolve, reject) => {
                     const reader = new FileReader();
                     reader.onload = () => resolve(reader.result);
@@ -1212,8 +1415,7 @@
                 togglePricingInputs('single');
                 closeModal('addFontModal');
 
-                // รีโหลดรายการฟอนต์จาก Sheet มาแสดงทันที
-                setTimeout(fetchFontsFromGoogleSheet, 2000);
+                setTimeout(fetchFontsFromGoogleSheet, 1500);
 
             } catch (err) {
                 console.error(err);
