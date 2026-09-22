@@ -57,7 +57,6 @@
         .price-split-style { background-color: #FFF3B0 !important; color: #8B7355 !important; border-top: 1.5px solid #F6D365 !important; }
         .price-single-style { background-color: #D4EDDA !important; color: #155724 !important; border-top: 1.5px solid #C3E6CB !important; }
 
-        /* ซ่อนแถบเลื่อนแต่ยังเลื่อนแบบแนวนอนได้ */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -94,11 +93,9 @@
                             <div class="text-[9px] text-pink-500">ตัวแทนจำหน่ายอย่างถูกต้อง ✨</div>
                         </div>
                     </button>
-                    <button onclick="openDynamicNotice('usage'); toggleMenu();" class="w-full text-left flex items-center gap-2.5 p-2 hover:bg-pink-50 rounded-xl">
-                        <span class="text-brand-dark"><i class="fas fa-scale-balanced"></i></span> เงื่อนไข & ประเภทการใช้งาน
-                    </button>
-                    <button onclick="openDynamicNotice('rules'); toggleMenu();" class="w-full text-left flex items-center gap-2.5 p-2 hover:bg-pink-50 rounded-xl">
-                        <span class="text-brand-dark"><i class="fas fa-shield-halved"></i></span> กฎและข้อห้ามลิขสิทธิ์
+                    <!-- ปุ่มเปิดเงื่อนไข & กฎลิขสิทธิ์ทั้งหมด -->
+                    <button onclick="openRulesModal('general'); toggleMenu();" class="w-full text-left flex items-center gap-2.5 p-2 hover:bg-pink-50 rounded-xl text-pink-700 font-semibold">
+                        <span class="text-brand-dark"><i class="fas fa-scale-balanced"></i></span> เงื่อนไข & กฎการใช้งานฟอนต์
                     </button>
                 </div>
 
@@ -255,6 +252,207 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- ==================== MODAL: กฎและเงื่อนไขการใช้งานฟอนต์ทั้งหมด (แยกกรอบ) ==================== -->
+    <div id="rulesModal" class="modal">
+        <div class="modal-content" style="max-width: 440px;">
+            <button onclick="closeModal('rulesModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
+            <div class="text-center mb-3">
+                <span class="text-[10px] bg-pink-100 text-pink-600 font-bold px-2.5 py-0.5 rounded-full">Terms & Conditions</span>
+                <h3 class="font-bold text-sm text-brand-text mt-1">📜 กฎและเงื่อนไขการใช้งานฟอนต์</h3>
+            </div>
+
+            <!-- แท็บสลับกฎแต่ละข้อ -->
+            <div class="flex gap-1 overflow-x-auto no-scrollbar pb-2 mb-2 border-b border-pink-100 text-[10px] font-bold">
+                <button type="button" id="tab-rule-general" onclick="switchRuleTab('general')" class="px-2.5 py-1.5 rounded-xl bg-brand-main text-white shrink-0 transition">กฎทั่วไป</button>
+                <button type="button" id="tab-rule-personal" onclick="switchRuleTab('personal')" class="px-2.5 py-1.5 rounded-xl bg-pink-50 text-pink-700 hover:bg-pink-100 shrink-0 transition">การใช้งานส่วนตัว</button>
+                <button type="button" id="tab-rule-commercial" onclick="switchRuleTab('commercial')" class="px-2.5 py-1.5 rounded-xl bg-pink-50 text-pink-700 hover:bg-pink-100 shrink-0 transition">เชิงพาณิชย์</button>
+                <button type="button" id="tab-rule-business" onclick="switchRuleTab('business')" class="px-2.5 py-1.5 rounded-xl bg-pink-50 text-pink-700 hover:bg-pink-100 shrink-0 transition">องค์กร / บริษัท</button>
+            </div>
+
+            <!-- เนื้อหากฎ 1: กฎการใช้งานฟอนต์ทั่วไป -->
+            <div id="rule-content-general" class="space-y-3 text-xs">
+                <div class="p-2.5 bg-rose-50 border border-rose-200 rounded-2xl text-[11px] text-rose-800 font-medium">
+                    ⚠️ ซื้อสิทธิ์แบบใด ต้องใช้งานตามเงื่อนไขของสิทธิ์นั้น และ 1 การสั่งซื้อต่อ 1 อีเมล ใช้ได้ 1 บุคคลเท่านั้น
+                </div>
+
+                <!-- กรอบ 01 -->
+                <div class="p-3 bg-white border-2 border-pink-100 rounded-2xl space-y-1.5 shadow-xs">
+                    <div class="flex items-center gap-1.5 text-brand-dark font-bold text-xs">
+                        <span class="bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded text-[10px]">01</span>
+                        <span>ข้อห้ามทุกเงื่อนไข</span>
+                    </div>
+                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
+                        <li>ห้ามส่งต่อไฟล์ฟอนต์ ต้องส่งงานเป็นไฟล์สำเร็จหรือ Create Outline ให้ฟอนต์เป็นวัตถุ เช่น PNG, PDF หรือ JPEG เท่านั้น</li>
+                        <li>ห้ามแยกตัวอักษรหรือเติมสีเพื่อนำไปทำสติ๊กเกอร์ไลน์ อิโมจิไลน์ หรือพิมพ์สติ๊กเกอร์ขาย และฟอนต์อิโมจิห้ามนำไปทำอิโมจิไลน์</li>
+                        <li>ห้ามคัดลอก ดัดแปลง ดราฟ ขาย ส่งต่อ แจก แถม หรือเปลี่ยนชื่อไฟล์ฟอนต์</li>
+                        <li>ห้ามนำไฟล์ไปลงกลุ่ม ขายสิทธิ์ขาด อัปโหลดขึ้นเว็บไซต์ หรือเผยแพร่ให้ผู้อื่นโดยไม่ได้รับอนุญาต</li>
+                    </ul>
+                </div>
+
+                <!-- กรอบ 02 -->
+                <div class="p-3 bg-white border-2 border-pink-100 rounded-2xl space-y-1.5 shadow-xs">
+                    <div class="flex items-center gap-1.5 text-brand-dark font-bold text-xs">
+                        <span class="bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded text-[10px]">02</span>
+                        <span>ข้อมูลไฟล์และการติดตั้ง</span>
+                    </div>
+                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
+                        <li>รองรับ iPad, iPhone, Android, Windows และ Mac โดยควรตรวจสอบรุ่นอุปกรณ์ก่อนติดตั้ง</li>
+                        <li>ได้รับไฟล์ฟอนต์ TTF และใช้งานกับ Adobe, Photoshop, Microsoft 365 และโปรแกรมที่รองรับฟอนต์ได้</li>
+                        <li>สามารถลง Canva Pro ได้ตามระบบของ Canva โดยไฟล์ OTF สำหรับ Canva จะมี 1 ขนาดเมื่อฟอนต์นั้นรองรับ</li>
+                        <li>ทางร้านไม่สอนติดตั้ง กรุณาศึกษาวิธีติดตั้งและอ่านเงื่อนไขให้ครบก่อนสั่งซื้อ</li>
+                    </ul>
+                </div>
+
+                <!-- กรอบ 03 -->
+                <div class="p-3 bg-white border-2 border-pink-100 rounded-2xl space-y-1.5 shadow-xs">
+                    <div class="flex items-center gap-1.5 text-brand-dark font-bold text-xs">
+                        <span class="bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded text-[10px]">03</span>
+                        <span>การสั่งซื้อและบทปรับ</span>
+                    </div>
+                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
+                        <li>สั่งซื้อและโอนเงินแล้ว ไม่คืนเงินทุกกรณี</li>
+                        <li>เปลี่ยนอีเมลหรือไฟล์ใน Google Drive สูญหาย ต้องซื้อใหม่เท่านั้น</li>
+                        <li>หากต้องการอัปเกรดสิทธิ์ สามารถชำระส่วนต่างตามราคาปัจจุบัน โดยต้องแนบแชตหรือสลิปการสั่งซื้อเดิม</li>
+                        <li class="text-rose-600 font-bold">หากพบการใช้งานผิดกฎ ปรับ 10,000 บาทต่อ 1 ไฟล์</li>
+                    </ul>
+                    <div class="pt-2 border-t border-pink-100 text-[10px] text-gray-500 space-y-0.5">
+                        <div><strong>ติดต่อ:</strong> Line: @wbk2012r</div>
+                        <div><strong>Facebook:</strong> เบบี้เรน’นน</div>
+                        <div><strong>Email:</strong> babyrainsticx@gmail.com</div>
+                        <div class="text-rose-500 font-semibold mt-1">หากไม่แน่ใจ กรุณาสอบถามก่อนใช้งาน (พบการใช้งานผิดกฎ ปรับ 10,000 บาท / 1 ไฟล์)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- เนื้อหากฎ 2: กฎการใช้งานส่วนตัว (Personal) -->
+            <div id="rule-content-personal" class="space-y-3 text-xs hidden">
+                <div class="p-2.5 bg-pink-50 border border-pink-200 rounded-2xl text-[11px] text-pink-900 font-medium">
+                    🌸 สำหรับงานที่ไม่มีรายได้ ไม่ขายของ ไม่โปรโมต และไม่เกี่ยวข้องกับธุรกิจหรือบริษัท
+                </div>
+
+                <!-- กรอบ 01 -->
+                <div class="p-3 bg-white border-2 border-pink-100 rounded-2xl space-y-1.5 shadow-xs">
+                    <div class="flex items-center gap-1.5 text-pink-600 font-bold text-xs">
+                        <span class="bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded text-[10px]">01</span>
+                        <span>งานที่ใช้ได้</span>
+                    </div>
+                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
+                        <li><strong>งานการศึกษา:</strong> รายงาน การบ้าน โครงงาน Mind Map งานนำเสนอ โปสเตอร์วิชาการ และวิทยานิพนธ์ที่ไม่เกี่ยวกับองค์กรธุรกิจ</li>
+                        <li><strong>งานส่วนตัว:</strong> จดโน้ต Bullet Journal, To-do list, ไดอารี่ ปฏิทิน ข้อความตกแต่ง และงานพิมพ์สำหรับอ่านเอง</li>
+                        <li><strong>โซเชียลส่วนตัว:</strong> แต่งรูป สตอรี่ โพสต์ทั่วไป และวิดีโอที่ไม่มีสปอนเซอร์ ไม่มีรายได้ และไม่ใช่งานโปรโมตหรือรีวิว</li>
+                        <li><strong>อุปกรณ์ส่วนตัว:</strong> ตั้งฟอนต์ Android แอปจดโน้ต ทำธีมใช้เอง และ UI ภายในเครื่อง</li>
+                        <li><strong>งานศิลปะส่วนตัว:</strong> วาดรูป คอลลาจ Scrapbook งานพิมพ์ติดบ้าน และสติ๊กเกอร์ใช้เอง</li>
+                        <li><strong>เอกสารส่วนบุคคล:</strong> Resume ใช้เอง จดหมาย บันทึกส่วนตัว และ PDF ที่เก็บไว้ใช้เอง</li>
+                    </ul>
+                </div>
+
+                <!-- กรอบ 02 -->
+                <div class="p-3 bg-white border-2 border-pink-100 rounded-2xl space-y-1.5 shadow-xs">
+                    <div class="flex items-center gap-1.5 text-pink-600 font-bold text-xs">
+                        <span class="bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded text-[10px]">02</span>
+                        <span>สิ่งที่ถือเป็นเชิงพาณิชย์</span>
+                    </div>
+                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
+                        <li>TikTok, YouTube, Facebook Reels หรือช่องทางอื่นที่เปิดสร้างรายได้ มีสปอนเซอร์ รีวิวสินค้า หรือโปรโมตสินค้า <strong>ต้องใช้สิทธิ์เชิงพาณิชย์</strong></li>
+                        <li>1 การสั่งซื้อต่อ 1 อีเมล ใช้ได้เฉพาะ 1 บุคคล ไม่สามารถแบ่งใช้ร่วมกันได้</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- เนื้อหากฎ 3: กฎการใช้งานเชิงพาณิชย์ (Commercial) -->
+            <div id="rule-content-commercial" class="space-y-3 text-xs hidden">
+                <div class="p-2.5 bg-amber-50 border border-amber-200 rounded-2xl text-[11px] text-amber-900 font-medium">
+                    💼 สำหรับสร้างรายได้ โปรโมต ทำการตลาด และใช้ในธุรกิจ โดยผู้ซื้อ 1 อีเมลใช้ได้ 1 บุคคล
+                </div>
+
+                <!-- กรอบ 01 -->
+                <div class="p-3 bg-white border-2 border-amber-100 rounded-2xl space-y-1.5 shadow-xs">
+                    <div class="flex items-center gap-1.5 text-amber-700 font-bold text-xs">
+                        <span class="bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded text-[10px]">01</span>
+                        <span>คอนเทนต์และงานขายออนไลน์</span>
+                    </div>
+                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
+                        <li>ใช้กับ TikTok, YouTube, Facebook, Instagram, Reels, Lemon8, สปอนเซอร์ รีวิวสินค้า Live ขายของ ปกคลิป เพจ และ CapCut ได้ แต่ห้ามนำไปทำแม่แบบที่แจกไฟล์ฟอนต์</li>
+                        <li>ใช้ตกแต่งป้ายร้านของตนเองหรือรับทำป้ายขายได้ โดยต้องประกอบเป็นชิ้นงานสำเร็จและมีการตกแต่งแล้ว</li>
+                        <li>งาน Sticker, Theme หรือ Emoji LINE ต้องเป็นงานสำเร็จและยังอยู่ภายใต้ข้อห้ามทั่วไปเรื่องการแยกหรือส่งต่อไฟล์ฟอนต์</li>
+                    </ul>
+                </div>
+
+                <!-- กรอบ 02 -->
+                <div class="p-3 bg-white border-2 border-amber-100 rounded-2xl space-y-1.5 shadow-xs">
+                    <div class="flex items-center gap-1.5 text-amber-700 font-bold text-xs">
+                        <span class="bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded text-[10px]">02</span>
+                        <span>งานแบรนด์และสินค้าเพื่อขาย</span>
+                    </div>
+                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
+                        <li>ใช้กับโลโก้ แบรนดิ้ง ป้ายร้าน ป้ายเมนู โปสเตอร์โปรโมชัน แบนเนอร์โฆษณา ใบปลิว และสื่อเชิงพาณิชย์ได้</li>
+                        <li>ใช้กับเสื้อ แก้ว การ์ด กล่องสินค้า สติ๊กเกอร์ขาย PNG, Vector, Template, Wallpaper งานพิมพ์ ไดคัท และสกรีนได้ โดยต้องเป็นชิ้นงานสำเร็จ</li>
+                        <li>ใช้ทำดิจิทัลโปรดักต์ เช่น Template Canva, Mockup, Printable และ Portfolio template ได้ตามข้อห้ามทั่วไป</li>
+                    </ul>
+                </div>
+
+                <!-- กรอบ 03 -->
+                <div class="p-3 bg-white border-2 border-amber-100 rounded-2xl space-y-1.5 shadow-xs">
+                    <div class="flex items-center gap-1.5 text-amber-700 font-bold text-xs">
+                        <span class="bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded text-[10px]">03</span>
+                        <span>สิทธิ์ส่วนตัวและเชิงพาณิชย์รวม</span>
+                    </div>
+                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
+                        <li>เหมาะสำหรับบุคคลเดียวที่ต้องการใช้ฟอนต์เดียวกันทั้งงานส่วนตัวและงานสร้างรายได้</li>
+                        <li>รวมสิทธิ์ส่วนตัวและเชิงพาณิชย์ตามเงื่อนไขด้านบน และสามารถขอใบรับรองสิทธิ์การใช้งานฟอนต์ได้</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- เนื้อหากฎ 4: กฎองค์กร / บริษัท / หจก. (Business) -->
+            <div id="rule-content-business" class="space-y-3 text-xs hidden">
+                <div class="p-2.5 bg-purple-50 border border-purple-200 rounded-2xl text-[11px] text-purple-900 font-medium">
+                    🏢 สำหรับบริษัท องค์กร หจก. หน่วยงาน ฟรีแลนซ์ที่ออกแบบให้องค์กร งานวิดีโอ และการฝังฟอนต์ในเว็บไซต์หรือแอป
+                </div>
+
+                <!-- กรอบ 01 -->
+                <div class="p-3 bg-white border-2 border-purple-100 rounded-2xl space-y-1.5 shadow-xs">
+                    <div class="flex items-center gap-1.5 text-purple-700 font-bold text-xs">
+                        <span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded text-[10px]">01</span>
+                        <span>ไลเซนส์องค์กรต่อ 1 ฟอนต์</span>
+                    </div>
+                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
+                        <li><strong>500 บาท:</strong> บุคคลทั่วไปหรือฟรีแลนซ์ออกแบบให้บริษัท องค์กร หจก. หรือหน่วยงาน ใช้ได้ไม่เกิน 5 เครื่องต่อการสั่งซื้อ</li>
+                        <li><strong>700 บาท:</strong> ในนามบริษัท ใช้เชิงพาณิชย์เฉพาะภายในองค์กร ใช้ได้ไม่เกิน 5 เครื่องต่อการสั่งซื้อ</li>
+                        <li><strong>1,000 บาท:</strong> ในนามบริษัท ใช้เชิงพาณิชย์และรับออกแบบ ใช้ได้ไม่เกิน 5 เครื่องต่อการสั่งซื้อ</li>
+                        <li>หากต้องการเพิ่มจำนวนเครื่อง ชำระ 2 เท่าของราคาเงื่อนไขนั้น และรวมแล้วสูงสุดไม่เกิน 10 เครื่อง</li>
+                        <li>ทางร้านออกใบเสร็จรับเงินแบบไม่จด VAT และใบรับรองการใช้งานฟอนต์ให้ได้</li>
+                    </ul>
+                </div>
+
+                <!-- กรอบ 02 -->
+                <div class="p-3 bg-white border-2 border-purple-100 rounded-2xl space-y-1.5 shadow-xs">
+                    <div class="flex items-center gap-1.5 text-purple-700 font-bold text-xs">
+                        <span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded text-[10px]">02</span>
+                        <span>งานวิดีโอในนามบริษัท</span>
+                    </div>
+                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
+                        <li><strong>ราคา 2,000 บาทต่อฟอนต์:</strong> สำหรับงานโปรดักชันเผยแพร่สาธารณะ เช่น TVC วิดีโอโปรโมต ภาพยนตร์ Motion Graphic, Trailer และสื่อยิงโฆษณา</li>
+                        <li>จำกัดไม่เกิน 5 เครื่องต่อ 1 การสั่งซื้อ</li>
+                    </ul>
+                </div>
+
+                <!-- กรอบ 03 -->
+                <div class="p-3 bg-white border-2 border-purple-100 rounded-2xl space-y-1.5 shadow-xs">
+                    <div class="flex items-center gap-1.5 text-purple-700 font-bold text-xs">
+                        <span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded text-[10px]">03</span>
+                        <span>เว็บไซต์ / แอป / แพลตฟอร์มธุรกิจ</span>
+                    </div>
+                    <ul class="text-[11px] text-gray-600 list-disc pl-4 space-y-1 leading-relaxed">
+                        <li><strong>เริ่มต้น 5,000 บาทต่อ 1 ฟอนต์:</strong> สำหรับฝังฟอนต์บนเว็บไซต์ แอป หรือแพลตฟอร์มที่มีผู้ใช้งานจำนวนมาก</li>
+                        <li>ครอบคลุมระบบที่บุคคลภายนอกเข้าถึงหรือสร้างรายได้จากสินค้าและบริการ เช่น E-commerce, Landing Page, เว็บไซต์บริษัท แอปขายสินค้า แอปบริการ และระบบสมาชิก</li>
+                        <li>รวม UI ที่ลูกค้าเห็น ข้อความบนหน้าเว็บ แบนเนอร์ในเว็บ และตัวหนังสือในระบบที่เปิดใช้งานสาธารณะ (รายละเอียดราคาขึ้นอยู่กับขอบเขตงาน)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ==================== MODAL: ล็อกอินแอดมิน (ADMIN LOGIN) ==================== -->
@@ -548,7 +746,7 @@
         </div>
     </div>
 
-    <!-- Modals: Notice Modal -->
+    <!-- Modals: Notice Modal (สำหรับตัวแทนจำหน่ายอื่นๆ) -->
     <div id="dynamicPageModal" class="modal">
         <div class="modal-content">
             <button onclick="closeModal('dynamicPageModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -568,7 +766,6 @@
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
 
-        // สถานะการล็อกอินของแอดมิน
         let isAdminLoggedIn = sessionStorage.getItem('thitipra_admin_auth') === 'true';
 
         const defaultQA = [
@@ -577,15 +774,8 @@
             { q: "ใช้กับโทรศัพท์ Android หรือ iPad ได้ไหม?", a: "รองรับทั้ง iOS (iPad/iPhone) และ Android ค่ะ ติดตั้งง่ายมากๆ" }
         ];
 
-        const defaultCMS = [
-            { id: 'c1', title: 'สั่งซื้อฟอนต์เครืออื่นๆ', subtitle: 'ตัวแทนจำหน่ายอย่างถูกต้อง ✨', layout: 'card', content: 'รับสิทธิ์แท้ 100% ปลอดภัย\nอัปเดตไฟล์ฟรีตลอดชีพ\nออกใบเสนอราคา & ใบเสร็จได้' },
-            { id: 'c2', title: 'เงื่อนไข & ประเภทการใช้งาน', subtitle: 'รายละเอียดลิขสิทธิ์แต่ละระดับ', layout: 'text', content: '👤 Personal: สำหรับการศึกษา จดสรุป งานส่วนตัว\n💼 Commercial: สื่อโฆษณา รีวิว ยิงแอด ป้ายสินค้า\n🏢 Business: นิติบุคคล/บริษัท/ฟรีแลนซ์ ไม่เกิน 5 เครื่อง' },
-            { id: 'c3', title: 'กฎและข้อห้ามลิขสิทธิ์', subtitle: 'ข้อห้ามเคร่งครัด', layout: 'text', content: '1. ห้ามส่งไฟล์ฟอนต์ต่อ ต้อง Create outline เป็นชิ้นงานสำเร็จเท่านั้น\n2. ห้ามแยกตัวอักษรทำสติ๊กเกอร์ไลน์เดี่ยวๆ ขาย\n3. ห้ามใช้ AI ดัดแปลงหรือเทรนโมเดลฟอนต์เลียนแบบ ฝ่าฝืนปรับ 10,000.- / ไฟล์' }
-        ];
-
         let fontsList = [];
         let qaList = JSON.parse(localStorage.getItem('thitipra_qa')) || defaultQA;
-        let cmsList = JSON.parse(localStorage.getItem('thitipra_cms')) || defaultCMS;
         let ordersList = JSON.parse(localStorage.getItem('thitipra_orders')) || [];
         let shopSettings = JSON.parse(localStorage.getItem('thitipra_settings')) || {
             lineUrl: "https://lin.ee/5HYfnJc",
@@ -597,14 +787,11 @@
 
         async function init() {
             if(!localStorage.getItem('thitipra_qa')) localStorage.setItem('thitipra_qa', JSON.stringify(defaultQA));
-            if(!localStorage.getItem('thitipra_cms')) localStorage.setItem('thitipra_cms', JSON.stringify(defaultCMS));
-            
             document.getElementById('mainContactLineLink').href = shopSettings.lineUrl;
 
             await fetchFontsFromSupabase();
             renderFeaturedFonts();
             renderQAChat();
-            renderSidebarCMS();
             populateSelects();
         }
 
@@ -643,7 +830,6 @@
             }
         }
 
-        // ================= แสดงผลสไลด์ฟอนต์แนะนำ (FEATURED) =================
         function renderFeaturedFonts() {
             const section = document.getElementById('featuredSection');
             const slider = document.getElementById('featuredSlider');
@@ -724,6 +910,29 @@
                 `;
                 card.onclick = () => openModal(f);
                 list.appendChild(card);
+            });
+        }
+
+        // ================= เปิด Modal กฎและสลับแท็บ =================
+        function openRulesModal(defaultTab = 'general') {
+            document.getElementById('rulesModal').style.display = 'flex';
+            switchRuleTab(defaultTab);
+        }
+
+        function switchRuleTab(tabName) {
+            const tabs = ['general', 'personal', 'commercial', 'business'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-rule-${t}`);
+                const content = document.getElementById(`rule-content-${t}`);
+                if (btn && content) {
+                    if (t === tabName) {
+                        btn.className = "px-2.5 py-1.5 rounded-xl bg-brand-main text-white shrink-0 font-bold transition shadow-xs";
+                        content.classList.remove('hidden');
+                    } else {
+                        btn.className = "px-2.5 py-1.5 rounded-xl bg-pink-50 text-pink-700 hover:bg-pink-100 shrink-0 font-medium transition";
+                        content.classList.add('hidden');
+                    }
+                }
             });
         }
 
@@ -815,7 +1024,6 @@
             try {
                 let fontFileUrl = '';
 
-                // อัปโหลดเข้า Supabase Storage (Bucket 'fonts') หากมี
                 if (supabaseClient) {
                     const ext = file.name.split('.').pop();
                     const fileName = `${Date.now()}_${en}.${ext}`;
@@ -827,7 +1035,6 @@
                     }
                 }
 
-                // ถ้าไม่มี Storage หรือไม่สำเร็จ ให้ใช้ Data URL
                 if (!fontFileUrl) {
                     fontFileUrl = await new Promise((resolve, reject) => {
                         const reader = new FileReader();
@@ -848,7 +1055,6 @@
                     created_at: new Date().toISOString()
                 };
 
-                // บันทึกลงตาราง Supabase
                 if (supabaseClient) {
                     try {
                         await supabaseClient.from('fonts').insert([newFont]);
@@ -1120,47 +1326,19 @@
         }
 
         function openDynamicNotice(type) {
-            const title = type === 'usage' ? 'เงื่อนไข & ประเภทการใช้งาน' : type === 'rules' ? 'กฎและข้อห้ามลิขสิทธิ์' : 'สั่งซื้อฟอนต์เครืออื่นๆ';
-            const icon = type === 'usage' ? 'fas fa-scale-balanced' : type === 'rules' ? 'fas fa-shield-halved' : 'fas fa-store';
-            let content = '';
-            
-            if (type === 'usage') {
-                content = `👤 Personal Use: สำหรับใช้ส่วนตัว จดสรุป ปริ้นอ่านเอง\n💼 Commercial Use: สำหรับแม่ค้าออนไลน์ โฆษณา รีวิว ยิงแอด ป้ายสินค้า\n🏢 Business Use: นิติบุคคล/บริษัท/ฟรีแลนซ์ ไม่เกิน 5 เครื่อง`;
-            } else if (type === 'rules') {
-                content = `1. ห้ามแจกจ่ายหรือขายต่อไฟล์ฟอนต์เด็ดขาด\n2. ห้ามดราฟหรือเทรน AI จากตัวอักษรของฟอนต์\n3. หากตรวจพบการละเมิดปรับตามกฎร้าน 10,000 บาท/ไฟล์ หรือดำเนินคดีตามกฎหมาย`;
-            } else {
-                content = `ตัวแทนจำหน่ายอย่างถูกต้อง ✨\n- รับสิทธิ์แท้ 100% ปลอดภัย\n- อัปเดตไฟล์ฟรีตลอดชีพ\n- ออกใบเสร็จรับเงินได้`;
+            if (type === 'external') {
+                document.getElementById('dynamicModalTitle').innerText = 'สั่งซื้อฟอนต์เครืออื่นๆ';
+                document.getElementById('dynamicModalIcon').className = 'fas fa-store text-brand-dark';
+                document.getElementById('dynamicModalContent').innerHTML = `
+                    <div class="p-3 bg-[#FFF3B0] text-[#8B7355] rounded-xl whitespace-pre-line leading-relaxed">
+                        ตัวแทนจำหน่ายอย่างถูกต้อง ✨
+                        - รับสิทธิ์แท้ 100% ปลอดภัย
+                        - อัปเดตไฟล์ฟรีตลอดชีพ
+                        - ออกใบเสร็จรับเงินได้
+                    </div>
+                `;
+                document.getElementById('dynamicPageModal').style.display = 'flex';
             }
-
-            document.getElementById('dynamicModalTitle').innerText = title;
-            document.getElementById('dynamicModalIcon').className = `${icon} text-brand-dark`;
-            document.getElementById('dynamicModalContent').innerHTML = `<div class="p-3 bg-[#FFF3B0] text-[#8B7355] rounded-xl whitespace-pre-line leading-relaxed">${content}</div>`;
-            document.getElementById('dynamicPageModal').style.display = 'flex';
-        }
-
-        function renderSidebarCMS() {
-            const container = document.getElementById('sidebarDynamicLinks');
-            container.innerHTML = '';
-            cmsList.forEach(c => {
-                const btn = document.createElement('button');
-                btn.className = "w-full text-left p-2 hover:bg-pink-50 rounded-xl transition flex items-center gap-2";
-                btn.innerHTML = `<span class="text-brand-dark"><i class="fas fa-sparkles text-[10px]"></i></span> <div><div class="font-bold text-xs">${c.title}</div><div class="text-[9px] text-pink-500">${c.subtitle||''}</div></div>`;
-                btn.onclick = () => { toggleMenu(); openCMSModal(c); };
-                container.appendChild(btn);
-            });
-        }
-
-        function openCMSModal(c) {
-            document.getElementById('dynamicModalTitle').innerText = c.title;
-            document.getElementById('dynamicModalIcon').className = 'fas fa-sparkles text-brand-dark';
-            const body = document.getElementById('dynamicModalContent');
-            if (c.layout === 'card') {
-                const lines = c.content.split('\n').filter(l => l.trim().length > 0);
-                body.innerHTML = lines.map(line => `<div class="p-2.5 bg-rose-50 border border-rose-100 rounded-xl font-medium text-slate-700">${line}</div>`).join('');
-            } else {
-                body.innerHTML = `<div class="p-3 bg-[#FFF3B0] text-[#8B7355] rounded-xl whitespace-pre-line leading-relaxed">${c.content}</div>`;
-            }
-            document.getElementById('dynamicPageModal').style.display = 'flex';
         }
 
         function switchTab(pageId, navIndex) {
