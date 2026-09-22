@@ -56,6 +56,10 @@
         
         .price-split-style { background-color: #FFF3B0 !important; color: #8B7355 !important; border-top: 1.5px solid #F6D365 !important; }
         .price-single-style { background-color: #D4EDDA !important; color: #155724 !important; border-top: 1.5px solid #C3E6CB !important; }
+
+        /* ซ่อนแถบเลื่อนแต่ยังเลื่อนแบบแนวนอนได้ */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="text-brand-text font-sans antialiased">
@@ -101,8 +105,8 @@
                 <div id="sidebarDynamicLinks" class="space-y-1.5 pt-1"></div>
 
                 <!-- ปุ่มเพิ่มฟอนต์สำหรับแอดมิน -->
-                <button onclick="openAddFontModal(); toggleMenu();" class="w-full text-left p-2.5 bg-brand-light hover:bg-pink-200 rounded-xl transition text-brand-dark font-bold border border-pink-200 mt-2">
-                    <i class="fas fa-plus-circle mr-1.5"></i> เพิ่มฟอนต์ใหม่ (Admin)
+                <button onclick="triggerAdminAddFont(); toggleMenu();" class="w-full text-left p-2.5 bg-brand-light hover:bg-pink-200 rounded-xl transition text-brand-dark font-bold border border-pink-200 mt-2">
+                    <i class="fas fa-user-lock mr-1.5"></i> จัดการเพิ่มฟอนต์ (แอดมิน)
                 </button>
             </div>
             
@@ -124,7 +128,7 @@
                         <i class="fa-solid fa-bars text-sm"></i>
                     </button>
                     <div class="text-brand-text font-outfit text-xl font-bold tracking-wide">THITIPRASTUDIO</div>
-                    <button onclick="openAddFontModal()" title="เพิ่มฟอนต์" class="w-9 h-9 bg-white/80 rounded-full flex items-center justify-center text-brand-dark shadow-sm text-xs">
+                    <button onclick="triggerAdminAddFont()" title="เพิ่มฟอนต์ (แอดมิน)" class="w-9 h-9 bg-white/80 rounded-full flex items-center justify-center text-brand-dark shadow-sm text-xs">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
@@ -140,6 +144,18 @@
             </div>
 
             <div class="bg-white rounded-t-[35px] -mt-14 relative z-10 pt-12 px-4 shadow-app pb-8">
+                
+                <!-- ==================== FEATURED FONTS SLIDER (แนะนำฟอนต์) ==================== -->
+                <div id="featuredSection" class="mb-5 hidden">
+                    <div class="flex items-center justify-between mb-2 px-1">
+                        <span class="text-xs font-bold text-brand-dark flex items-center gap-1.5">
+                            <i class="fas fa-crown text-amber-500"></i> แนะนำยอดนิยม ✨
+                        </span>
+                        <span class="text-[10px] text-pink-400">เลื่อนดูฟอนต์แนะนำ ➔</span>
+                    </div>
+                    <div id="featuredSlider" class="flex gap-3 overflow-x-auto no-scrollbar pb-2 pt-1 px-1"></div>
+                </div>
+
                 <div class="bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl p-2.5 text-center text-xs font-medium mb-4 flex items-center justify-center gap-1.5 shadow-xs">
                     <i class="fas fa-clock text-amber-600"></i> สั่งซื้อรอดึงเมลเข้า Google Drive ภายใน 1 - 3 ชั่วโมงค่ะ ✨
                 </div>
@@ -241,16 +257,47 @@
 
     </div>
 
-    <!-- ==================== MODAL: เพิ่มฟอนต์ใหม่ (ADMIN) ==================== -->
+    <!-- ==================== MODAL: ล็อกอินแอดมิน (ADMIN LOGIN) ==================== -->
+    <div id="adminLoginModal" class="modal">
+        <div class="modal-content">
+            <button onclick="closeModal('adminLoginModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
+            <div class="text-center mb-4">
+                <div class="w-12 h-12 bg-pink-100 text-brand-dark rounded-full flex items-center justify-center mx-auto text-xl mb-2">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3 class="font-bold text-sm text-brand-text">เข้าสู่ระบบแอดมิน</h3>
+                <p class="text-[11px] text-gray-500">กรุณากรอกรหัสผ่านเพื่อจัดการคลังฟอนต์</p>
+            </div>
+
+            <form onsubmit="handleAdminLogin(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold text-gray-700 text-[11px] mb-1">Username</label>
+                    <input required type="text" id="adminUsername" placeholder="กรอก Username" class="w-full border-2 border-pink-100 rounded-xl p-2.5 focus:outline-brand-main bg-slate-50">
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 text-[11px] mb-1">Password</label>
+                    <input required type="password" id="adminPassword" placeholder="กรอก Password" class="w-full border-2 border-pink-100 rounded-xl p-2.5 focus:outline-brand-main bg-slate-50">
+                </div>
+                <div id="adminLoginErr" class="hidden text-rose-500 text-[11px] text-center font-semibold">
+                    Username หรือ Password ไม่ถูกต้อง!
+                </div>
+                <button type="submit" class="w-full bg-brand-main hover:bg-brand-dark text-white font-bold py-2.5 rounded-xl shadow-sm transition">
+                    เข้าสู่ระบบ
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: เพิ่มฟอนต์ใหม่ (ADMIN ADD FONT) ==================== -->
     <div id="addFontModal" class="modal">
         <div class="modal-content">
             <button onclick="closeModal('addFontModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
             <div class="text-center mb-3">
                 <span class="text-[10px] bg-pink-100 text-pink-600 font-bold px-2.5 py-0.5 rounded-full">Admin Dashboard</span>
-                <h3 class="font-bold text-sm text-brand-text mt-1">✨ เพิ่มฟอนต์ & อัปโหลดไฟล์ฟอนต์</h3>
+                <h3 class="font-bold text-sm text-brand-text mt-1">✨ เพิ่มฟอนต์ใหม่เข้าหน้าร้าน</h3>
             </div>
 
-            <form onsubmit="handleAdminAddFont(event)" class="space-y-2.5 text-xs">
+            <form onsubmit="handleAdminAddFont(event)" class="space-y-3 text-xs">
                 <div>
                     <label class="block font-semibold text-gray-700 text-[11px] mb-1">ชื่อฟอนต์ (ภาษาไทย) *</label>
                     <input required type="text" id="adminFontTh" placeholder="เช่น นมสด, ขนมผิง" class="w-full border-2 border-pink-100 rounded-xl p-2 focus:outline-brand-main bg-slate-50">
@@ -261,31 +308,63 @@
                     <input required type="text" id="adminFontEn" placeholder="เช่น Nomsod, KanomPing (ห้ามเว้นวรรค)" class="w-full border-2 border-pink-100 rounded-xl p-2 focus:outline-brand-main bg-slate-50">
                 </div>
 
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block font-semibold text-gray-700 text-[11px] mb-1">ราคาส่วนตัว *</label>
-                        <input required type="text" id="adminFontP" placeholder="เช่น ฿69 หรือ 69.-" class="w-full border-2 border-pink-100 rounded-xl p-2 focus:outline-brand-main bg-slate-50">
+                <!-- ตัวเลือกประเภทราคา -->
+                <div class="p-3 bg-pink-50/50 rounded-2xl border border-pink-100 space-y-2">
+                    <label class="block font-bold text-brand-dark text-[11px]">เลือกรูปแบบราคา:</label>
+                    <div class="space-y-1.5">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="pricingType" value="single" checked onchange="togglePricingInputs('single')" class="accent-brand-main">
+                            <span class="text-[11px] text-gray-700">1. ราคาเดียว (ใช้ได้ทั้งส่วนตัว & เชิงพาณิชย์)</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="pricingType" value="split" onchange="togglePricingInputs('split')" class="accent-brand-main">
+                            <span class="text-[11px] text-gray-700">2. แยกสิทธิ์ (ส่วนตัว / เชิงพาณิชย์)</span>
+                        </label>
                     </div>
-                    <div>
-                        <label class="block font-semibold text-gray-700 text-[11px] mb-1">ราคาเชิงพาณิชย์ *</label>
-                        <input required type="text" id="adminFontC" placeholder="เช่น ฿149 หรือ 149.-" class="w-full border-2 border-pink-100 rounded-xl p-2 focus:outline-brand-main bg-slate-50">
+
+                    <!-- ช่องกรอกแบบที่ 1 (ราคาเดียว) -->
+                    <div id="pricingSingleGroup" class="space-y-2 pt-2 border-t border-pink-100">
+                        <div>
+                            <label class="block font-semibold text-gray-700 text-[10px]">ราคาส่วนตัว & เชิงพาณิชย์ (ราคาเดียวกัน) *</label>
+                            <input type="text" id="adminFontCombinedPrice" placeholder="เช่น ฿79" class="w-full border border-pink-200 rounded-xl p-2 focus:outline-brand-main bg-white text-xs">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-purple-800 text-[10px]">ราคาบริษัท / องค์กร / หจก. (Business License) *</label>
+                            <input type="text" id="adminFontBizPrice1" placeholder="เช่น ฿700" value="฿700" class="w-full border border-purple-200 rounded-xl p-2 focus:outline-purple-400 bg-white text-xs">
+                        </div>
                     </div>
+
+                    <!-- ช่องกรอกแบบที่ 2 (แยกสิทธิ์) -->
+                    <div id="pricingSplitGroup" class="space-y-2 pt-2 border-t border-pink-100 hidden">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block font-semibold text-gray-700 text-[10px]">ราคาส่วนตัว *</label>
+                                <input type="text" id="adminFontP" placeholder="เช่น ฿69" class="w-full border border-pink-200 rounded-xl p-2 focus:outline-brand-main bg-white text-xs">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-700 text-[10px]">ราคาเชิงพาณิชย์ *</label>
+                                <input type="text" id="adminFontC" placeholder="เช่น ฿149" class="w-full border border-pink-200 rounded-xl p-2 focus:outline-brand-main bg-white text-xs">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-purple-800 text-[10px]">ราคาบริษัท / องค์กร / หจก. (Business License) *</label>
+                            <input type="text" id="adminFontBizPrice2" placeholder="เช่น ฿700" value="฿700" class="w-full border border-purple-200 rounded-xl p-2 focus:outline-purple-400 bg-white text-xs">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ติ๊กฟอนต์แนะนำ -->
+                <div class="flex items-center gap-2 p-2.5 bg-amber-50 rounded-xl border border-amber-200">
+                    <input type="checkbox" id="adminFontIsFeatured" class="w-4 h-4 accent-amber-500 rounded cursor-pointer">
+                    <label for="adminFontIsFeatured" class="text-[11px] font-bold text-amber-900 cursor-pointer">
+                        ⭐ ตั้งเป็นฟอนต์แนะนำ (แสดงบนแถบสไลด์หน้าหลัก)
+                    </label>
                 </div>
 
                 <div>
                     <label class="block font-semibold text-gray-700 text-[11px] mb-1">ไฟล์ฟอนต์สำหรับทดลองพิมพ์ (.ttf, .otf, .woff) *</label>
                     <input required type="file" id="adminFontFile" accept=".ttf,.otf,.woff,.woff2" class="w-full text-slate-500 text-[10px] file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:bg-pink-100 file:text-brand-dark cursor-pointer border border-pink-100 rounded-xl p-1 bg-pink-50/30">
-                    <p class="text-[9px] text-gray-400 mt-0.5">* ไฟล์นี้จะถูกโหลดเข้าบราวเซอร์เพื่อทดลองพิมพ์สดทันที</p>
-                </div>
-
-                <div>
-                    <label class="block font-semibold text-gray-700 text-[11px] mb-1">ลิงก์ Google Drive (ส่วนตัว)</label>
-                    <input type="url" id="adminFontDriveP" placeholder="https://drive.google.com/..." class="w-full border-2 border-pink-100 rounded-xl p-2 focus:outline-brand-main bg-slate-50">
-                </div>
-
-                <div>
-                    <label class="block font-semibold text-gray-700 text-[11px] mb-1">ลิงก์ Google Drive (เชิงพาณิชย์)</label>
-                    <input type="url" id="adminFontDriveC" placeholder="https://drive.google.com/..." class="w-full border-2 border-pink-100 rounded-xl p-2 focus:outline-brand-main bg-slate-50">
+                    <p class="text-[9px] text-gray-400 mt-0.5">* ไฟล์นี้จะนำมาใช้แสดงผลตัวหนังสือให้ลูกค้าทดลองพิมพ์สด</p>
                 </div>
 
                 <div id="adminUploadProgress" class="hidden text-center text-xs text-pink-600 font-semibold py-1">
@@ -293,13 +372,13 @@
                 </div>
 
                 <button type="submit" id="adminSubmitBtn" class="w-full bg-brand-main hover:bg-brand-dark text-white font-bold py-2.5 rounded-xl shadow-sm transition">
-                    <i class="fas fa-save mr-1"></i> บันทึกฟอนต์เข้าหน้าร้าน
+                    <i class="fas fa-save mr-1"></i> บันทึกและเผยแพร่ฟอนต์
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- Modals อื่นๆ (Tester, VS Mode, Order, Notice) -->
+    <!-- Modals: Font Tester -->
     <div id="fontModal" class="modal">
         <div class="modal-content">
             <button onclick="closeModal('fontModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -340,7 +419,7 @@
         </div>
     </div>
 
-    <!-- VS Modal -->
+    <!-- Modals: VS Modal -->
     <div id="vsModal" class="modal">
         <div class="modal-content" style="max-width: 550px;">
             <button onclick="closeModal('vsModal')" class="absolute top-4 right-4 text-gray-400 hover:text-purple-600 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -372,7 +451,7 @@
         </div>
     </div>
 
-    <!-- Order Modal -->
+    <!-- Modals: Order Modal -->
     <div id="orderLicenseModal" class="modal">
         <div class="modal-content">
             <button onclick="closeModal('orderLicenseModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -426,7 +505,7 @@
                             <div class="flex-1">
                                 <div class="flex justify-between items-center">
                                     <span class="font-bold text-gray-800 text-xs">นิติบุคคล (Business License)</span>
-                                    <span class="font-bold text-purple-700 text-xs">฿700</span>
+                                    <span class="font-bold text-purple-700 text-xs" id="orderPriceBusiness">฿700</span>
                                 </div>
                                 <p class="text-[10px] text-purple-700 font-medium">สำหรับบริษัท องค์กร และ หจก. (จำกัด 5 เครื่อง)</p>
                                 <ul class="text-[9px] text-gray-500 list-disc pl-3 mt-1 space-y-0.5">
@@ -469,7 +548,7 @@
         </div>
     </div>
 
-    <!-- Notice Modal -->
+    <!-- Modals: Notice Modal -->
     <div id="dynamicPageModal" class="modal">
         <div class="modal-content">
             <button onclick="closeModal('dynamicPageModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -488,6 +567,9 @@
         if (typeof supabase !== 'undefined') {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
+
+        // สถานะการล็อกอินของแอดมิน
+        let isAdminLoggedIn = sessionStorage.getItem('thitipra_admin_auth') === 'true';
 
         const defaultQA = [
             { q: "สั่งซื้อแล้วใช้เวลานานไหมกว่าจะได้ฟอนต์?", a: "แอดมินจะตรวจสอบสลิปและดึงอีเมลเข้า Google Drive ให้ภายใน 1-3 ชั่วโมงค่ะ ✨" },
@@ -520,6 +602,7 @@
             document.getElementById('mainContactLineLink').href = shopSettings.lineUrl;
 
             await fetchFontsFromSupabase();
+            renderFeaturedFonts();
             renderQAChat();
             renderSidebarCMS();
             populateSelects();
@@ -541,6 +624,7 @@
             }
 
             await loadDynamicFonts();
+            renderFeaturedFonts();
             renderFonts();
             populateSelects();
         }
@@ -557,6 +641,45 @@
                     }
                 }
             }
+        }
+
+        // ================= แสดงผลสไลด์ฟอนต์แนะนำ (FEATURED) =================
+        function renderFeaturedFonts() {
+            const section = document.getElementById('featuredSection');
+            const slider = document.getElementById('featuredSlider');
+            if (!slider || !section) return;
+
+            const featured = fontsList.filter(f => f.featured === true || f.featured === 'true');
+            if (featured.length === 0) {
+                section.classList.add('hidden');
+                return;
+            }
+
+            section.classList.remove('hidden');
+            slider.innerHTML = '';
+
+            featured.forEach(f => {
+                const card = document.createElement('div');
+                card.className = "min-w-[190px] max-w-[190px] bg-gradient-to-b from-white to-pink-50/50 border border-pink-200 rounded-2xl p-3 shadow-xs shrink-0 cursor-pointer transition hover:scale-[1.02] hover:border-brand-main";
+                const isSingle = (f.p === f.c);
+                const priceTxt = isSingle ? `${f.p}` : `${f.p} / ${f.c}`;
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between text-[11px] font-bold text-brand-dark mb-1">
+                        <span class="truncate">${f.th}</span>
+                        <span class="text-amber-500 text-[10px]"><i class="fas fa-star"></i> แนะนำ</span>
+                    </div>
+                    <div class="text-center py-2 text-xl text-gray-800 whitespace-nowrap overflow-hidden" style="font-family:'${f.en}', sans-serif">
+                        สวัสดีจ้า Aa
+                    </div>
+                    <div class="flex items-center justify-between mt-1 pt-1.5 border-t border-pink-100">
+                        <span class="text-[10px] font-bold text-pink-600 truncate">${priceTxt}</span>
+                        <button onclick="event.stopPropagation(); openOrderDirect('${f.en}')" class="bg-brand-main hover:bg-brand-dark text-white text-[9px] font-bold px-2 py-0.5 rounded-full">สั่งซื้อ</button>
+                    </div>
+                `;
+                card.onclick = () => openModal(f);
+                slider.appendChild(card);
+            });
         }
 
         function renderFonts() {
@@ -583,10 +706,14 @@
                 card.className = "bg-white rounded-2xl border border-pink-100 overflow-hidden shadow-xs cursor-pointer transition hover:border-brand-main";
                 const priceClass = isSingle ? 'price-single-style' : 'price-split-style';
                 const priceTxt = isSingle ? `ราคาเดียว: ${f.p}` : `ส่วนตัว: ${f.p} | เชิงพาณิชย์: ${f.c}`;
+                const isFeatured = f.featured === true || f.featured === 'true';
 
                 card.innerHTML = `
                     <div class="px-4 pt-3 font-semibold text-brand-text text-sm flex justify-between items-center" style="font-family:'${f.en}', sans-serif">
-                        <span class="truncate">${(idx+1).toString().padStart(2, '0')}. ${f.th} (${f.en})</span>
+                        <span class="truncate flex items-center gap-1">
+                            ${(idx+1).toString().padStart(2, '0')}. ${f.th} (${f.en})
+                            ${isFeatured ? '<span class="text-[10px] bg-amber-100 text-amber-700 font-sans px-1.5 py-0.2 rounded-md font-bold">⭐ แนะนำ</span>' : ''}
+                        </span>
                         <span class="text-[10px] text-pink-400 font-sans shrink-0 ml-1">✨ ทดลองพิมพ์</span>
                     </div>
                     <div class="p-3.5 text-center text-2xl overflow-hidden whitespace-nowrap text-gray-800" style="font-family:'${f.en}', sans-serif">สวัสดี Hello 123</div>
@@ -600,9 +727,43 @@
             });
         }
 
-        // ================= ฟังก์ชัน ADMIN เพิ่มฟอนต์ + อัปโหลดไฟล์ =================
-        function openAddFontModal() {
-            document.getElementById('addFontModal').style.display = 'flex';
+        // ================= ตรวจสอบสิทธิ์และล็อกอินแอดมิน =================
+        function triggerAdminAddFont() {
+            if (isAdminLoggedIn) {
+                document.getElementById('addFontModal').style.display = 'flex';
+            } else {
+                document.getElementById('adminLoginErr').classList.add('hidden');
+                document.getElementById('adminLoginModal').style.display = 'flex';
+            }
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('adminUsername').value.trim();
+            const p = document.getElementById('adminPassword').value.trim();
+
+            if (u === 'BRPRH' && p === 'Pleng235') {
+                isAdminLoggedIn = true;
+                sessionStorage.setItem('thitipra_admin_auth', 'true');
+                closeModal('adminLoginModal');
+                document.getElementById('adminUsername').value = '';
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('addFontModal').style.display = 'flex';
+            } else {
+                document.getElementById('adminLoginErr').classList.remove('hidden');
+            }
+        }
+
+        function togglePricingInputs(type) {
+            const singleGrp = document.getElementById('pricingSingleGroup');
+            const splitGrp = document.getElementById('pricingSplitGroup');
+            if (type === 'single') {
+                singleGrp.classList.remove('hidden');
+                splitGrp.classList.add('hidden');
+            } else {
+                singleGrp.classList.add('hidden');
+                splitGrp.classList.remove('hidden');
+            }
         }
 
         async function handleAdminAddFont(e) {
@@ -612,10 +773,35 @@
             const fileInput = document.getElementById('adminFontFile');
             const th = document.getElementById('adminFontTh').value.trim();
             const en = document.getElementById('adminFontEn').value.trim().replace(/\s+/g, '');
-            const p = document.getElementById('adminFontP').value.trim();
-            const c = document.getElementById('adminFontC').value.trim();
-            const driveP = document.getElementById('adminFontDriveP').value.trim();
-            const driveC = document.getElementById('adminFontDriveC').value.trim();
+            const pricingType = document.querySelector('input[name="pricingType"]:checked').value;
+            const isFeatured = document.getElementById('adminFontIsFeatured').checked;
+
+            let pricePersonal = '';
+            let priceCommercial = '';
+            let priceBiz = '';
+
+            if (pricingType === 'single') {
+                const combined = document.getElementById('adminFontCombinedPrice').value.trim();
+                priceBiz = document.getElementById('adminFontBizPrice1').value.trim() || '฿700';
+                if (!combined) {
+                    alert('กรุณากรอกราคาใช้งานส่วนตัว & เชิงพาณิชย์');
+                    return;
+                }
+                pricePersonal = combined.startsWith('฿') ? combined : `฿${combined}`;
+                priceCommercial = pricePersonal;
+            } else {
+                const p = document.getElementById('adminFontP').value.trim();
+                const c = document.getElementById('adminFontC').value.trim();
+                priceBiz = document.getElementById('adminFontBizPrice2').value.trim() || '฿700';
+                if (!p || !c) {
+                    alert('กรุณากรอกราคาส่วนตัวและราคาเชิงพาณิชย์');
+                    return;
+                }
+                pricePersonal = p.startsWith('฿') ? p : `฿${p}`;
+                priceCommercial = c.startsWith('฿') ? c : `฿${c}`;
+            }
+
+            priceBiz = priceBiz.startsWith('฿') ? priceBiz : `฿${priceBiz}`;
 
             if (!fileInput.files || fileInput.files.length === 0) {
                 alert('กรุณาเลือกไฟล์ฟอนต์');
@@ -629,7 +815,7 @@
             try {
                 let fontFileUrl = '';
 
-                // ลองอัปโหลดเข้า Supabase Storage (Bucket 'fonts')
+                // อัปโหลดเข้า Supabase Storage (Bucket 'fonts') หากมี
                 if (supabaseClient) {
                     const ext = file.name.split('.').pop();
                     const fileName = `${Date.now()}_${en}.${ext}`;
@@ -641,7 +827,7 @@
                     }
                 }
 
-                // หากไม่มี Bucket หรืออัปโหลดไม่สำเร็จ ให้แปลงไฟล์เป็น Data Base64 สำรอง
+                // ถ้าไม่มี Storage หรือไม่สำเร็จ ให้ใช้ Data URL
                 if (!fontFileUrl) {
                     fontFileUrl = await new Promise((resolve, reject) => {
                         const reader = new FileReader();
@@ -654,24 +840,23 @@
                 const newFont = {
                     th: th,
                     en: en,
-                    p: p.startsWith('฿') ? p : `฿${p}`,
-                    c: c.startsWith('฿') ? c : `฿${c}`,
+                    p: pricePersonal,
+                    c: priceCommercial,
+                    b: priceBiz,
                     file: fontFileUrl,
-                    drive: driveP || driveC || '',
-                    drive_personal: driveP,
-                    drive_commercial: driveC,
+                    featured: isFeatured,
                     created_at: new Date().toISOString()
                 };
 
                 // บันทึกลงตาราง Supabase
                 if (supabaseClient) {
-                    const { error: insertErr } = await supabaseClient.from('fonts').insert([newFont]);
-                    if (insertErr) {
-                        console.warn('Supabase DB Insert note:', insertErr.message);
+                    try {
+                        await supabaseClient.from('fonts').insert([newFont]);
+                    } catch(err) {
+                        console.warn('Supabase DB Insert notice:', err);
                     }
                 }
 
-                // บันทึกและโหลดฟอนต์เข้าใช้งานทันที
                 fontsList.unshift(newFont);
                 localStorage.setItem('thitipra_fonts', JSON.stringify(fontsList));
 
@@ -679,11 +864,15 @@
                 await fontObj.load();
                 document.fonts.add(fontObj);
 
+                renderFeaturedFonts();
                 renderFonts();
                 populateSelects();
 
                 alert(`เพิ่มฟอนต์ "${th} (${en})" สำเร็จเรียบร้อยแล้วค่ะ!`);
                 e.target.reset();
+                document.getElementById('adminFontBizPrice1').value = '฿700';
+                document.getElementById('adminFontBizPrice2').value = '฿700';
+                togglePricingInputs('single');
                 closeModal('addFontModal');
             } catch (err) {
                 console.error(err);
@@ -782,6 +971,7 @@
             document.getElementById('orderModalFontTitle').innerText = `${currentFont.th} (${currentFont.en})`;
             document.getElementById('orderPricePersonal').innerText = currentFont.p;
             document.getElementById('orderPriceCommercial').innerText = currentFont.c;
+            document.getElementById('orderPriceBusiness').innerText = currentFont.b || '฿700';
             document.querySelector('input[name="licenseSelect"][value="personal"]').checked = true;
             updatePaymentAmount();
             document.getElementById('orderLicenseModal').style.display = 'flex';
@@ -793,7 +983,7 @@
             const totalEl = document.getElementById('paymentTotalAmount');
             if (license === 'personal') totalEl.innerText = `${currentFont.p}`;
             else if (license === 'commercial') totalEl.innerText = `${currentFont.c}`;
-            else totalEl.innerText = `฿700`;
+            else totalEl.innerText = `${currentFont.b || '฿700'}`;
         }
 
         async function handleSendOrderWithSlip(e) {
@@ -810,7 +1000,7 @@
                 license: license,
                 amount: price,
                 customerEmail: email,
-                driveLink: (license === 'personal') ? (currentFont.drive_personal || currentFont.drive) : (currentFont.drive_commercial || currentFont.drive),
+                driveLink: '',
                 status: 'pending',
                 date: new Date().toLocaleString('th-TH')
             };
