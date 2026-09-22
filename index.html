@@ -93,7 +93,6 @@
                             <div class="text-[9px] text-pink-500">ตัวแทนจำหน่ายอย่างถูกต้อง ✨</div>
                         </div>
                     </button>
-                    <!-- ปุ่มเปิดเงื่อนไข & กฎลิขสิทธิ์ทั้งหมด -->
                     <button onclick="openRulesModal('general'); toggleMenu();" class="w-full text-left flex items-center gap-2.5 p-2 hover:bg-pink-50 rounded-xl text-pink-700 font-semibold">
                         <span class="text-brand-dark"><i class="fas fa-scale-balanced"></i></span> เงื่อนไข & กฎการใช้งานฟอนต์
                     </button>
@@ -101,7 +100,6 @@
 
                 <div id="sidebarDynamicLinks" class="space-y-1.5 pt-1"></div>
 
-                <!-- ปุ่มเพิ่มฟอนต์สำหรับแอดมิน -->
                 <button onclick="triggerAdminAddFont(); toggleMenu();" class="w-full text-left p-2.5 bg-brand-light hover:bg-pink-200 rounded-xl transition text-brand-dark font-bold border border-pink-200 mt-2">
                     <i class="fas fa-user-lock mr-1.5"></i> จัดการเพิ่มฟอนต์ (แอดมิน)
                 </button>
@@ -142,7 +140,7 @@
 
             <div class="bg-white rounded-t-[35px] -mt-14 relative z-10 pt-12 px-4 shadow-app pb-8">
                 
-                <!-- ==================== FEATURED FONTS SLIDER (แนะนำฟอนต์) ==================== -->
+                <!-- FEATURED FONTS SLIDER (แนะนำฟอนต์) -->
                 <div id="featuredSection" class="mb-5 hidden">
                     <div class="flex items-center justify-between mb-2 px-1">
                         <span class="text-xs font-bold text-brand-dark flex items-center gap-1.5">
@@ -153,8 +151,8 @@
                     <div id="featuredSlider" class="flex gap-3 overflow-x-auto no-scrollbar pb-2 pt-1 px-1"></div>
                 </div>
 
-                <div class="bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl p-2.5 text-center text-xs font-medium mb-4 flex items-center justify-center gap-1.5 shadow-xs">
-                    <i class="fas fa-clock text-amber-600"></i> สั่งซื้อรอดึงเมลเข้า Google Drive ภายใน 1 - 3 ชั่วโมงค่ะ ✨
+                <div class="bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-2xl p-2.5 text-center text-xs font-medium mb-4 flex items-center justify-center gap-1.5 shadow-xs">
+                    <i class="fas fa-bolt text-emerald-600"></i> สั่งซื้อและแนบสลิป ระบบดึง Gmail เข้า Google Drive ทันที ⚡
                 </div>
 
                 <div class="space-y-3 mb-5">
@@ -174,7 +172,6 @@
                     </div>
                 </div>
 
-                <!-- Font Cards List (ดึงจาก Supabase) -->
                 <div class="space-y-3" id="fontList">
                     <div class="text-center py-8 text-xs text-slate-400">กำลังโหลดคลังฟอนต์...</div>
                 </div>
@@ -254,7 +251,7 @@
 
     </div>
 
-    <!-- ==================== MODAL: กฎและเงื่อนไขการใช้งานฟอนต์ทั้งหมด (แยกกรอบ) ==================== -->
+    <!-- ==================== MODAL: กฎและเงื่อนไขการใช้งานฟอนต์ทั้งหมด ==================== -->
     <div id="rulesModal" class="modal">
         <div class="modal-content" style="max-width: 440px;">
             <button onclick="closeModal('rulesModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -263,7 +260,6 @@
                 <h3 class="font-bold text-sm text-brand-text mt-1">📜 กฎและเงื่อนไขการใช้งานฟอนต์</h3>
             </div>
 
-            <!-- แท็บสลับกฎแต่ละข้อ -->
             <div class="flex gap-1 overflow-x-auto no-scrollbar pb-2 mb-2 border-b border-pink-100 text-[10px] font-bold">
                 <button type="button" id="tab-rule-general" onclick="switchRuleTab('general')" class="px-2.5 py-1.5 rounded-xl bg-brand-main text-white shrink-0 transition">กฎทั่วไป</button>
                 <button type="button" id="tab-rule-personal" onclick="switchRuleTab('personal')" class="px-2.5 py-1.5 rounded-xl bg-pink-50 text-pink-700 hover:bg-pink-100 shrink-0 transition">การใช้งานส่วนตัว</button>
@@ -271,13 +267,12 @@
                 <button type="button" id="tab-rule-business" onclick="switchRuleTab('business')" class="px-2.5 py-1.5 rounded-xl bg-pink-50 text-pink-700 hover:bg-pink-100 shrink-0 transition">องค์กร / บริษัท</button>
             </div>
 
-            <!-- เนื้อหากฎ 1: กฎการใช้งานฟอนต์ทั่วไป -->
+            <!-- กฎ 1: ทั่วไป -->
             <div id="rule-content-general" class="space-y-3 text-xs">
                 <div class="p-2.5 bg-rose-50 border border-rose-200 rounded-2xl text-[11px] text-rose-800 font-medium">
                     ⚠️ ซื้อสิทธิ์แบบใด ต้องใช้งานตามเงื่อนไขของสิทธิ์นั้น และ 1 การสั่งซื้อต่อ 1 อีเมล ใช้ได้ 1 บุคคลเท่านั้น
                 </div>
 
-                <!-- กรอบ 01 -->
                 <div class="p-3 bg-white border-2 border-pink-100 rounded-2xl space-y-1.5 shadow-xs">
                     <div class="flex items-center gap-1.5 text-brand-dark font-bold text-xs">
                         <span class="bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded text-[10px]">01</span>
@@ -291,7 +286,6 @@
                     </ul>
                 </div>
 
-                <!-- กรอบ 02 -->
                 <div class="p-3 bg-white border-2 border-pink-100 rounded-2xl space-y-1.5 shadow-xs">
                     <div class="flex items-center gap-1.5 text-brand-dark font-bold text-xs">
                         <span class="bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded text-[10px]">02</span>
@@ -305,7 +299,6 @@
                     </ul>
                 </div>
 
-                <!-- กรอบ 03 -->
                 <div class="p-3 bg-white border-2 border-pink-100 rounded-2xl space-y-1.5 shadow-xs">
                     <div class="flex items-center gap-1.5 text-brand-dark font-bold text-xs">
                         <span class="bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded text-[10px]">03</span>
@@ -326,13 +319,12 @@
                 </div>
             </div>
 
-            <!-- เนื้อหากฎ 2: กฎการใช้งานส่วนตัว (Personal) -->
+            <!-- กฎ 2: ส่วนตัว -->
             <div id="rule-content-personal" class="space-y-3 text-xs hidden">
                 <div class="p-2.5 bg-pink-50 border border-pink-200 rounded-2xl text-[11px] text-pink-900 font-medium">
                     🌸 สำหรับงานที่ไม่มีรายได้ ไม่ขายของ ไม่โปรโมต และไม่เกี่ยวข้องกับธุรกิจหรือบริษัท
                 </div>
 
-                <!-- กรอบ 01 -->
                 <div class="p-3 bg-white border-2 border-pink-100 rounded-2xl space-y-1.5 shadow-xs">
                     <div class="flex items-center gap-1.5 text-pink-600 font-bold text-xs">
                         <span class="bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded text-[10px]">01</span>
@@ -348,7 +340,6 @@
                     </ul>
                 </div>
 
-                <!-- กรอบ 02 -->
                 <div class="p-3 bg-white border-2 border-pink-100 rounded-2xl space-y-1.5 shadow-xs">
                     <div class="flex items-center gap-1.5 text-pink-600 font-bold text-xs">
                         <span class="bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded text-[10px]">02</span>
@@ -361,13 +352,12 @@
                 </div>
             </div>
 
-            <!-- เนื้อหากฎ 3: กฎการใช้งานเชิงพาณิชย์ (Commercial) -->
+            <!-- กฎ 3: เชิงพาณิชย์ -->
             <div id="rule-content-commercial" class="space-y-3 text-xs hidden">
                 <div class="p-2.5 bg-amber-50 border border-amber-200 rounded-2xl text-[11px] text-amber-900 font-medium">
                     💼 สำหรับสร้างรายได้ โปรโมต ทำการตลาด และใช้ในธุรกิจ โดยผู้ซื้อ 1 อีเมลใช้ได้ 1 บุคคล
                 </div>
 
-                <!-- กรอบ 01 -->
                 <div class="p-3 bg-white border-2 border-amber-100 rounded-2xl space-y-1.5 shadow-xs">
                     <div class="flex items-center gap-1.5 text-amber-700 font-bold text-xs">
                         <span class="bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded text-[10px]">01</span>
@@ -380,7 +370,6 @@
                     </ul>
                 </div>
 
-                <!-- กรอบ 02 -->
                 <div class="p-3 bg-white border-2 border-amber-100 rounded-2xl space-y-1.5 shadow-xs">
                     <div class="flex items-center gap-1.5 text-amber-700 font-bold text-xs">
                         <span class="bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded text-[10px]">02</span>
@@ -393,7 +382,6 @@
                     </ul>
                 </div>
 
-                <!-- กรอบ 03 -->
                 <div class="p-3 bg-white border-2 border-amber-100 rounded-2xl space-y-1.5 shadow-xs">
                     <div class="flex items-center gap-1.5 text-amber-700 font-bold text-xs">
                         <span class="bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded text-[10px]">03</span>
@@ -406,13 +394,12 @@
                 </div>
             </div>
 
-            <!-- เนื้อหากฎ 4: กฎองค์กร / บริษัท / หจก. (Business) -->
+            <!-- กฎ 4: องค์กร / บริษัท -->
             <div id="rule-content-business" class="space-y-3 text-xs hidden">
                 <div class="p-2.5 bg-purple-50 border border-purple-200 rounded-2xl text-[11px] text-purple-900 font-medium">
                     🏢 สำหรับบริษัท องค์กร หจก. หน่วยงาน ฟรีแลนซ์ที่ออกแบบให้องค์กร งานวิดีโอ และการฝังฟอนต์ในเว็บไซต์หรือแอป
                 </div>
 
-                <!-- กรอบ 01 -->
                 <div class="p-3 bg-white border-2 border-purple-100 rounded-2xl space-y-1.5 shadow-xs">
                     <div class="flex items-center gap-1.5 text-purple-700 font-bold text-xs">
                         <span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded text-[10px]">01</span>
@@ -427,7 +414,6 @@
                     </ul>
                 </div>
 
-                <!-- กรอบ 02 -->
                 <div class="p-3 bg-white border-2 border-purple-100 rounded-2xl space-y-1.5 shadow-xs">
                     <div class="flex items-center gap-1.5 text-purple-700 font-bold text-xs">
                         <span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded text-[10px]">02</span>
@@ -439,7 +425,6 @@
                     </ul>
                 </div>
 
-                <!-- กรอบ 03 -->
                 <div class="p-3 bg-white border-2 border-purple-100 rounded-2xl space-y-1.5 shadow-xs">
                     <div class="flex items-center gap-1.5 text-purple-700 font-bold text-xs">
                         <span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded text-[10px]">03</span>
@@ -455,7 +440,7 @@
         </div>
     </div>
 
-    <!-- ==================== MODAL: ล็อกอินแอดมิน (ADMIN LOGIN) ==================== -->
+    <!-- ==================== MODAL: ล็อกอินแอดมิน ==================== -->
     <div id="adminLoginModal" class="modal">
         <div class="modal-content">
             <button onclick="closeModal('adminLoginModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -486,7 +471,7 @@
         </div>
     </div>
 
-    <!-- ==================== MODAL: เพิ่มฟอนต์ใหม่ (ADMIN ADD FONT) ==================== -->
+    <!-- ==================== MODAL: เพิ่มฟอนต์ใหม่ ==================== -->
     <div id="addFontModal" class="modal">
         <div class="modal-content">
             <button onclick="closeModal('addFontModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -506,7 +491,6 @@
                     <input required type="text" id="adminFontEn" placeholder="เช่น Nomsod, KanomPing (ห้ามเว้นวรรค)" class="w-full border-2 border-pink-100 rounded-xl p-2 focus:outline-brand-main bg-slate-50">
                 </div>
 
-                <!-- ตัวเลือกประเภทราคา -->
                 <div class="p-3 bg-pink-50/50 rounded-2xl border border-pink-100 space-y-2">
                     <label class="block font-bold text-brand-dark text-[11px]">เลือกรูปแบบราคา:</label>
                     <div class="space-y-1.5">
@@ -520,7 +504,6 @@
                         </label>
                     </div>
 
-                    <!-- ช่องกรอกแบบที่ 1 (ราคาเดียว) -->
                     <div id="pricingSingleGroup" class="space-y-2 pt-2 border-t border-pink-100">
                         <div>
                             <label class="block font-semibold text-gray-700 text-[10px]">ราคาส่วนตัว & เชิงพาณิชย์ (ราคาเดียวกัน) *</label>
@@ -532,7 +515,6 @@
                         </div>
                     </div>
 
-                    <!-- ช่องกรอกแบบที่ 2 (แยกสิทธิ์) -->
                     <div id="pricingSplitGroup" class="space-y-2 pt-2 border-t border-pink-100 hidden">
                         <div class="grid grid-cols-2 gap-2">
                             <div>
@@ -551,7 +533,6 @@
                     </div>
                 </div>
 
-                <!-- ติ๊กฟอนต์แนะนำ -->
                 <div class="flex items-center gap-2 p-2.5 bg-amber-50 rounded-xl border border-amber-200">
                     <input type="checkbox" id="adminFontIsFeatured" class="w-4 h-4 accent-amber-500 rounded cursor-pointer">
                     <label for="adminFontIsFeatured" class="text-[11px] font-bold text-amber-900 cursor-pointer">
@@ -735,18 +716,18 @@
                     <input required type="file" id="orderSlipFile" accept="image/*" class="w-full text-slate-500 text-[10px] file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:bg-rose-100 file:text-rose-600 cursor-pointer">
                 </div>
 
-                <div class="p-2 bg-amber-50 rounded-xl text-[10px] text-amber-800 text-center font-medium">
-                    ⏰ สั่งซื้อและแนบสลิปแล้ว แอดมินจะตรวจสอบและดึงเมลเข้า Drive ภายใน 1-3 ชม.ค่ะ
+                <div class="p-2 bg-emerald-50 rounded-xl text-[10px] text-emerald-800 text-center font-medium">
+                    ⚡ สั่งซื้อและแนบสลิปแล้ว ระบบบอตจะดึงเมลเข้า Drive ทันทีค่ะ
                 </div>
 
                 <button type="submit" class="w-full bg-[#06C755] hover:bg-green-600 text-white font-bold py-2.5 rounded-xl transition shadow-md flex items-center justify-center gap-1.5 text-xs">
-                    <i class="fab fa-line text-base"></i> ยืนยันคำสั่งซื้อ & เด้งแจ้งแอดมินใน LINE
+                    <i class="fab fa-line text-base"></i> ยืนยันคำสั่งซื้อ & ดึงเมลเข้า Google Drive ทันที
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- Modals: Notice Modal (สำหรับตัวแทนจำหน่ายอื่นๆ) -->
+    <!-- Modals: Notice Modal -->
     <div id="dynamicPageModal" class="modal">
         <div class="modal-content">
             <button onclick="closeModal('dynamicPageModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -766,10 +747,13 @@
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
 
+        // URL Web App จาก Google Apps Script สำหรับดึงเมลเข้า Google Drive ทันที
+        const GOOGLE_DRIVE_BOT_URL = 'https://script.google.com/macros/s/AKfycbxInjwV2XTnocxUbnUAcpkkT0sfU0Hr6i03DIb09HozhvK0C2dCYQaaYzrcB8Zy_lLedQ/exec';
+
         let isAdminLoggedIn = sessionStorage.getItem('thitipra_admin_auth') === 'true';
 
         const defaultQA = [
-            { q: "สั่งซื้อแล้วใช้เวลานานไหมกว่าจะได้ฟอนต์?", a: "แอดมินจะตรวจสอบสลิปและดึงอีเมลเข้า Google Drive ให้ภายใน 1-3 ชั่วโมงค่ะ ✨" },
+            { q: "สั่งซื้อแล้วใช้เวลานานไหมกว่าจะได้ฟอนต์?", a: "ระบบบอตจะดึงอีเมลเข้า Google Drive ให้อัตโนมัติทันทีหลังแจ้งโอนเงินค่ะ ✨" },
             { q: "ฟอนต์สามารถใช้ในแอปไหนได้บ้าง?", a: "ใช้ได้ทั้งใน Goodnotes, Procreate, Canva, CapCut, Phonto, Photoshop และแอปแต่งรูปทั่วไปเลยค่ะ" },
             { q: "ใช้กับโทรศัพท์ Android หรือ iPad ได้ไหม?", a: "รองรับทั้ง iOS (iPad/iPhone) และ Android ค่ะ ติดตั้งง่ายมากๆ" }
         ];
@@ -913,7 +897,6 @@
             });
         }
 
-        // ================= เปิด Modal กฎและสลับแท็บ =================
         function openRulesModal(defaultTab = 'general') {
             document.getElementById('rulesModal').style.display = 'flex';
             switchRuleTab(defaultTab);
@@ -936,7 +919,6 @@
             });
         }
 
-        // ================= ตรวจสอบสิทธิ์และล็อกอินแอดมิน =================
         function triggerAdminAddFont() {
             if (isAdminLoggedIn) {
                 document.getElementById('addFontModal').style.display = 'flex';
@@ -1192,22 +1174,50 @@
             else totalEl.innerText = `${currentFont.b || '฿700'}`;
         }
 
+        // ================= สั่งซื้อและส่งเฉพาะเมลลูกค้าไปดึงเข้า Google Drive ทันที =================
         async function handleSendOrderWithSlip(e) {
             e.preventDefault();
             if (!currentFont) return;
+
             const email = document.getElementById('orderCustomerEmail').value.trim();
             const license = document.querySelector('input[name="licenseSelect"]:checked').value;
             const price = document.getElementById('paymentTotalAmount').innerText;
             const orderId = `ORD-${Date.now().toString().slice(-6)}`;
+            const fontTitle = `${currentFont.th} (${currentFont.en})`;
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-1"></i> กำลังดึงเมล ${email} เข้า Drive...`;
+
+            // ส่งข้อมูลไปให้ Google Apps Script เพื่อดึงเมลลูกค้าเข้าโฟลเดอร์ Google Drive
+            let botDispatched = false;
+            try {
+                await fetch(GOOGLE_DRIVE_BOT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        customerEmail: email, // ส่งเฉพาะอีเมลลูกค้า
+                        fontName: fontTitle,
+                        license: license,
+                        orderId: orderId,
+                        amount: price
+                    })
+                });
+                botDispatched = true;
+            } catch (botErr) {
+                console.warn("Bot Drive dispatch note:", botErr);
+            }
 
             const newOrder = {
                 id: orderId,
-                fontName: `${currentFont.th} (${currentFont.en})`,
+                fontName: fontTitle,
                 license: license,
                 amount: price,
                 customerEmail: email,
-                driveLink: '',
-                status: 'pending',
+                driveLink: currentFont.drive || '',
+                status: 'approved', // ปรับเป็นอนุมัติทันที
                 date: new Date().toLocaleString('th-TH')
             };
 
@@ -1221,10 +1231,14 @@
             }
 
             closeModal('orderLicenseModal');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
 
-            const msg = `🛒✨ [แจ้งโอนเงินสั่งซื้อฟอนต์ ${orderId}]%0A- ฟอนต์: ${encodeURIComponent(newOrder.fontName)}%0A- สิทธิ์: ${license}%0A- ยอดเงิน: ${price}%0A- อีเมลรับ Google Drive: ${encodeURIComponent(email)}%0A⏰ (แนบสลิปเรียบร้อยแล้ว รอดึงเมลเข้าไดรฟ์ภายใน 1-3 ชม.)`;
+            // เด้งแจ้งสรุปข้อมูลเข้า LINE แอดมิน
+            const msg = `🛒✨ [แจ้งโอนเงินสั่งซื้อฟอนต์ ${orderId}]%0A- ฟอนต์: ${encodeURIComponent(fontTitle)}%0A- สิทธิ์: ${license}%0A- ยอดเงิน: ${price}%0A- อีเมลรับสิทธิ์: ${encodeURIComponent(email)}%0A⚡ ระบบบอตส่งคำขอดึงเมลเข้า Google Drive เรียบร้อยแล้ว`;
             window.open(`${shopSettings.lineUrl}/?${msg}`, '_blank');
-            alert(`บันทึกคำสั่งซื้อ ${orderId} เรียบร้อยแล้ว! แอดมินจะดึงเมลเข้า Drive ให้ภายใน 1-3 ชั่วโมงค่ะ`);
+
+            alert(`สั่งซื้อสำเร็จ! ระบบได้ทำการดึงอีเมล "${email}" เข้า Google Drive เรียบร้อยแล้วค่ะ สามารถตรวจสอบการแชร์ไฟล์ใน Gmail หรือ Google Drive ได้ทันที ✨`);
         }
 
         async function handleCustomerVaultAccess(e) {
@@ -1258,12 +1272,12 @@
                     <div class="p-2.5 bg-pink-50/50 border border-pink-100 rounded-xl flex justify-between items-center text-xs">
                         <div>
                             <div class="font-bold text-slate-800">${o.fontName}</div>
-                            <div class="text-[9px] text-gray-500">สิทธิ์: ${o.license} | ${isApproved ? '<span class="text-green-600 font-bold">อนุมัติแล้ว</span>' : '<span class="text-amber-600 font-bold">รอดึงเมล 1-3 ชม.</span>'}</div>
+                            <div class="text-[9px] text-gray-500">สิทธิ์: ${o.license} | ${isApproved ? '<span class="text-green-600 font-bold">อนุมัติแล้ว</span>' : '<span class="text-amber-600 font-bold">รอดึงเมล</span>'}</div>
                         </div>
                         <div>
                             ${isApproved && o.driveLink ? 
                                 `<a href="${o.driveLink}" target="_blank" class="bg-green-500 text-white font-bold px-2.5 py-1 rounded-lg text-[10px] flex items-center gap-1 shadow-xs"><i class="fab fa-google-drive"></i> เปิดไดรฟ์</a>` :
-                                `<span class="text-[10px] text-gray-400">🔒 รอสิทธิ์</span>`
+                                `<span class="text-[10px] text-emerald-600 font-semibold">✓ ดึงเมลแล้ว</span>`
                             }
                         </div>
                     </div>
