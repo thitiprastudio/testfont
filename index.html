@@ -358,7 +358,7 @@
 
     </div>
 
-    <!-- ==================== MODAL: เมนูควบคุมแอดมิน (Admin Control Hub) ==================== -->
+    <!-- ==================== MODAL: แผงควบคุมระบบแอดมิน ==================== -->
     <div id="adminControlHubModal" class="modal">
         <div class="modal-content">
             <button onclick="closeModal('adminControlHubModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -387,7 +387,7 @@
         </div>
     </div>
 
-    <!-- ==================== MODAL: จัดการ/แก้ไข/ลบฟอนต์เดิม (Font Manager) ==================== -->
+    <!-- ==================== MODAL: จัดการ/แก้ไข/ลบฟอนต์เดิม ==================== -->
     <div id="fontManagerModal" class="modal">
         <div class="modal-content" style="max-width: 440px;">
             <button onclick="closeModal('fontManagerModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -397,13 +397,11 @@
                 <p class="text-[10px] text-gray-500">สามารถแก้ไขข้อมูล ราคา ลิงก์ไดรฟ์ หรือลบฟอนต์ได้ที่นี่</p>
             </div>
 
-            <div id="adminFontListContainer" class="space-y-2 max-h-96 overflow-y-auto pr-1">
-                <!-- รายการฟอนต์จะถูกเรนเดอร์ตรงนี้ -->
-            </div>
+            <div id="adminFontListContainer" class="space-y-2 max-h-96 overflow-y-auto pr-1"></div>
         </div>
     </div>
 
-    <!-- ==================== MODAL: แก้ไขฟอนต์เดิม (Edit Font Modal) ==================== -->
+    <!-- ==================== MODAL: แก้ไขข้อมูลฟอนต์ ==================== -->
     <div id="editFontModal" class="modal">
         <div class="modal-content">
             <button onclick="closeModal('editFontModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -441,7 +439,7 @@
                     <input required type="text" id="editFontDrive" class="w-full border border-emerald-200 rounded-xl p-2 bg-slate-50">
                 </div>
                 <div>
-                    <label class="block font-semibold text-gray-700 text-[10px] mb-0.5">อัปโหลดไฟล์ฟอนต์ตัวอย่างใหม่ (.ttf, .otf) (ไม่ใส่=ใช้ของเดิม)</label>
+                    <label class="block font-semibold text-gray-700 text-[10px] mb-0.5">เปลี่ยนไฟล์ฟอนต์ตัวอย่าง (.ttf, .otf) (ไม่เลือก=ใช้ของเดิม)</label>
                     <input type="file" id="editFontFile" accept=".ttf,.otf,.woff,.woff2" class="w-full text-[10px] border border-pink-100 rounded-xl p-1 bg-pink-50/30">
                 </div>
                 <div class="flex items-center gap-2 p-2 bg-amber-50 rounded-xl border border-amber-200">
@@ -455,7 +453,7 @@
         </div>
     </div>
 
-    <!-- MODAL: ปรับแต่งสีเว็บ ฟอนต์ และแก้ไขกฎ (Theme & Rules Manager) -->
+    <!-- MODAL: ปรับแต่งสีเว็บ ฟอนต์ และแก้ไขกฎ -->
     <div id="themeAndRulesModal" class="modal">
         <div class="modal-content" style="max-width: 440px;">
             <button onclick="closeModal('themeAndRulesModal')" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 bg-gray-50 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
@@ -610,7 +608,6 @@
                         ไฟล์ฟอนต์ตัวอย่างสำหรับทดลองพิมพ์ (.ttf, .otf, .woff) *
                     </label>
                     <input required type="file" id="adminFontFile" accept=".ttf,.otf,.woff,.woff2" class="w-full text-slate-500 text-[10px] file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:bg-pink-100 file:text-brand-dark cursor-pointer border border-pink-100 rounded-xl p-1 bg-pink-50/30">
-                    <p class="text-[9px] text-gray-400 mt-0.5">* ไฟล์นี้จะถูกอัปโหลดไปเก็บใน Google Drive ของแอดมิน เพื่อใช้แสดงผลให้ลูกค้าทดลองพิมพ์สด</p>
                 </div>
 
                 <div id="adminUploadProgress" class="hidden text-center text-xs text-pink-600 font-semibold py-1">
@@ -842,7 +839,6 @@
     </div>
 
     <script>
-        // Web App URL ของ Google Apps Script
         const GOOGLE_DRIVE_BOT_URL = 'https://script.google.com/macros/s/AKfycbwU3q3h7U6FsKNoMFR8WY6AluO8L73LowTMPxwKOve93z_yzJ5awP9w1EavjxkuQlFb/exec';
 
         let isAdminLoggedIn = sessionStorage.getItem('thitipra_admin_auth') === 'true';
@@ -906,7 +902,6 @@
             document.getElementById('ruleDisplayBusiness').innerText = currentRules.business;
         }
 
-        // ================= ดึงฟอนต์จาก Google Sheet 100% =================
         async function fetchFontsFromGoogleSheet() {
             try {
                 const res = await fetch(GOOGLE_DRIVE_BOT_URL);
@@ -1023,7 +1018,7 @@
             });
         }
 
-        // ================= ฟังก์ชันจัดการฟอนต์เดิม (Admin Font Manager) =================
+        // ================= จัดการฟอนต์เดิม (Font Manager) =================
         function openFontManagerModal() {
             const container = document.getElementById('adminFontListContainer');
             container.innerHTML = '';
